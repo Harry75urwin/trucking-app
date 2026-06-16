@@ -83,7 +83,7 @@ function exportToCsv(filename: string, rows: Record<string, unknown>[]) {
             ? `"${val}"`
             : String(val ?? "");
         })
-        .join(","),
+        .join(",")
     ),
   ].join("\n");
   const blob = new Blob([csv], { type: "text/csv" });
@@ -99,7 +99,7 @@ export default function Reports() {
   const { t } = useLanguage();
   const [loads, setLoads] = useState<BackendLoad[]>([]);
   const [trackingEvents, setTrackingEvents] = useState<BackendTrackingEvent[]>(
-    [],
+    []
   );
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState("6m");
@@ -189,7 +189,7 @@ export default function Reports() {
 
   const totalRevenue = loads.reduce(
     (sum, l) => sum + (l.total_revenue ?? 0),
-    0,
+    0
   );
   const deliveredLoads = loads.filter((l) => l.status === "delivered");
   const avgRevenue =
@@ -217,8 +217,8 @@ export default function Reports() {
           : key,
         color: val.color,
       },
-    ]),
-  ) as ChartConfig;
+    ])
+  );
 
   const getStatusLabel = (status: string) =>
     statusLabels[status]
@@ -239,7 +239,7 @@ export default function Reports() {
         rate: l.rate,
         revenue: l.total_revenue ?? 0,
         created_at: l.created_at,
-      })),
+      }))
     );
   };
 
@@ -254,7 +254,7 @@ export default function Reports() {
         route: r.route,
         count: r.count,
         revenue: r.revenue,
-      })),
+      }))
     );
   };
 
@@ -268,14 +268,14 @@ export default function Reports() {
           <p className="text-muted-foreground">
             {t(
               "Operational analytics and performance metrics",
-              "परिचालन विश्लेषण और प्रदर्शन मीट्रिक्स",
+              "परिचालन विश्लेषण और प्रदर्शन मीट्रिक्स"
             )}
           </p>
         </div>
         <div className="flex items-center gap-2">
           <Calendar className="w-4 h-4 text-muted-foreground" />
           <Select value={period} onValueChange={setPeriod}>
-            <SelectTrigger className="w-[140px]">
+            <SelectTrigger className="w-35">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -386,7 +386,7 @@ export default function Reports() {
                 <CardDescription>
                   {t(
                     "Revenue trend over selected period",
-                    "चयनित अवधि का राजस्व प्रवृत्ति",
+                    "चयनित अवधि का राजस्व प्रवृत्ति"
                   )}
                 </CardDescription>
               </CardHeader>
@@ -441,7 +441,7 @@ export default function Reports() {
                 <CardDescription>
                   {t(
                     "Number of loads over selected period",
-                    "चयनित अवधि में लोड की संख्या",
+                    "चयनित अवधि में लोड की संख्या"
                   )}
                 </CardDescription>
               </CardHeader>
@@ -489,7 +489,7 @@ export default function Reports() {
                 <CardDescription>
                   {t(
                     "Breakdown by current status",
-                    "वर्तमान स्थिति के अनुसार विभाजन",
+                    "वर्तमान स्थिति के अनुसार विभाजन"
                   )}
                 </CardDescription>
               </CardHeader>

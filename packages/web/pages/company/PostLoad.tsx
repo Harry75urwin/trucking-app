@@ -1,5 +1,12 @@
 import { useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, MapPin, Package, Upload, X } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  MapPin,
+  Package,
+  Upload,
+  X,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,7 +49,7 @@ export default function PostLoadCompany() {
   });
 
   const handleField = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const validate = () => {
@@ -59,7 +66,7 @@ export default function PostLoadCompany() {
       if (form.assignTo === "fleet" && !form.notes.trim())
         errs.notes = t(
           "Add notes for fleet assignment",
-          "बेड़े असाइनमेंट के लिए नोट जोड़ें",
+          "बेड़े असाइनमेंट के लिए नोट जोड़ें"
         );
     }
     setErrors(errs);
@@ -130,7 +137,7 @@ export default function PostLoadCompany() {
             <p className="text-muted-foreground">
               {t(
                 "Load added to your fleet operations.",
-                "लोड आपके बेड़े में जोड़ा गया।",
+                "लोड आपके बेड़े में जोड़ा गया।"
               )}
             </p>
             <div className="rounded-xl bg-muted/50 p-4 text-sm text-muted-foreground">
@@ -182,7 +189,7 @@ export default function PostLoadCompany() {
         <p className="text-muted-foreground">
           {t(
             "Assign to fleet or open for bidding",
-            "बेड़े को असाइन करें या नीलामी के लिए खोलें",
+            "बेड़े को असाइन करें या नीलामी के लिए खोलें"
           )}
         </p>
       </div>
@@ -334,7 +341,7 @@ export default function PostLoadCompany() {
                   rows={3}
                   placeholder={t(
                     "Special requirements...",
-                    "विशेष आवश्यकताएं...",
+                    "विशेष आवश्यकताएं..."
                   )}
                 />
               </div>
@@ -349,7 +356,7 @@ export default function PostLoadCompany() {
                     accept="image/*"
                     multiple
                     className="hidden"
-                    onChange={uploadImage}
+                    onChange={(e) => void uploadImage(e)}
                   />
                   <Button
                     type="button"
@@ -408,7 +415,7 @@ export default function PostLoadCompany() {
                       <p className="text-xs text-muted-foreground mt-1">
                         {t(
                           "All truckers can bid",
-                          "सभी ट्रकर बोली लगा सकते हैं",
+                          "सभी ट्रकर बोली लगा सकते हैं"
                         )}
                       </p>
                     </div>
@@ -426,7 +433,7 @@ export default function PostLoadCompany() {
                       <p className="text-xs text-muted-foreground mt-1">
                         {t(
                           "Assign to your own trucks",
-                          "अपने ट्रकों को असाइन करें",
+                          "अपने ट्रकों को असाइन करें"
                         )}
                       </p>
                     </div>
@@ -471,7 +478,7 @@ export default function PostLoadCompany() {
           </Button>
         ) : (
           <Button
-            onClick={submit}
+            onClick={() => void submit()}
             disabled={loading}
             className="bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-lg"
           >

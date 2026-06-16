@@ -111,7 +111,7 @@ export function CustomerSidebar() {
             <SidebarMenuButton
               onClick={() => {
                 logout();
-                navigate("/login");
+                void navigate("/login");
               }}
             >
               <LogOut className="size-4" />

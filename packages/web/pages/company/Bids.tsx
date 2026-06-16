@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, CheckCircle2, XCircle, MapPin } from "lucide-react";
+import { CheckCircle2, XCircle, MapPin } from "lucide-react";
 import { useState } from "react";
 import { useLanguage } from "@/lib/language-context";
 
@@ -30,7 +30,7 @@ export default function BidsPage() {
         <p className="text-muted-foreground">
           {t(
             "Review and accept bids for your loads",
-            "अपने लोड के लिए बोलियाँ समीक्षा करें और स्वीकार करें",
+            "अपने लोड के लिए बोलियाँ समीक्षा करें और स्वीकार करें"
           )}
         </p>
       </div>

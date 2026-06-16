@@ -1,20 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import {
-  Search,
-  User,
-  Phone,
-  Star,
-  ShieldCheck,
-  Plus,
-  Trash2,
-  MapPin,
-  Truck,
-} from "lucide-react";
+import { Search, User, Phone, Plus, Trash2, MapPin, Truck } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
 import { useAuthSession } from "@/lib/auth-session";
 import {
@@ -57,7 +47,7 @@ export default function DriversPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [assigningDriverId, setAssigningDriverId] = useState<string | null>(
-    null,
+    null
   );
   const [loads, setLoads] = useState<any[]>([]);
   const [selectedLoadId, setSelectedLoadId] = useState("");
@@ -81,7 +71,7 @@ export default function DriversPage() {
   };
 
   useEffect(() => {
-    loadData();
+    void loadData();
   }, [session]);
 
   const loadAssignmentsData = async () => {
@@ -92,7 +82,7 @@ export default function DriversPage() {
   };
 
   useEffect(() => {
-    loadAssignmentsData();
+    void loadAssignmentsData();
   }, [session]);
 
   const filtered = drivers.filter((d) => {
@@ -150,7 +140,7 @@ export default function DriversPage() {
           <p className="text-muted-foreground">
             {t(
               "Assign and manage drivers to loads",
-              "लोड को असाइन करें और प्रबंधित करें",
+              "लोड को असाइन करें और प्रबंधित करें"
             )}
           </p>
         </div>
@@ -282,7 +272,7 @@ export default function DriversPage() {
                               size="sm"
                               variant="ghost"
                               className="h-6 w-6 p-0 text-rose-500"
-                              onClick={() => unassign(a.id)}
+                              onClick={() => void unassign(a.id)}
                             >
                               <Trash2 className="w-3 h-3" />
                             </Button>
@@ -312,7 +302,7 @@ export default function DriversPage() {
                               <SelectValue
                                 placeholder={t(
                                   "Select a load...",
-                                  "लोड चुनें...",
+                                  "लोड चुनें..."
                                 )}
                               />
                             </SelectTrigger>
@@ -331,7 +321,7 @@ export default function DriversPage() {
                           </Select>
                           <Button
                             size="sm"
-                            onClick={submitAssignment}
+                            onClick={() => void submitAssignment()}
                             disabled={!selectedLoadId || assignLoading}
                             className="h-8 text-xs bg-linear-to-r from-emerald-500 to-teal-600"
                           >

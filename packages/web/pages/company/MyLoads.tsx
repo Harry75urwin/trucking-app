@@ -57,7 +57,7 @@ export default function MyLoadsCompany() {
     (l) =>
       (filter === "all" || l.status === filter) &&
       (l.id.includes(search) ||
-        l.from.toLowerCase().includes(search.toLowerCase())),
+        l.from.toLowerCase().includes(search.toLowerCase()))
   );
   return (
     <div className="p-6 space-y-6">

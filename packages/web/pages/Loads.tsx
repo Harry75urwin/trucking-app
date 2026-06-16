@@ -98,7 +98,7 @@ export default function Loads() {
   }, []);
 
   useEffect(() => {
-    fetchLoads();
+    void fetchLoads();
   }, [fetchLoads]);
 
   function openCreate() {
@@ -142,12 +142,12 @@ export default function Loads() {
     }
     setSaving(false);
     setDialogOpen(false);
-    fetchLoads();
+    void fetchLoads();
   }
 
   async function handleDelete(id: string) {
     await supabase.from("loads").delete().eq("id", id);
-    fetchLoads();
+    void fetchLoads();
   }
 
   const columns: ColumnDef<Load>[] = [
@@ -213,7 +213,7 @@ export default function Loads() {
             </DropdownMenuItem>
             <DropdownMenuItem
               variant="destructive"
-              onClick={() => handleDelete(row.original.id)}
+              onClick={() => void handleDelete(row.original.id)}
             >
               <Trash2 className="size-4" /> {t("Delete", "हटाएं")}
             </DropdownMenuItem>
@@ -246,7 +246,7 @@ export default function Loads() {
           <p className="text-muted-foreground">
             {t(
               "Shipment management and tracking",
-              "शिप्मेंट प्रबंधन और ट्रैकिंग",
+              "शिप्मेंट प्रबंधन और ट्रैकिंग"
             )}
           </p>
         </div>
@@ -299,7 +299,7 @@ export default function Loads() {
                           ? null
                           : flexRender(
                               header.column.columnDef.header,
-                              header.getContext(),
+                              header.getContext()
                             )}
                       </TableHead>
                     ))}
@@ -314,7 +314,7 @@ export default function Loads() {
                         <TableCell key={cell.id}>
                           {flexRender(
                             cell.column.columnDef.cell,
-                            cell.getContext(),
+                            cell.getContext()
                           )}
                         </TableCell>
                       ))}
@@ -552,7 +552,7 @@ export default function Loads() {
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
               {t("Cancel", "रद्द करें")}
             </Button>
-            <Button onClick={handleSave} disabled={saving}>
+            <Button onClick={() => void handleSave()} disabled={saving}>
               {saving
                 ? t("Saving...", "सहेज रहे हैं...")
                 : editLoad

@@ -7,7 +7,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, Bell, Save } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
@@ -22,7 +21,7 @@ export default function NotificationSettingsPage() {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate("/settings")}
+          onClick={() => void navigate("/settings")}
         >
           <ArrowLeft className="w-4 h-4" />
         </Button>
@@ -33,7 +32,7 @@ export default function NotificationSettingsPage() {
           <p className="text-muted-foreground">
             {t(
               "Choose what alerts you receive",
-              "चुनें कि आपको कौन-सी सूचनाएं मिलें",
+              "चुनें कि आपको कौन-सी सूचनाएं मिलें"
             )}
           </p>
         </div>
@@ -50,7 +49,7 @@ export default function NotificationSettingsPage() {
           <CardDescription>
             {t(
               "Manage how you receive notifications",
-              "सूचनाएं कैसे प्राप्त करें, यह प्रबंधित करें",
+              "सूचनाएं कैसे प्राप्त करें, यह प्रबंधित करें"
             )}
           </CardDescription>
         </CardHeader>
@@ -63,7 +62,7 @@ export default function NotificationSettingsPage() {
               <p className="text-sm text-muted-foreground">
                 {t(
                   "Receive push alerts in-app",
-                  "इन-ऐप पुश अलर्ट प्राप्त करें",
+                  "इन-ऐप पुश अलर्ट प्राप्त करें"
                 )}
               </p>
             </div>
@@ -77,7 +76,7 @@ export default function NotificationSettingsPage() {
               <p className="text-sm text-muted-foreground">
                 {t(
                   "Receive updates via email",
-                  "ईमेल के माध्यम से अपडेट प्राप्त करें",
+                  "ईमेल के माध्यम से अपडेट प्राप्त करें"
                 )}
               </p>
             </div>

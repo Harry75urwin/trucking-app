@@ -45,7 +45,7 @@ export default function LoadTemplatesPage() {
       const orgId = session.user?.organizationId;
       const data = await fetchLoadTemplates(
         session,
-        orgId ? String(orgId) : undefined,
+        orgId ? String(orgId) : undefined
       );
       setTemplates(data);
     } catch (err) {
@@ -55,7 +55,7 @@ export default function LoadTemplatesPage() {
   };
 
   useEffect(() => {
-    if (session.user) loadTemplates();
+    if (session.user) void loadTemplates();
   }, [session]);
 
   const handleCreate = async (e: React.FormEvent) => {
@@ -78,7 +78,7 @@ export default function LoadTemplatesPage() {
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         id: "",
-      } as any);
+      });
       setShowForm(false);
       setForm({
         name: "",
@@ -117,7 +117,7 @@ export default function LoadTemplatesPage() {
       t.name.toLowerCase().includes(search.toLowerCase()) ||
       t.origin_city.toLowerCase().includes(search.toLowerCase()) ||
       t.destination_city.toLowerCase().includes(search.toLowerCase()) ||
-      t.commodity.toLowerCase().includes(search.toLowerCase()),
+      t.commodity.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -130,7 +130,7 @@ export default function LoadTemplatesPage() {
           <p className="text-muted-foreground">
             {t(
               "Save and reuse frequent load configurations",
-              "बार-बार उपयोग किए जाने वाले लोड कॉन्फ़िगरेशन को सहेजें और पुनः उपयोग करें",
+              "बार-बार उपयोग किए जाने वाले लोड कॉन्फ़िगरेशन को सहेजें और पुनः उपयोग करें"
             )}
           </p>
         </div>
@@ -161,7 +161,7 @@ export default function LoadTemplatesPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form className="space-y-4" onSubmit={handleCreate}>
+            <form className="space-y-4" onSubmit={(e) => void handleCreate(e)}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2 md:col-span-2">
                   <label className="text-sm font-medium">
@@ -172,7 +172,7 @@ export default function LoadTemplatesPage() {
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     placeholder={t(
                       "e.g. Mumbai-Delhi Electronics",
-                      "उदा. मुंबई-दिल्ली इलेक्ट्रॉनिक्स",
+                      "उदा. मुंबई-दिल्ली इलेक्ट्रॉनिक्स"
                     )}
                     required
                   />
@@ -459,14 +459,24 @@ export default function LoadTemplatesPage() {
                       variant="outline"
                       className="h-7 text-xs gap-1"
                       onClick={() => {
-                        const orgId = session.user?.organizationId;
-                        if (!orgId) return;
-                        createLoadTemplate(session, {
-                          ...tmpl,
-                          usage_count: tmpl.usage_count + 1,
-                          organization_id: String(orgId),
-                        } as any);
-                        loadTemplates();
+                        void (async () => {
+                          const orgId = session.user?.organizationId;
+                          if (!orgId) return;
+                          try {
+                            await createLoadTemplate(session, {
+                              ...tmpl,
+                              usage_count: tmpl.usage_count + 1,
+                              organization_id: String(orgId),
+                            });
+                            await loadTemplates();
+                          } catch (err) {
+                            alert(
+                              err instanceof Error
+                                ? err.message
+                                : "Failed to use template"
+                            );
+                          }
+                        })();
                       }}
                     >
                       <Copy className="w-3 h-3" /> {t("Use", "उपयोग")}
@@ -475,7 +485,7 @@ export default function LoadTemplatesPage() {
                       size="sm"
                       variant="ghost"
                       className="h-7 w-7 p-0 text-rose-500"
-                      onClick={() => handleDelete(tmpl.id)}
+                      onClick={() => void handleDelete(tmpl.id)}
                     >
                       <Trash2 className="w-3 h-3" />
                     </Button>

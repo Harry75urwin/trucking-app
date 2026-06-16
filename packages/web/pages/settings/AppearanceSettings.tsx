@@ -22,7 +22,7 @@ export default function AppearanceSettingsPage() {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate("/settings")}
+          onClick={() => void navigate("/settings")}
         >
           <ArrowLeft className="w-4 h-4" />
         </Button>
@@ -31,7 +31,7 @@ export default function AppearanceSettingsPage() {
           <p className="text-muted-foreground">
             {t(
               "Control theme and display preferences",
-              "थीम और प्रदर्शन प्राथमिकताएं नियंत्रित करें",
+              "थीम और प्रदर्शन प्राथमिकताएं नियंत्रित करें"
             )}
           </p>
         </div>

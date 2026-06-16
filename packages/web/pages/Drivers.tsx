@@ -93,7 +93,7 @@ export default function Drivers() {
   }, []);
 
   useEffect(() => {
-    fetchDrivers();
+    void fetchDrivers();
   }, [fetchDrivers]);
 
   function openCreate() {
@@ -128,12 +128,12 @@ export default function Drivers() {
     }
     setSaving(false);
     setDialogOpen(false);
-    fetchDrivers();
+    void fetchDrivers();
   }
 
   async function handleDelete(id: string) {
     await supabase.from("drivers").delete().eq("id", id);
-    fetchDrivers();
+    void fetchDrivers();
   }
 
   function isExpiringSoon(date: string): boolean {
@@ -252,7 +252,7 @@ export default function Drivers() {
             </DropdownMenuItem>
             <DropdownMenuItem
               variant="destructive"
-              onClick={() => handleDelete(row.original.id)}
+              onClick={() => void handleDelete(row.original.id)}
             >
               <Trash2 className="size-4" /> {t("Delete", "हटाएं")}
             </DropdownMenuItem>
@@ -289,7 +289,7 @@ export default function Drivers() {
           <p className="text-muted-foreground">
             {t(
               "Fleet driver roster and management",
-              "फ्लीट ड्राइवर रोस्टर और प्रबंधन",
+              "फ्लीट ड्राइवर रोस्टर और प्रबंधन"
             )}
           </p>
         </div>
@@ -375,7 +375,7 @@ export default function Drivers() {
                           ? null
                           : flexRender(
                               header.column.columnDef.header,
-                              header.getContext(),
+                              header.getContext()
                             )}
                       </TableHead>
                     ))}
@@ -390,7 +390,7 @@ export default function Drivers() {
                         <TableCell key={cell.id}>
                           {flexRender(
                             cell.column.columnDef.cell,
-                            cell.getContext(),
+                            cell.getContext()
                           )}
                         </TableCell>
                       ))}
@@ -549,7 +549,7 @@ export default function Drivers() {
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
               {t("Cancel", "रद्द करें")}
             </Button>
-            <Button onClick={handleSave} disabled={saving}>
+            <Button onClick={() => void handleSave()} disabled={saving}>
               {saving
                 ? t("Saving...", "सहेज रहे हैं...")
                 : editDriver

@@ -83,7 +83,7 @@ export default function Customers() {
   }, []);
 
   useEffect(() => {
-    fetchCustomers();
+    void fetchCustomers();
   }, [fetchCustomers]);
 
   function openCreate() {
@@ -117,12 +117,12 @@ export default function Customers() {
     }
     setSaving(false);
     setDialogOpen(false);
-    fetchCustomers();
+    void fetchCustomers();
   }
 
   async function handleDelete(id: string) {
     await supabase.from("customers").delete().eq("id", id);
-    fetchCustomers();
+    void fetchCustomers();
   }
 
   const columns: ColumnDef<Customer>[] = [
@@ -187,7 +187,7 @@ export default function Customers() {
             </DropdownMenuItem>
             <DropdownMenuItem
               variant="destructive"
-              onClick={() => handleDelete(row.original.id)}
+              onClick={() => void handleDelete(row.original.id)}
             >
               <Trash2 className="size-4" /> {t("Delete", "हटाएं")}
             </DropdownMenuItem>
@@ -270,7 +270,7 @@ export default function Customers() {
                           ? null
                           : flexRender(
                               header.column.columnDef.header,
-                              header.getContext(),
+                              header.getContext()
                             )}
                       </TableHead>
                     ))}
@@ -285,7 +285,7 @@ export default function Customers() {
                         <TableCell key={cell.id}>
                           {flexRender(
                             cell.column.columnDef.cell,
-                            cell.getContext(),
+                            cell.getContext()
                           )}
                         </TableCell>
                       ))}
@@ -429,7 +429,7 @@ export default function Customers() {
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
               {t("Cancel", "रद्द करें")}
             </Button>
-            <Button onClick={handleSave} disabled={saving}>
+            <Button onClick={() => void handleSave()} disabled={saving}>
               {saving
                 ? t("Saving...", "सहेज रहे हैं...")
                 : editCustomer

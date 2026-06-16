@@ -6,7 +6,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Package, MapPin, TrendingUp, Clock, Plus, Truck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/lib/language-context";
@@ -97,7 +96,7 @@ export default function CustomerDashboard() {
           <p className="text-muted-foreground">
             {t(
               "Manage your shipments easily",
-              "अपने शिपमेंट आसानी से प्रबंधित करें",
+              "अपने शिपमेंट आसानी से प्रबंधित करें"
             )}
           </p>
         </div>
@@ -146,7 +145,7 @@ export default function CustomerDashboard() {
           <CardDescription>
             {t(
               "Track all your active and recent loads",
-              "अपने सभी सक्रिय और हाल के लोड ट्रैक करें",
+              "अपने सभी सक्रिय और हाल के लोड ट्रैक करें"
             )}
           </CardDescription>
         </CardHeader>

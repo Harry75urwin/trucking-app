@@ -93,7 +93,7 @@ export default function Fleet() {
   }, []);
 
   useEffect(() => {
-    fetchVehicles();
+    void fetchVehicles();
   }, [fetchVehicles]);
 
   function openCreate() {
@@ -127,12 +127,12 @@ export default function Fleet() {
     }
     setSaving(false);
     setDialogOpen(false);
-    fetchVehicles();
+    void fetchVehicles();
   }
 
   async function handleDelete(id: string) {
     await supabase.from("vehicles").delete().eq("id", id);
-    fetchVehicles();
+    void fetchVehicles();
   }
 
   function isMaintenanceDue(vehicle: Vehicle): boolean {
@@ -210,7 +210,7 @@ export default function Fleet() {
             </DropdownMenuItem>
             <DropdownMenuItem
               variant="destructive"
-              onClick={() => handleDelete(row.original.id)}
+              onClick={() => void handleDelete(row.original.id)}
             >
               <Trash2 className="size-4" /> {t("Delete", "हटाएं")}
             </DropdownMenuItem>
@@ -234,10 +234,10 @@ export default function Fleet() {
   });
 
   const activeTrucks = vehicles.filter(
-    (v) => v.status === "active" && v.type === "truck",
+    (v) => v.status === "active" && v.type === "truck"
   ).length;
   const activeTrailers = vehicles.filter(
-    (v) => v.status === "active" && v.type === "trailer",
+    (v) => v.status === "active" && v.type === "trailer"
   ).length;
   const maintenanceDue = vehicles.filter(isMaintenanceDue).length;
 
@@ -334,7 +334,7 @@ export default function Fleet() {
                           ? null
                           : flexRender(
                               header.column.columnDef.header,
-                              header.getContext(),
+                              header.getContext()
                             )}
                       </TableHead>
                     ))}
@@ -349,7 +349,7 @@ export default function Fleet() {
                         <TableCell key={cell.id}>
                           {flexRender(
                             cell.column.columnDef.cell,
-                            cell.getContext(),
+                            cell.getContext()
                           )}
                         </TableCell>
                       ))}
@@ -508,7 +508,7 @@ export default function Fleet() {
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
               {t("Cancel", "रद्द करें")}
             </Button>
-            <Button onClick={handleSave} disabled={saving}>
+            <Button onClick={() => void handleSave()} disabled={saving}>
               {saving
                 ? t("Saving...", "सहेज रहे हैं...")
                 : editVehicle

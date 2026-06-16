@@ -82,7 +82,7 @@ export function VehicleStatusBadge({ status }: { status: VehicleStatus }) {
 
   const label = t(
     vehicleStatusLabels[status].en,
-    vehicleStatusLabels[status].hi,
+    vehicleStatusLabels[status].hi
   );
 
   return (

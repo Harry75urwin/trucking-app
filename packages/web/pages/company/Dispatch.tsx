@@ -116,7 +116,7 @@ export default function DispatchPage() {
   const [dateFilter, setDateFilter] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editDispatch, setEditDispatch] = useState<BackendDispatch | null>(
-    null,
+    null
   );
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
@@ -143,14 +143,14 @@ export default function DispatchPage() {
       setError(
         err instanceof Error
           ? err.message
-          : t("Failed to load dispatches", "डिस्पैच लोड करने में विफल"),
+          : t("Failed to load dispatches", "डिस्पैच लोड करने में विफल")
       );
     }
     setLoading(false);
   }, [session, t]);
 
   useEffect(() => {
-    loadData();
+    void loadData();
   }, [loadData]);
 
   function openCreate() {
@@ -182,8 +182,8 @@ export default function DispatchPage() {
         setSuccess(
           t(
             "Dispatch updated successfully",
-            "डिस्पैच सफलतापूर्वक अपडेट किया गया",
-          ),
+            "डिस्पैच सफलतापूर्वक अपडेट किया गया"
+          )
         );
       } else {
         await createDispatch(session, {
@@ -191,7 +191,7 @@ export default function DispatchPage() {
           dispatchedAt: form.dispatchedAt || undefined,
         });
         setSuccess(
-          t("Dispatch created successfully", "डिस्पैच सफलतापूर्वक बनाया गया"),
+          t("Dispatch created successfully", "डिस्पैच सफलतापूर्वक बनाया गया")
         );
       }
       setDialogOpen(false);
@@ -201,7 +201,7 @@ export default function DispatchPage() {
       setError(
         err instanceof Error
           ? err.message
-          : t("Failed to save dispatch", "डिस्पैच सहेजने में विफल"),
+          : t("Failed to save dispatch", "डिस्पैच सहेजने में विफल")
       );
     }
     setSaving(false);
@@ -212,7 +212,7 @@ export default function DispatchPage() {
     try {
       await deleteDispatch(session, id);
       setSuccess(
-        t("Dispatch deleted successfully", "डिस्पैच सफलतापूर्वक हटाया गया"),
+        t("Dispatch deleted successfully", "डिस्पैच सफलतापूर्वक हटाया गया")
       );
       await loadData();
       setTimeout(() => setSuccess(null), 3000);
@@ -220,7 +220,7 @@ export default function DispatchPage() {
       setError(
         err instanceof Error
           ? err.message
-          : t("Failed to delete dispatch", "डिस्पैच हटाने में विफल"),
+          : t("Failed to delete dispatch", "डिस्पैच हटाने में विफल")
       );
     }
   }
@@ -330,7 +330,7 @@ export default function DispatchPage() {
             </DropdownMenuItem>
             <DropdownMenuItem
               variant="destructive"
-              onClick={() => handleDelete(row.original.id)}
+              onClick={() => void handleDelete(row.original.id)}
             >
               <Trash2 className="size-4" /> {t("Delete", "हटाएं")}
             </DropdownMenuItem>
@@ -362,7 +362,7 @@ export default function DispatchPage() {
           <p className="text-muted-foreground">
             {t(
               "Assign drivers to vehicles and manage dispatch schedules",
-              "ड्राइवर को वाहनों पर असाइन करें और डिस्पैच शेड्यूल प्रबंधित करें",
+              "ड्राइवर को वाहनों पर असाइन करें और डिस्पैच शेड्यूल प्रबंधित करें"
             )}
           </p>
         </div>
@@ -404,7 +404,7 @@ export default function DispatchPage() {
                   <SelectValue
                     placeholder={t(
                       "Filter by status...",
-                      "स्थिति के अनुसार फ़िल्टर करें...",
+                      "स्थिति के अनुसार फ़िल्टर करें..."
                     )}
                   />
                 </SelectTrigger>
@@ -478,7 +478,7 @@ export default function DispatchPage() {
                               ? null
                               : flexRender(
                                   header.column.columnDef.header,
-                                  header.getContext(),
+                                  header.getContext()
                                 )}
                           </TableHead>
                         ))}
@@ -493,7 +493,7 @@ export default function DispatchPage() {
                             <TableCell key={cell.id}>
                               {flexRender(
                                 cell.column.columnDef.cell,
-                                cell.getContext(),
+                                cell.getContext()
                               )}
                             </TableCell>
                           ))}
@@ -660,7 +660,7 @@ export default function DispatchPage() {
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
               {t("Cancel", "रद्द करें")}
             </Button>
-            <Button onClick={handleSave} disabled={saving}>
+            <Button onClick={() => void handleSave()} disabled={saving}>
               {saving
                 ? t("Saving...", "सहेज रहे हैं...")
                 : editDispatch

@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TrendingUp, Truck, MapPin, Clock, DollarSign } from "lucide-react";
+import { TrendingUp, Truck, MapPin, Clock } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
 import { useAuthSession } from "@/lib/auth-session";
 import { fetchLoads, type BackendLoad } from "@/lib/trucker-api";
@@ -46,9 +46,9 @@ export default function TruckerDashboard() {
   const activeLoads = useMemo(
     () =>
       loads.filter((l) =>
-        ["pending", "dispatched", "in_transit", "problem"].includes(l.status),
+        ["pending", "dispatched", "in_transit", "problem"].includes(l.status)
       ),
-    [loads],
+    [loads]
   );
 
   const stats = useMemo(
@@ -86,7 +86,7 @@ export default function TruckerDashboard() {
         darkBg: "from-rose-950/30 to-pink-950/30",
       },
     ],
-    [loads, activeLoads.length, t],
+    [loads, activeLoads.length, t]
   );
 
   const statusLabel = (status: BackendLoad["status"]) => {
@@ -131,7 +131,7 @@ export default function TruckerDashboard() {
         <p className="text-muted-foreground">
           {t(
             "Welcome to your truck network dashboard",
-            "आपके ट्रक नेटवर्क डैशबोर्ड में आपका स्वागत है",
+            "आपके ट्रक नेटवर्क डैशबोर्ड में आपका स्वागत है"
           )}
         </p>
       </div>
@@ -284,7 +284,7 @@ export default function TruckerDashboard() {
             <CardContent className="pt-6 text-center text-muted-foreground py-8">
               {t(
                 "Your load history will appear here",
-                "आपका लोड इतिहास यहाँ दिखाई देगा",
+                "आपका लोड इतिहास यहाँ दिखाई देगा"
               )}
             </CardContent>
           </Card>

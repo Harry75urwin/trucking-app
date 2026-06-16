@@ -22,7 +22,7 @@ export default function SecuritySettingsPage() {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate("/settings")}
+          onClick={() => void navigate("/settings")}
         >
           <ArrowLeft className="w-4 h-4" />
         </Button>
@@ -31,7 +31,7 @@ export default function SecuritySettingsPage() {
           <p className="text-muted-foreground">
             {t(
               "Manage passwords and sign-in protection",
-              "पासवर्ड और साइन-इन सुरक्षा प्रबंधित करें",
+              "पासवर्ड और साइन-इन सुरक्षा प्रबंधित करें"
             )}
           </p>
         </div>
@@ -48,7 +48,7 @@ export default function SecuritySettingsPage() {
           <CardDescription>
             {t(
               "Control authentication and access tools",
-              "प्रमाणीकरण और एक्सेस टूल्स नियंत्रित करें",
+              "प्रमाणीकरण और एक्सेस टूल्स नियंत्रित करें"
             )}
           </CardDescription>
         </CardHeader>
@@ -69,7 +69,7 @@ export default function SecuritySettingsPage() {
                 type="password"
                 placeholder={t(
                   "Enter current password",
-                  "वर्तमान पासवर्ड दर्ज करें",
+                  "वर्तमान पासवर्ड दर्ज करें"
                 )}
               />
             </div>
@@ -92,7 +92,7 @@ export default function SecuritySettingsPage() {
                 type="password"
                 placeholder={t(
                   "Confirm new password",
-                  "नया पासवर्ड पुष्टि करें",
+                  "नया पासवर्ड पुष्टि करें"
                 )}
               />
             </div>

@@ -24,7 +24,7 @@ export default function SettingsPage() {
       title: t("Profile", "प्रोफ़ाइल"),
       description: t(
         "Update your account identity and contact details",
-        "अपनी खाता पहचान और संपर्क विवरण अपडेट करें",
+        "अपनी खाता पहचान और संपर्क विवरण अपडेट करें"
       ),
       to: "/settings/profile",
     },
@@ -33,7 +33,7 @@ export default function SettingsPage() {
       title: t("Notifications", "सूचनाएं"),
       description: t(
         "Choose what alerts you receive",
-        "चुनें कि आपको कौन-सी सूचनाएं मिलें",
+        "चुनें कि आपको कौन-सी सूचनाएं मिलें"
       ),
       to: "/settings/notifications",
     },
@@ -42,7 +42,7 @@ export default function SettingsPage() {
       title: t("Appearance", "दिखावट"),
       description: t(
         "Control theme and display preferences",
-        "थीम और प्रदर्शन प्राथमिकताएं नियंत्रित करें",
+        "थीम और प्रदर्शन प्राथमिकताएं नियंत्रित करें"
       ),
       to: "/settings/appearance",
     },
@@ -51,7 +51,7 @@ export default function SettingsPage() {
       title: t("Security", "सुरक्षा"),
       description: t(
         "Manage passwords and sign-in protection",
-        "पासवर्ड और साइन-इन सुरक्षा प्रबंधित करें",
+        "पासवर्ड और साइन-इन सुरक्षा प्रबंधित करें"
       ),
       to: "/settings/security",
     },
@@ -66,7 +66,7 @@ export default function SettingsPage() {
         <p className="text-muted-foreground">
           {t(
             "Manage your account, language, and preferences",
-            "अपना खाता, भाषा और प्राथमिकताएं प्रबंधित करें",
+            "अपना खाता, भाषा और प्राथमिकताएं प्रबंधित करें"
           )}
         </p>
       </div>
@@ -77,7 +77,7 @@ export default function SettingsPage() {
           <CardDescription>
             {t(
               "Switch between English and Hindi across the app",
-              "ऐप में अंग्रेजी और हिंदी के बीच स्विच करें",
+              "ऐप में अंग्रेजी और हिंदी के बीच स्विच करें"
             )}
           </CardDescription>
         </CardHeader>
@@ -136,7 +136,7 @@ export default function SettingsPage() {
           <CardDescription>
             {t(
               "Review security and sign-out options",
-              "सुरक्षा और साइन-आउट विकल्प देखें",
+              "सुरक्षा और साइन-आउट विकल्प देखें"
             )}
           </CardDescription>
         </CardHeader>
@@ -144,14 +144,14 @@ export default function SettingsPage() {
           <p className="text-sm text-muted-foreground">
             {t(
               "Your last sign-in was recently verified.",
-              "आपका पिछला साइन-इन हाल ही में सत्यापित हुआ था।",
+              "आपका पिछला साइन-इन हाल ही में सत्यापित हुआ था।"
             )}
           </p>
           <Button
             className="bg-linear-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 shadow-md"
             onClick={() => {
               logout();
-              navigate("/login");
+              void navigate("/login");
             }}
           >
             {t("Sign Out", "साइन आउट")}
@@ -163,7 +163,7 @@ export default function SettingsPage() {
       <p className="text-xs text-muted-foreground">
         {t(
           "Language preference is stored locally in your browser.",
-          "भाषा प्राथमिकता आपके ब्राउज़र में स्थानीय रूप से संग्रहीत है।",
+          "भाषा प्राथमिकता आपके ब्राउज़र में स्थानीय रूप से संग्रहीत है।"
         )}
       </p>
     </div>

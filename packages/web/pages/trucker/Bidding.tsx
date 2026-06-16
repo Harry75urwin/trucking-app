@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Clock, TrendingUp, IndianRupee, Users } from "lucide-react";
+import { MapPin, Clock, IndianRupee, Users } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
 
 const auctions = [

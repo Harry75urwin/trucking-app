@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Truck, Package, TrendingUp, Users, Plus, MapPin } from "lucide-react";
@@ -83,7 +77,7 @@ export default function CompanyDashboard() {
           <p className="text-muted-foreground">
             {t(
               "Manage your fleet and operations",
-              "अपने बेड़े और संचालन प्रबंधित करें",
+              "अपने बेड़े और संचालन प्रबंधित करें"
             )}
           </p>
         </div>

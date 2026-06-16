@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -65,7 +65,7 @@ export default function MyLoadsCustomer() {
       (filter === "all" || l.status === filter) &&
       (l.id.toLowerCase().includes(search.toLowerCase()) ||
         l.from.toLowerCase().includes(search.toLowerCase()) ||
-        l.to.toLowerCase().includes(search.toLowerCase())),
+        l.to.toLowerCase().includes(search.toLowerCase()))
   );
 
   return (
@@ -114,7 +114,7 @@ export default function MyLoadsCustomer() {
                     ? "यातायात में"
                     : s === "pending"
                       ? "लंबित"
-                      : "डिलीवर",
+                      : "डिलीवर"
               )}
             </Button>
           ))}

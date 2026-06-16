@@ -5,7 +5,7 @@ const API_BASE_URL =
 
 async function requestJson<T>(
   path: string,
-  init?: RequestInit & { accessToken?: string | null },
+  init?: RequestInit & { accessToken?: string | null }
 ): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     headers: {
@@ -38,7 +38,7 @@ export function getAccessToken(session: AuthSession) {
   return session.accessToken ?? null;
 }
 
-export type UploadKind = 'load' | 'vehicle' | 'organization-logo';
+export type UploadKind = "load" | "vehicle" | "organization-logo";
 
 export interface PresignedUploadResponse {
   url: string;
@@ -53,10 +53,10 @@ export async function createPresignedUpload(
     kind: UploadKind;
     fileName: string;
     contentType?: string;
-  },
+  }
 ): Promise<PresignedUploadResponse> {
-  return requestJson<PresignedUploadResponse>('/uploads/presign', {
-    method: 'POST',
+  return requestJson<PresignedUploadResponse>("/uploads/presign", {
+    method: "POST",
     accessToken: getAccessToken(session),
     body: JSON.stringify(data),
   });
@@ -65,7 +65,7 @@ export async function createPresignedUpload(
 export async function uploadFileToR2(
   session: AuthSession,
   file: File,
-  kind: UploadKind,
+  kind: UploadKind
 ): Promise<string> {
   const presigned = await createPresignedUpload(session, {
     kind,
@@ -74,9 +74,10 @@ export async function uploadFileToR2(
   });
 
   const response = await fetch(presigned.url, {
-    method: 'PUT',
+    method: "PUT",
     headers: {
-      'Content-Type': presigned.contentType || file.type || 'application/octet-stream',
+      "Content-Type":
+        presigned.contentType || file.type || "application/octet-stream",
     },
     body: file,
   });
@@ -163,7 +164,7 @@ export async function fetchLoads(session: AuthSession): Promise<BackendLoad[]> {
 
 export async function fetchLoad(
   session: AuthSession,
-  id: string,
+  id: string
 ): Promise<BackendLoad> {
   return requestJson<BackendLoad>(`/loads/${id}`, {
     accessToken: getAccessToken(session),
@@ -172,10 +173,10 @@ export async function fetchLoad(
 
 export async function createLoad(
   session: AuthSession,
-  data: Omit<BackendLoad, 'id' | 'created_at' | 'updated_at'>,
+  data: Omit<BackendLoad, "id" | "created_at" | "updated_at">
 ): Promise<BackendLoad> {
-  return requestJson<BackendLoad>('/loads', {
-    method: 'POST',
+  return requestJson<BackendLoad>("/loads", {
+    method: "POST",
     accessToken: getAccessToken(session),
     body: JSON.stringify(data),
   });
@@ -184,10 +185,10 @@ export async function createLoad(
 export async function updateLoad(
   session: AuthSession,
   id: string,
-  data: Partial<Omit<BackendLoad, 'id' | 'created_at' | 'updated_at'>>,
+  data: Partial<Omit<BackendLoad, "id" | "created_at" | "updated_at">>
 ): Promise<BackendLoad> {
   await requestJson<void>(`/loads/${id}`, {
-    method: 'PATCH',
+    method: "PATCH",
     accessToken: getAccessToken(session),
     body: JSON.stringify(data),
   });
@@ -195,7 +196,7 @@ export async function updateLoad(
 }
 
 export async function fetchVehicles(
-  session: AuthSession,
+  session: AuthSession
 ): Promise<BackendVehicle[]> {
   return requestJson<BackendVehicle[]>("/vehicles", {
     accessToken: getAccessToken(session),
@@ -204,7 +205,7 @@ export async function fetchVehicles(
 
 export async function fetchVehicle(
   session: AuthSession,
-  id: string,
+  id: string
 ): Promise<BackendVehicle> {
   return requestJson<BackendVehicle>(`/vehicles/${id}`, {
     accessToken: getAccessToken(session),
@@ -214,7 +215,7 @@ export async function fetchVehicle(
 export async function updateVehicle(
   session: AuthSession,
   id: string,
-  data: Partial<Omit<BackendVehicle, "id" | "created_at" | "updated_at">>,
+  data: Partial<Omit<BackendVehicle, "id" | "created_at" | "updated_at">>
 ): Promise<BackendVehicle> {
   await requestJson<void>(`/vehicles/${id}`, {
     method: "PATCH",
@@ -226,7 +227,7 @@ export async function updateVehicle(
 }
 
 export async function fetchTrackingEvents(
-  session: AuthSession,
+  session: AuthSession
 ): Promise<BackendTrackingEvent[]> {
   return requestJson<BackendTrackingEvent[]>("/tracking", {
     accessToken: getAccessToken(session),
@@ -292,7 +293,7 @@ export interface BackendLoadTemplate {
 export async function updateUser(
   session: AuthSession,
   id: number,
-  data: Partial<BackendUser>,
+  data: Partial<BackendUser>
 ): Promise<BackendUser> {
   return requestJson<BackendUser>(`/users/${id}`, {
     method: "PATCH",
@@ -304,7 +305,7 @@ export async function updateUser(
 export async function updateOrganization(
   session: AuthSession,
   id: number,
-  data: Partial<BackendOrganization>,
+  data: Partial<BackendOrganization>
 ): Promise<BackendOrganization> {
   return requestJson<BackendOrganization>(`/organizations/${id}`, {
     method: "PATCH",
@@ -315,7 +316,7 @@ export async function updateOrganization(
 
 export async function fetchOrganization(
   session: AuthSession,
-  id: number,
+  id: number
 ): Promise<BackendOrganization> {
   return requestJson<BackendOrganization>(`/organizations/${id}`, {
     accessToken: getAccessToken(session),
@@ -323,7 +324,7 @@ export async function fetchOrganization(
 }
 
 export async function fetchOrganizations(
-  session: AuthSession,
+  session: AuthSession
 ): Promise<BackendOrganization[]> {
   return requestJson<BackendOrganization[]>("/organizations", {
     accessToken: getAccessToken(session),
@@ -332,7 +333,7 @@ export async function fetchOrganizations(
 
 export async function createOrganization(
   session: AuthSession,
-  data: Partial<BackendOrganization>,
+  data: Partial<BackendOrganization>
 ): Promise<BackendOrganization> {
   return requestJson<BackendOrganization>("/organizations", {
     method: "POST",
@@ -343,7 +344,7 @@ export async function createOrganization(
 
 export async function deleteOrganization(
   session: AuthSession,
-  id: number,
+  id: number
 ): Promise<void> {
   return requestJson<void>(`/organizations/${id}`, {
     method: "DELETE",
@@ -352,7 +353,7 @@ export async function deleteOrganization(
 }
 
 export async function fetchDrivers(
-  session: AuthSession,
+  session: AuthSession
 ): Promise<BackendDriver[]> {
   return requestJson<BackendDriver[]>("/drivers", {
     accessToken: getAccessToken(session),
@@ -361,7 +362,7 @@ export async function fetchDrivers(
 
 export async function fetchDriver(
   session: AuthSession,
-  id: string,
+  id: string
 ): Promise<BackendDriver> {
   return requestJson<BackendDriver>(`/drivers/${id}`, {
     accessToken: getAccessToken(session),
@@ -371,7 +372,7 @@ export async function fetchDriver(
 export async function updateDriver(
   session: AuthSession,
   id: string,
-  data: Partial<Omit<BackendDriver, "id" | "created_at" | "updated_at">>,
+  data: Partial<Omit<BackendDriver, "id" | "created_at" | "updated_at">>
 ): Promise<BackendDriver> {
   await requestJson<void>(`/drivers/${id}`, {
     method: "PATCH",
@@ -400,7 +401,7 @@ export interface BackendDriver {
 
 export async function fetchLoadTemplates(
   session: AuthSession,
-  organizationId?: string,
+  organizationId?: string
 ): Promise<BackendLoadTemplate[]> {
   const qs = organizationId
     ? `?organization_id=${encodeURIComponent(organizationId)}`
@@ -412,7 +413,7 @@ export async function fetchLoadTemplates(
 
 export async function createLoadTemplate(
   session: AuthSession,
-  data: BackendLoadTemplate,
+  data: BackendLoadTemplate
 ): Promise<BackendLoadTemplate> {
   return requestJson<BackendLoadTemplate>("/load-templates", {
     method: "POST",
@@ -423,7 +424,7 @@ export async function createLoadTemplate(
 
 export async function deleteLoadTemplate(
   session: AuthSession,
-  id: string,
+  id: string
 ): Promise<void> {
   return requestJson<void>(`/load-templates/${id}`, {
     method: "DELETE",
@@ -432,7 +433,7 @@ export async function deleteLoadTemplate(
 }
 
 export async function fetchLoadAssignments(
-  session: AuthSession,
+  session: AuthSession
 ): Promise<BackendLoadAssignment[]> {
   return requestJson<BackendLoadAssignment[]>("/load_assignments", {
     accessToken: getAccessToken(session),
@@ -446,7 +447,7 @@ export async function createLoadAssignment(
     driver_id?: string;
     truck_id?: string;
     trailer_id?: string;
-  },
+  }
 ): Promise<BackendLoadAssignment> {
   return requestJson<BackendLoadAssignment>("/load_assignments", {
     method: "POST",
@@ -457,7 +458,7 @@ export async function createLoadAssignment(
 
 export async function deleteLoadAssignment(
   session: AuthSession,
-  id: string,
+  id: string
 ): Promise<void> {
   return requestJson<void>(`/load_assignments/${id}`, {
     method: "DELETE",
@@ -473,7 +474,7 @@ export async function updateLoadAssignment(
     driver_id?: string | null;
     truck_id?: string | null;
     trailer_id?: string | null;
-  },
+  }
 ): Promise<BackendLoadAssignment> {
   return requestJson<BackendLoadAssignment>(`/load_assignments/${id}`, {
     method: "PATCH",
@@ -516,11 +517,11 @@ export interface BackendMessage {
 
 export async function fetchConversations(
   session: AuthSession,
-  userId: number,
+  userId: number
 ): Promise<BackendConversation[]> {
   return requestJson<BackendConversation[]>(
     `/messaging/conversations?userId=${encodeURIComponent(userId)}`,
-    { accessToken: getAccessToken(session) },
+    { accessToken: getAccessToken(session) }
   );
 }
 
@@ -531,7 +532,7 @@ export async function createConversation(
     organizationId?: number;
     userId: number;
     receiverId: number;
-  },
+  }
 ): Promise<BackendConversation> {
   return requestJson<BackendConversation>("/messaging/conversations", {
     method: "POST",
@@ -543,11 +544,11 @@ export async function createConversation(
 export async function fetchMessages(
   session: AuthSession,
   conversationId: string,
-  limit = 50,
+  limit = 50
 ): Promise<BackendMessage[]> {
   return requestJson<BackendMessage[]>(
     `/messaging/conversations/${conversationId}/messages?limit=${limit}`,
-    { accessToken: getAccessToken(session) },
+    { accessToken: getAccessToken(session) }
   );
 }
 
@@ -559,7 +560,7 @@ export async function sendMessage(
     receiverId: number;
     body: string;
     attachmentUrl?: string;
-  },
+  }
 ): Promise<BackendMessage> {
   return requestJson<BackendMessage>("/messaging/messages", {
     method: "POST",
@@ -570,7 +571,7 @@ export async function sendMessage(
 
 export async function markMessageRead(
   session: AuthSession,
-  messageId: string,
+  messageId: string
 ): Promise<BackendMessage> {
   return requestJson<BackendMessage>(`/messaging/messages/${messageId}/read`, {
     method: "PATCH",
@@ -585,7 +586,7 @@ export async function fetchUsers(session: AuthSession): Promise<BackendUser[]> {
 }
 
 export async function fetchDispatches(
-  session: AuthSession,
+  session: AuthSession
 ): Promise<BackendDispatch[]> {
   return requestJson<BackendDispatch[]>("/dispatches", {
     accessToken: getAccessToken(session),
@@ -594,7 +595,7 @@ export async function fetchDispatches(
 
 export async function createDispatch(
   session: AuthSession,
-  data: Omit<BackendDispatch, "id" | "createdAt" | "updatedAt">,
+  data: Omit<BackendDispatch, "id" | "createdAt" | "updatedAt">
 ): Promise<BackendDispatch> {
   return requestJson<BackendDispatch>("/dispatches", {
     method: "POST",
@@ -606,7 +607,7 @@ export async function createDispatch(
 export async function updateDispatch(
   session: AuthSession,
   id: string,
-  data: Partial<Omit<BackendDispatch, "id" | "createdAt" | "updatedAt">>,
+  data: Partial<Omit<BackendDispatch, "id" | "createdAt" | "updatedAt">>
 ): Promise<BackendDispatch> {
   return requestJson<BackendDispatch>(`/dispatches/${id}`, {
     method: "PATCH",
@@ -617,7 +618,7 @@ export async function updateDispatch(
 
 export async function deleteDispatch(
   session: AuthSession,
-  id: string,
+  id: string
 ): Promise<void> {
   return requestJson<void>(`/dispatches/${id}`, {
     method: "DELETE",
@@ -641,7 +642,7 @@ export interface BackendCustomer {
 }
 
 export async function fetchCustomers(
-  session: AuthSession,
+  session: AuthSession
 ): Promise<BackendCustomer[]> {
   return requestJson<BackendCustomer[]>("/customers", {
     accessToken: getAccessToken(session),
@@ -650,7 +651,7 @@ export async function fetchCustomers(
 
 export async function createCustomer(
   session: AuthSession,
-  data: Omit<BackendCustomer, "id" | "created_at" | "updated_at">,
+  data: Omit<BackendCustomer, "id" | "created_at" | "updated_at">
 ): Promise<BackendCustomer> {
   return requestJson<BackendCustomer>("/customers", {
     method: "POST",
@@ -662,7 +663,7 @@ export async function createCustomer(
 export async function updateCustomer(
   session: AuthSession,
   id: string,
-  data: Partial<Omit<BackendCustomer, "id" | "created_at" | "updated_at">>,
+  data: Partial<Omit<BackendCustomer, "id" | "created_at" | "updated_at">>
 ): Promise<BackendCustomer> {
   return requestJson<BackendCustomer>(`/customers/${id}`, {
     method: "PATCH",
@@ -673,7 +674,7 @@ export async function updateCustomer(
 
 export async function deleteCustomer(
   session: AuthSession,
-  id: string,
+  id: string
 ): Promise<void> {
   return requestJson<void>(`/customers/${id}`, {
     method: "DELETE",

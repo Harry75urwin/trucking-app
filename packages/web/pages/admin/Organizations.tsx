@@ -8,7 +8,6 @@ import {
   X,
   Building2,
   Phone,
-  Mail,
   Globe,
   MapPin,
   User,
@@ -117,14 +116,14 @@ export default function OrganizationsManagement() {
       setError(
         err instanceof Error
           ? err.message
-          : t("Failed to load organizations", "संगठन लोड करने में विफल"),
+          : t("Failed to load organizations", "संगठन लोड करने में विफल")
       );
     }
     setLoading(false);
   }, [session, t]);
 
   useEffect(() => {
-    loadOrganizations();
+    void loadOrganizations();
   }, [loadOrganizations]);
 
   function openCreate() {
@@ -184,16 +183,13 @@ export default function OrganizationsManagement() {
         setSuccess(
           t(
             "Organization updated successfully",
-            "संगठन सफलतापूर्वक अपडेट किया गया",
-          ),
+            "संगठन सफलतापूर्वक अपडेट किया गया"
+          )
         );
       } else {
         await createOrganization(session, payload);
         setSuccess(
-          t(
-            "Organization created successfully",
-            "संगठन सफलतापूर्वक बनाया गया",
-          ),
+          t("Organization created successfully", "संगठन सफलतापूर्वक बनाया गया")
         );
       }
       setDialogOpen(false);
@@ -203,26 +199,18 @@ export default function OrganizationsManagement() {
       setError(
         err instanceof Error
           ? err.message
-          : t("Failed to save organization", "संगठन सहेजने में विफल"),
+          : t("Failed to save organization", "संगठन सहेजने में विफल")
       );
     }
     setSaving(false);
   }
 
   async function handleDelete(id: number) {
-    if (
-      !confirm(
-        t("Delete this organization?", "इस संगठन को हटाएं?"),
-      )
-    )
-      return;
+    if (!confirm(t("Delete this organization?", "इस संगठन को हटाएं?"))) return;
     try {
       await deleteOrganization(session, id);
       setSuccess(
-        t(
-          "Organization deleted successfully",
-          "संगठन सफलतापूर्वक हटाया गया",
-        ),
+        t("Organization deleted successfully", "संगठन सफलतापूर्वक हटाया गया")
       );
       await loadOrganizations();
       setTimeout(() => setSuccess(null), 3000);
@@ -230,14 +218,13 @@ export default function OrganizationsManagement() {
       setError(
         err instanceof Error
           ? err.message
-          : t("Failed to delete organization", "संगठन हटाने में विफल"),
+          : t("Failed to delete organization", "संगठन हटाने में विफल")
       );
     }
   }
 
   const filteredOrgs = organizations.filter((org) => {
-    if (statusFilter === "active")
-      return org.isActive === true;
+    if (statusFilter === "active") return org.isActive === true;
     if (statusFilter === "inactive")
       return org.isActive === false || org.isActive === undefined;
     return true;
@@ -304,9 +291,7 @@ export default function OrganizationsManagement() {
                 : "border-rose-200 text-rose-700 dark:border-rose-800 dark:text-rose-400"
             }
           >
-            {isActive
-              ? t("Active", "सक्रिय")
-              : t("Inactive", "निष्क्रिय")}
+            {isActive ? t("Active", "सक्रिय") : t("Inactive", "निष्क्रिय")}
           </Badge>
         );
       },
@@ -330,7 +315,7 @@ export default function OrganizationsManagement() {
             </DropdownMenuItem>
             <DropdownMenuItem
               variant="destructive"
-              onClick={() => handleDelete(row.original.id)}
+              onClick={() => void handleDelete(row.original.id)}
             >
               <Trash2 className="size-4" /> {t("Delete", "हटाएं")}
             </DropdownMenuItem>
@@ -363,7 +348,7 @@ export default function OrganizationsManagement() {
           <p className="text-muted-foreground">
             {t(
               "Manage all organizations on the platform",
-              "प्लेटफॉर्म पर सभी संगठनों का प्रबंधन करें",
+              "प्लेटफॉर्म पर सभी संगठनों का प्रबंधन करें"
             )}
           </p>
         </div>
@@ -401,10 +386,8 @@ export default function OrganizationsManagement() {
             </div>
             <div className="flex items-center gap-2">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[160px]">
-                  <SelectValue
-                    placeholder={t("Status", "स्थिति")}
-                  />
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder={t("Status", "स्थिति")} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">
@@ -421,10 +404,7 @@ export default function OrganizationsManagement() {
               <div className="relative w-full sm:w-72">
                 <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
-                  placeholder={t(
-                    "Search organizations...",
-                    "संगठन खोजें...",
-                  )}
+                  placeholder={t("Search organizations...", "संगठन खोजें...")}
                   value={globalFilter}
                   onChange={(e) => setGlobalFilter(e.target.value)}
                   className="pl-9"
@@ -446,10 +426,7 @@ export default function OrganizationsManagement() {
         <CardContent className="pt-0">
           {loading ? (
             <div className="py-12 text-center text-muted-foreground">
-              {t(
-                "Loading organizations...",
-                "संगठन लोड हो रहे हैं...",
-              )}
+              {t("Loading organizations...", "संगठन लोड हो रहे हैं...")}
             </div>
           ) : (
             <>
@@ -464,7 +441,7 @@ export default function OrganizationsManagement() {
                               ? null
                               : flexRender(
                                   header.column.columnDef.header,
-                                  header.getContext(),
+                                  header.getContext()
                                 )}
                           </TableHead>
                         ))}
@@ -479,7 +456,7 @@ export default function OrganizationsManagement() {
                             <TableCell key={cell.id}>
                               {flexRender(
                                 cell.column.columnDef.cell,
-                                cell.getContext(),
+                                cell.getContext()
                               )}
                             </TableCell>
                           ))}
@@ -491,10 +468,7 @@ export default function OrganizationsManagement() {
                           colSpan={columns.length}
                           className="h-24 text-center text-muted-foreground"
                         >
-                          {t(
-                            "No organizations found.",
-                            "कोई संगठन नहीं मिला।",
-                          )}
+                          {t("No organizations found.", "कोई संगठन नहीं मिला।")}
                         </TableCell>
                       </TableRow>
                     )}
@@ -668,7 +642,7 @@ export default function OrganizationsManagement() {
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
               {t("Cancel", "रद्द करें")}
             </Button>
-            <Button onClick={handleSave} disabled={saving}>
+            <Button onClick={() => void handleSave()} disabled={saving}>
               {saving
                 ? t("Saving...", "सहेज रहे हैं...")
                 : editOrg
@@ -727,8 +701,7 @@ export default function OrganizationsManagement() {
                     {t("Website", "वेबसाइट")}
                   </p>
                   <p className="font-medium flex items-center gap-1">
-                    <Globe className="size-3" />{" "}
-                    {viewOrg.website || "—"}
+                    <Globe className="size-3" /> {viewOrg.website || "—"}
                   </p>
                 </div>
                 <div className="p-3 bg-muted/30 dark:bg-slate-800/30 rounded-lg">
@@ -747,8 +720,7 @@ export default function OrganizationsManagement() {
                     {t("Owner User ID", "मालिक उपयोगकर्ता आईडी")}
                   </p>
                   <p className="font-medium flex items-center gap-1">
-                    <User className="size-3" />{" "}
-                    {viewOrg.ownerUserId ?? "—"}
+                    <User className="size-3" /> {viewOrg.ownerUserId ?? "—"}
                   </p>
                 </div>
               </div>
@@ -795,19 +767,14 @@ export default function OrganizationsManagement() {
                         backgroundColor: viewOrg.primaryColor,
                       }}
                     />
-                    <p className="text-sm font-mono">
-                      {viewOrg.primaryColor}
-                    </p>
+                    <p className="text-sm font-mono">{viewOrg.primaryColor}</p>
                   </div>
                 </div>
               )}
             </div>
           )}
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setDetailOpen(false)}
-            >
+            <Button variant="outline" onClick={() => setDetailOpen(false)}>
               {t("Close", "बंद करें")}
             </Button>
             {viewOrg && (
@@ -817,8 +784,7 @@ export default function OrganizationsManagement() {
                   openEdit(viewOrg);
                 }}
               >
-                <Pencil className="size-4 mr-2" />{" "}
-                {t("Edit", "संपादित करें")}
+                <Pencil className="size-4 mr-2" /> {t("Edit", "संपादित करें")}
               </Button>
             )}
           </DialogFooter>

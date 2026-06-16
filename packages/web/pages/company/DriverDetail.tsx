@@ -169,7 +169,7 @@ export default function DriverDetailPage() {
       .catch((err) => {
         if (!cancelled)
           setError(
-            err instanceof Error ? err.message : "Failed to load driver",
+            err instanceof Error ? err.message : "Failed to load driver"
           );
       })
       .finally(() => {
@@ -312,7 +312,7 @@ export default function DriverDetailPage() {
         <form
           id="driver-detail-form"
           className="space-y-6"
-          onSubmit={saveDriver}
+          onSubmit={(e) => void saveDriver(e)}
         >
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             <div className="space-y-6 xl:col-span-2">
@@ -329,7 +329,7 @@ export default function DriverDetailPage() {
                       <CardDescription>
                         {t(
                           "Personal details and home base",
-                          "व्यक्तिगत विवरण और होम बेस",
+                          "व्यक्तिगत विवरण और होम बेस"
                         )}
                       </CardDescription>
                     </div>
@@ -439,7 +439,7 @@ export default function DriverDetailPage() {
                       <CardDescription>
                         {t(
                           "Availability and profile timestamps",
-                          "उपलब्धता और प्रोफ़ाइल समय-चिह्न",
+                          "उपलब्धता और प्रोफ़ाइल समय-चिह्न"
                         )}
                       </CardDescription>
                     </div>
@@ -508,7 +508,7 @@ export default function DriverDetailPage() {
                       <CardDescription>
                         {t(
                           "CDL and medical document status",
-                          "सीडीएल और मेडिकल दस्तावेज़ स्थिति",
+                          "सीडीएल और मेडिकल दस्तावेज़ स्थिति"
                         )}
                       </CardDescription>
                     </div>
@@ -559,7 +559,7 @@ export default function DriverDetailPage() {
                             </span>
                             <Badge
                               className={documentStateClass(
-                                getDocumentState(driver.cdl_expiry),
+                                getDocumentState(driver.cdl_expiry)
                               )}
                             >
                               {getDocumentState(driver.cdl_expiry)}
@@ -576,7 +576,7 @@ export default function DriverDetailPage() {
                             </span>
                             <Badge
                               className={documentStateClass(
-                                getDocumentState(driver.medical_expiry),
+                                getDocumentState(driver.medical_expiry)
                               )}
                             >
                               {getDocumentState(driver.medical_expiry)}
@@ -614,7 +614,7 @@ export default function DriverDetailPage() {
                       )}
                       <Badge
                         className={documentStateClass(
-                          getDocumentState(driver.cdl_expiry),
+                          getDocumentState(driver.cdl_expiry)
                         )}
                       >
                         {getDocumentState(driver.cdl_expiry)}
@@ -633,7 +633,7 @@ export default function DriverDetailPage() {
                       )}
                       <Badge
                         className={documentStateClass(
-                          getDocumentState(driver.medical_expiry),
+                          getDocumentState(driver.medical_expiry)
                         )}
                       >
                         {getDocumentState(driver.medical_expiry)}

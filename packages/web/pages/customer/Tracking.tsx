@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Truck, CheckCircle2, Clock, Phone } from "lucide-react";
+import { MapPin, CheckCircle2, Clock, Phone } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
 import { useAuthSession } from "@/lib/auth-session";
 import { fetchLoads, type BackendLoad } from "@/lib/trucker-api";

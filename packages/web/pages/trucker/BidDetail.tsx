@@ -60,22 +60,38 @@ export default function BidDetailPage() {
   const [myBid, setMyBid] = useState("");
   const [bidStatus, setBidStatus] = useState<BidStatus>("active");
   const [counterOffer, setCounterOffer] = useState("");
-  const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [feedback, setFeedback] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handlePlaceBid = async () => {
-    if (!myBid || parseFloat(myBid) <= parseFloat(mockAuction.currentBid.replace(/[^\d]/g, ""))) {
-      setFeedback({ type: "error", message: "Bid must be higher than current bid" });
+    if (
+      !myBid ||
+      parseFloat(myBid) <=
+        parseFloat(mockAuction.currentBid.replace(/[^\d]/g, ""))
+    ) {
+      setFeedback({
+        type: "error",
+        message: "Bid must be higher than current bid",
+      });
       return;
     }
     setIsProcessing(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((_resolve) => setTimeout(_resolve, 500));
       setBidStatus("accepted");
-      setFeedback({ type: "success", message: `Bid placed successfully! Amount: ₹${myBid}` });
+      setFeedback({
+        type: "success",
+        message: `Bid placed successfully! Amount: ₹${myBid}`,
+      });
       setMyBid("");
     } catch {
-      setFeedback({ type: "error", message: "Failed to place bid. Please try again." });
+      setFeedback({
+        type: "error",
+        message: "Failed to place bid. Please try again.",
+      });
     } finally {
       setIsProcessing(false);
     }
@@ -84,11 +100,17 @@ export default function BidDetailPage() {
   const handleAcceptBid = async () => {
     setIsProcessing(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((_resolve) => setTimeout(_resolve, 500));
       setBidStatus("accepted");
-      setFeedback({ type: "success", message: "Bid accepted! Load assigned to you." });
+      setFeedback({
+        type: "success",
+        message: "Bid accepted! Load assigned to you.",
+      });
     } catch {
-      setFeedback({ type: "error", message: "Failed to accept bid. Please try again." });
+      setFeedback({
+        type: "error",
+        message: "Failed to accept bid. Please try again.",
+      });
     } finally {
       setIsProcessing(false);
     }
@@ -97,29 +119,45 @@ export default function BidDetailPage() {
   const handleRejectBid = async () => {
     setIsProcessing(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((_resolve) => setTimeout(_resolve, 500));
       setBidStatus("rejected");
       setFeedback({ type: "success", message: "Bid rejected successfully." });
     } catch {
-      setFeedback({ type: "error", message: "Failed to reject bid. Please try again." });
+      setFeedback({
+        type: "error",
+        message: "Failed to reject bid. Please try again.",
+      });
     } finally {
       setIsProcessing(false);
     }
   };
 
   const handleCounterOffer = async () => {
-    if (!counterOffer || parseFloat(counterOffer) <= parseFloat(mockAuction.currentBid.replace(/[^\d]/g, ""))) {
-      setFeedback({ type: "error", message: "Counter-offer must be higher than current bid" });
+    if (
+      !counterOffer ||
+      parseFloat(counterOffer) <=
+        parseFloat(mockAuction.currentBid.replace(/[^\d]/g, ""))
+    ) {
+      setFeedback({
+        type: "error",
+        message: "Counter-offer must be higher than current bid",
+      });
       return;
     }
     setIsProcessing(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((_resolve) => setTimeout(_resolve, 500));
       setBidStatus("countered");
-      setFeedback({ type: "success", message: `Counter-offer sent: ₹${counterOffer}` });
+      setFeedback({
+        type: "success",
+        message: `Counter-offer sent: ₹${counterOffer}`,
+      });
       setCounterOffer("");
     } catch {
-      setFeedback({ type: "error", message: "Failed to send counter-offer. Please try again." });
+      setFeedback({
+        type: "error",
+        message: "Failed to send counter-offer. Please try again.",
+      });
     } finally {
       setIsProcessing(false);
     }
@@ -128,13 +166,19 @@ export default function BidDetailPage() {
   return (
     <div className="p-6 space-y-6">
       {feedback && (
-        <Alert className={`border-0 ${feedback.type === "success" ? "bg-linear-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20" : "bg-linear-to-r from-rose-50 to-pink-50 dark:from-rose-950/20 dark:to-pink-950/20"}`}>
+        <Alert
+          className={`border-0 ${feedback.type === "success" ? "bg-linear-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20" : "bg-linear-to-r from-rose-50 to-pink-50 dark:from-rose-950/20 dark:to-pink-950/20"}`}
+        >
           {feedback.type === "success" ? (
             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
           ) : (
             <AlertCircle className="w-4 h-4 text-rose-600" />
           )}
-          <AlertTitle>{feedback.type === "success" ? t("Success", "सफल") : t("Error", "त्रुटि")}</AlertTitle>
+          <AlertTitle>
+            {feedback.type === "success"
+              ? t("Success", "सफल")
+              : t("Error", "त्रुटि")}
+          </AlertTitle>
           <AlertDescription>{feedback.message}</AlertDescription>
         </Alert>
       )}
@@ -150,7 +194,8 @@ export default function BidDetailPage() {
             <CardTitle className="text-xl">{mockAuction.id}</CardTitle>
             {bidStatus === "accepted" ? (
               <Badge className="bg-linear-to-r from-emerald-500 to-teal-600 border-0">
-                <CheckCircle2 className="w-3 h-3 mr-1" /> {t("Accepted", "स्वीकृत")}
+                <CheckCircle2 className="w-3 h-3 mr-1" />{" "}
+                {t("Accepted", "स्वीकृत")}
               </Badge>
             ) : bidStatus === "rejected" ? (
               <Badge className="bg-linear-to-r from-rose-500 to-pink-600 border-0">
@@ -158,7 +203,8 @@ export default function BidDetailPage() {
               </Badge>
             ) : bidStatus === "countered" ? (
               <Badge className="bg-linear-to-r from-amber-500 to-orange-600 border-0">
-                <TrendingUp className="w-3 h-3 mr-1" /> {t("Counter-offered", "काउंटर-ऑफर")}
+                <TrendingUp className="w-3 h-3 mr-1" />{" "}
+                {t("Counter-offered", "काउंटर-ऑफर")}
               </Badge>
             ) : (
               <Badge className="bg-linear-to-r from-rose-500 to-pink-600 border-0 animate-pulse">
@@ -242,7 +288,7 @@ export default function BidDetailPage() {
                   {mockAuction.bids}{" "}
                   {t(
                     "bidders are active - place your bid now!",
-                    "बोलीदाता सक्रिय हैं - अभी बोली लगाएं!",
+                    "बोलीदाता सक्रिय हैं - अभी बोली लगाएं!"
                   )}
                 </p>
               </div>
@@ -257,7 +303,7 @@ export default function BidDetailPage() {
               <CardDescription>
                 {t(
                   "Pickup and delivery schedule",
-                  "पिकअप और डिलीवरी कार्यक्रम",
+                  "पिकअप और डिलीवरी कार्यक्रम"
                 )}
               </CardDescription>
             </CardHeader>
@@ -420,15 +466,17 @@ export default function BidDetailPage() {
               <div className="grid grid-cols-2 gap-2">
                 <Button
                   className="bg-white text-orange-700 hover:bg-white/90 font-semibold shadow-lg"
-                  onClick={handlePlaceBid}
+                  onClick={() => void handlePlaceBid()}
                   disabled={bidStatus !== "active" || isProcessing}
                 >
-                  {isProcessing ? t("Placing...", "लगाया जा रहा है...") : t("🔨 Place Bid", "🔨 बोली लगाएं")}
+                  {isProcessing
+                    ? t("Placing...", "लगाया जा रहा है...")
+                    : t("🔨 Place Bid", "🔨 बोली लगाएं")}
                 </Button>
                 <Button
                   variant="outline"
                   className="bg-white/10 border-white/30 text-white hover:bg-white/20 font-semibold"
-                  onClick={handleAcceptBid}
+                  onClick={() => void handleAcceptBid()}
                   disabled={bidStatus !== "active" || isProcessing}
                 >
                   <CheckCircle2 className="w-4 h-4 mr-1" />
@@ -450,7 +498,7 @@ export default function BidDetailPage() {
                 <Button
                   variant="outline"
                   className="bg-white/10 border-amber-300/50 text-amber-700 hover:bg-amber-50/20 font-semibold"
-                  onClick={handleCounterOffer}
+                  onClick={() => void handleCounterOffer()}
                   disabled={bidStatus !== "active" || isProcessing}
                 >
                   <TrendingUp className="w-4 h-4 mr-1" />
@@ -459,7 +507,7 @@ export default function BidDetailPage() {
                 <Button
                   variant="outline"
                   className="bg-white/10 border-rose-300/50 text-rose-700 hover:bg-rose-50/20 font-semibold"
-                  onClick={handleRejectBid}
+                  onClick={() => void handleRejectBid()}
                   disabled={bidStatus !== "active" || isProcessing}
                 >
                   <XCircle className="w-4 h-4 mr-1" />

@@ -82,7 +82,7 @@ export default function CompanyCustomers() {
   const [globalFilter, setGlobalFilter] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editCustomer, setEditCustomer] = useState<BackendCustomer | null>(
-    null,
+    null
   );
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
@@ -100,14 +100,14 @@ export default function CompanyCustomers() {
       setError(
         err instanceof Error
           ? err.message
-          : t("Failed to load customers", "ग्राहक लोड करने में विफल"),
+          : t("Failed to load customers", "ग्राहक लोड करने में विफल")
       );
     }
     setLoading(false);
   }, [session, t]);
 
   useEffect(() => {
-    loadCustomers();
+    void loadCustomers();
   }, [loadCustomers]);
 
   function openCreate() {
@@ -141,13 +141,13 @@ export default function CompanyCustomers() {
         setSuccess(
           t(
             "Customer updated successfully",
-            "ग्राहक सफलतापूर्वक अपडेट किया गया",
-          ),
+            "ग्राहक सफलतापूर्वक अपडेट किया गया"
+          )
         );
       } else {
         await createCustomer(session, form);
         setSuccess(
-          t("Customer created successfully", "ग्राहक सफलतापूर्वक बनाया गया"),
+          t("Customer created successfully", "ग्राहक सफलतापूर्वक बनाया गया")
         );
       }
       setDialogOpen(false);
@@ -157,7 +157,7 @@ export default function CompanyCustomers() {
       setError(
         err instanceof Error
           ? err.message
-          : t("Failed to save customer", "ग्राहक सहेजने में विफल"),
+          : t("Failed to save customer", "ग्राहक सहेजने में विफल")
       );
     }
     setSaving(false);
@@ -168,7 +168,7 @@ export default function CompanyCustomers() {
     try {
       await deleteCustomer(session, id);
       setSuccess(
-        t("Customer deleted successfully", "ग्राहक सफलतापूर्वक हटाया गया"),
+        t("Customer deleted successfully", "ग्राहक सफलतापूर्वक हटाया गया")
       );
       await loadCustomers();
       setTimeout(() => setSuccess(null), 3000);
@@ -176,7 +176,7 @@ export default function CompanyCustomers() {
       setError(
         err instanceof Error
           ? err.message
-          : t("Failed to delete customer", "ग्राहक हटाने में विफल"),
+          : t("Failed to delete customer", "ग्राहक हटाने में विफल")
       );
     }
   }
@@ -243,7 +243,7 @@ export default function CompanyCustomers() {
             </DropdownMenuItem>
             <DropdownMenuItem
               variant="destructive"
-              onClick={() => handleDelete(row.original.id)}
+              onClick={() => void handleDelete(row.original.id)}
             >
               <Trash2 className="size-4" /> {t("Delete", "हटाएं")}
             </DropdownMenuItem>
@@ -348,7 +348,7 @@ export default function CompanyCustomers() {
                               ? null
                               : flexRender(
                                   header.column.columnDef.header,
-                                  header.getContext(),
+                                  header.getContext()
                                 )}
                           </TableHead>
                         ))}
@@ -363,7 +363,7 @@ export default function CompanyCustomers() {
                             <TableCell key={cell.id}>
                               {flexRender(
                                 cell.column.columnDef.cell,
-                                cell.getContext(),
+                                cell.getContext()
                               )}
                             </TableCell>
                           ))}
@@ -509,7 +509,7 @@ export default function CompanyCustomers() {
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
               {t("Cancel", "रद्द करें")}
             </Button>
-            <Button onClick={handleSave} disabled={saving}>
+            <Button onClick={() => void handleSave()} disabled={saving}>
               {saving
                 ? t("Saving...", "सहेज रहे हैं...")
                 : editCustomer

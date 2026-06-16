@@ -9,20 +9,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import {
-  Search,
-  Send,
-  Plus,
-  MessageSquare,
-  Users,
-  Loader2,
-  User,
-  ArrowLeft,
-} from "lucide-react";
+import { Search, Send, Plus, MessageSquare, Loader2 } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
 import { useAuthSession } from "@/lib/auth-session";
 import { useSocket } from "@/lib/socket-context";
@@ -44,6 +32,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 type Tab = "conversations" | "users";
 
@@ -106,7 +96,7 @@ export default function ChatPage() {
   }, [session, currentUserId]);
 
   useEffect(() => {
-    if (session.isAuthenticated) loadInitial();
+    if (session.isAuthenticated) void loadInitial();
   }, [session, loadInitial]);
 
   const loadMessages = useCallback(
@@ -125,12 +115,12 @@ export default function ChatPage() {
       } catch {}
       if (!silent) setLoading(false);
     },
-    [session],
+    [session]
   );
 
   useEffect(() => {
     if (selectedConversation) {
-      loadMessages(selectedConversation.id);
+      void loadMessages(selectedConversation.id);
     }
   }, [selectedConversation?.id, loadMessages]);
 
@@ -165,7 +155,7 @@ export default function ChatPage() {
           };
           updated.sort(
             (a, b) =>
-              new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+              new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
           );
         }
         return updated;
@@ -174,7 +164,7 @@ export default function ChatPage() {
 
     const onMessageRead = ({ messageId }: { messageId: string }) => {
       setMessages((prev) =>
-        prev.map((m) => (m.id === messageId ? { ...m, isRead: true } : m)),
+        prev.map((m) => (m.id === messageId ? { ...m, isRead: true } : m))
       );
     };
 
@@ -239,7 +229,7 @@ export default function ChatPage() {
       const saved = await new Promise<BackendMessage>((resolve, reject) => {
         const timeout = window.setTimeout(
           () => reject(new Error("Timed out sending message")),
-          10000,
+          10000
         );
         let settled = false;
         const finish = () => {
@@ -263,7 +253,7 @@ export default function ChatPage() {
           (
             response:
               | BackendMessage
-              | { event?: string; data?: BackendMessage; message?: string },
+              | { event?: string; data?: BackendMessage; message?: string }
           ) => {
             if (settled) return;
             finish();
@@ -273,7 +263,7 @@ export default function ChatPage() {
                 ? response.data
                 : response;
             if (data && typeof data === "object" && "id" in data) {
-              resolve(data as BackendMessage);
+              resolve(data);
             } else {
               reject(
                 new Error(
@@ -282,11 +272,11 @@ export default function ChatPage() {
                     "message" in response &&
                     typeof response.message === "string"
                     ? response.message
-                    : "Failed to send message",
-                ),
+                    : "Failed to send message"
+                )
               );
             }
-          },
+          }
         );
       });
       setMessages((prev) => {
@@ -366,7 +356,7 @@ export default function ChatPage() {
                   <SelectValue
                     placeholder={t(
                       "Select recipient...",
-                      "प्राप्तकर्ता चुनें...",
+                      "प्राप्तकर्ता चुनें..."
                     )}
                   />
                 </SelectTrigger>
@@ -387,7 +377,7 @@ export default function ChatPage() {
                   <SelectValue
                     placeholder={t(
                       "Link to load (optional)",
-                      "लोड से जोड़ें (वैकल्पिक)",
+                      "लोड से जोड़ें (वैकल्पिक)"
                     )}
                   />
                 </SelectTrigger>
@@ -402,7 +392,7 @@ export default function ChatPage() {
               <Button
                 size="sm"
                 className="w-full h-8 text-xs bg-linear-to-r from-purple-600 to-indigo-600"
-                onClick={handleCreateConversation}
+                onClick={() => void handleCreateConversation()}
                 disabled={!newConvoReceiver}
               >
                 <Plus className="w-3 h-3 mr-1" />{" "}
@@ -464,7 +454,7 @@ export default function ChatPage() {
                             lastName: "",
                             id: 0,
                             email: "",
-                          } as BackendUser)}
+                          })}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
@@ -475,7 +465,7 @@ export default function ChatPage() {
                           {conv.lastMessageAt && (
                             <span className="text-[10px] text-muted-foreground">
                               {new Date(
-                                conv.lastMessageAt,
+                                conv.lastMessageAt
                               ).toLocaleDateString()}
                             </span>
                           )}
@@ -546,7 +536,7 @@ export default function ChatPage() {
                       lastName: "",
                       id: 0,
                       email: "",
-                    } as BackendUser)}
+                    })}
                   </AvatarFallback>
                 </Avatar>
                 <div>
@@ -574,7 +564,7 @@ export default function ChatPage() {
                 <div className="h-full flex items-center justify-center text-muted-foreground text-xs">
                   {t(
                     "No messages yet. Start the conversation!",
-                    "अभी तक कोई संदेश नहीं। वार्तालाप शुरू करें!",
+                    "अभी तक कोई संदेश नहीं। वार्तालाप शुरू करें!"
                   )}
                 </div>
               ) : (
@@ -642,7 +632,7 @@ export default function ChatPage() {
                           conversationId: selectedConversation.id,
                         });
                       }
-                      handleSend();
+                      void handleSend();
                     }
                   }}
                 />
@@ -650,7 +640,7 @@ export default function ChatPage() {
                 <Button
                   size="icon"
                   className="h-10 w-10 bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
-                  onClick={handleSend}
+                  onClick={() => void handleSend()}
                   disabled={sending || !messageBody.trim()}
                 >
                   {sending ? (
@@ -669,7 +659,7 @@ export default function ChatPage() {
               <p>
                 {t(
                   "Select a conversation to start messaging",
-                  "संदेश शुरू करने के लिए वार्तालाप चुनें",
+                  "संदेश शुरू करने के लिए वार्तालाप चुनें"
                 )}
               </p>
             </div>

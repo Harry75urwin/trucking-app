@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useMemo, useRef, useState, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  useCallback,
+} from "react";
 import type { ReactNode } from "react";
 import { io, type Socket } from "socket.io-client";
 
@@ -41,7 +48,7 @@ export function SocketProvider({
   token?: string | null;
 }) {
   const [socket, setSocket] = useState<Socket | null>(() =>
-    token ? getSocket(token) : null,
+    token ? getSocket(token) : null
   );
   const [isConnected, setIsConnected] = useState(false);
 
@@ -98,7 +105,7 @@ export function SocketProvider({
       connect,
       disconnect,
     }),
-    [socket, isConnected, connect, disconnect],
+    [socket, isConnected, connect, disconnect]
   );
 
   return (

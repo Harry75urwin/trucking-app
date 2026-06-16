@@ -190,7 +190,7 @@ export default function TruckerTrackingPage() {
       .catch((err) => {
         if (!cancelled)
           setError(
-            err instanceof Error ? err.message : "Failed to load tracking",
+            err instanceof Error ? err.message : "Failed to load tracking"
           );
       })
       .finally(() => {
@@ -298,7 +298,7 @@ export default function TruckerTrackingPage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="relative h-[500px] bg-linear-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 rounded-xl overflow-hidden border border-border">
+                <div className="relative h-125 bg-linear-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 rounded-xl overflow-hidden border border-border">
                   <RouteMap
                     from={from}
                     to={to}
@@ -322,7 +322,7 @@ export default function TruckerTrackingPage() {
               <CardContent>
                 <div className="space-y-0">
                   <div className="relative">
-                    <div className="absolute left-[11px] top-2 bottom-2 w-0.5 bg-gradient-to-b from-emerald-500 via-indigo-500 to-slate-200 dark:to-slate-700" />
+                    <div className="absolute left-2.75 top-2 bottom-2 w-0.5 bg-linear-to-b from-emerald-500 via-indigo-500 to-slate-200 dark:to-slate-700" />
                     {displayWaypoints.map((wp, i) => (
                       <div
                         key={i}

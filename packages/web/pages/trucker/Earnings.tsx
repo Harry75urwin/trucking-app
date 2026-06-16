@@ -75,7 +75,7 @@ export default function EarningsPage() {
           <p className="text-muted-foreground">
             {t(
               "Your payment history and stats",
-              "आपका भुगतान इतिहास और आंकड़े",
+              "आपका भुगतान इतिहास और आंकड़े"
             )}
           </p>
         </div>

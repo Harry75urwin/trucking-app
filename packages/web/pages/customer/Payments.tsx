@@ -85,7 +85,7 @@ export default function PaymentsPage() {
         <p className="text-muted-foreground">
           {t(
             "Manage all your payment transactions",
-            "अपने सभी भुगतान लेनदेन प्रबंधित करें",
+            "अपने सभी भुगतान लेनदेन प्रबंधित करें"
           )}
         </p>
       </div>

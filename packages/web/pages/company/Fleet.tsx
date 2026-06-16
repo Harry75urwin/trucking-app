@@ -72,7 +72,7 @@ export default function FleetPage() {
           <p className="text-muted-foreground">
             {t(
               "All vehicles in your company fleet",
-              "आपकी कंपनी के बेड़े में सभी वाहन",
+              "आपकी कंपनी के बेड़े में सभी वाहन"
             )}
           </p>
         </div>

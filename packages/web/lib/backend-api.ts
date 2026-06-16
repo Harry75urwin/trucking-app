@@ -81,7 +81,7 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export function mapBackendRoleToUserType(
-  role?: string | null,
+  role?: string | null
 ): UserType | null {
   switch ((role ?? "").toLowerCase()) {
     case "admin":
@@ -99,9 +99,7 @@ export function mapBackendRoleToUserType(
   }
 }
 
-export async function loginWithBackend(
-  payload: BackendLoginPayload,
-): Promise<
+export async function loginWithBackend(payload: BackendLoginPayload): Promise<
   AuthSession & {
     accessToken: string;
     user: BackendAuthUser;
@@ -117,7 +115,7 @@ export async function loginWithBackend(
 
   if (!userType) {
     throw new Error(
-      `Unsupported backend role: ${response.user.role ?? "unknown"}`,
+      `Unsupported backend role: ${response.user.role ?? "unknown"}`
     );
   }
 
@@ -130,9 +128,7 @@ export async function loginWithBackend(
   };
 }
 
-export async function signupWithBackend(
-  payload: BackendSignupPayload,
-): Promise<
+export async function signupWithBackend(payload: BackendSignupPayload): Promise<
   AuthSession & {
     accessToken: string;
     user: BackendAuthUser;
@@ -148,7 +144,7 @@ export async function signupWithBackend(
 
   if (!userType) {
     throw new Error(
-      `Unsupported backend role: ${response.user.role ?? "unknown"}`,
+      `Unsupported backend role: ${response.user.role ?? "unknown"}`
     );
   }
 

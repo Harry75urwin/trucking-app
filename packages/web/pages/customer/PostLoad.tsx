@@ -1,17 +1,17 @@
 import { useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, MapPin, Package, Upload, X } from "lucide-react";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+  ArrowLeft,
+  ArrowRight,
+  MapPin,
+  Package,
+  Upload,
+  X,
+} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useLanguage } from "@/lib/language-context";
 import { useAuthSession } from "@/lib/auth-session";
 import { createLoad, uploadFileToR2 } from "@/lib/trucker-api";
@@ -48,7 +48,7 @@ export default function PostLoad() {
   });
 
   const handleField = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const validate = () => {
@@ -129,7 +129,7 @@ export default function PostLoad() {
             <p className="text-muted-foreground">
               {t(
                 "Truckers will start bidding soon. You`ll be notified.",
-                "ट्रकर जल्द ही बोली लगाना शुरू करेंगे। आपको सूचित किया जाएगा।",
+                "ट्रकर जल्द ही बोली लगाना शुरू करेंगे। आपको सूचित किया जाएगा।"
               )}
             </p>
             <div className="rounded-xl bg-muted/50 p-4 text-sm text-muted-foreground">
@@ -181,7 +181,7 @@ export default function PostLoad() {
         <p className="text-muted-foreground">
           {t(
             "Fill in details to get truckers to bid",
-            "ट्रकरों से बोली पाने के लिए विवरण भरें",
+            "ट्रकरों से बोली पाने के लिए विवरण भरें"
           )}
         </p>
       </div>
@@ -309,7 +309,7 @@ export default function PostLoad() {
                     onChange={handleField}
                     placeholder={t(
                       "Electronics, Textiles...",
-                      "इलेक्ट्रॉनिक्स, कपड़ा...",
+                      "इलेक्ट्रॉनिक्स, कपड़ा..."
                     )}
                     className={errors.goodsType ? "border-destructive" : ""}
                   />
@@ -331,7 +331,7 @@ export default function PostLoad() {
                   rows={3}
                   placeholder={t(
                     "Special handling requirements...",
-                    "विशेष हैंडलिंग आवश्यकताएं...",
+                    "विशेष हैंडलिंग आवश्यकताएं..."
                   )}
                 />
               </div>
@@ -346,7 +346,7 @@ export default function PostLoad() {
                     accept="image/*"
                     multiple
                     className="hidden"
-                    onChange={uploadImage}
+                    onChange={(e) => void uploadImage(e)}
                   />
                   <Button
                     type="button"
@@ -404,7 +404,7 @@ export default function PostLoad() {
                 <p className="text-xs text-muted-foreground">
                   {t(
                     "Truckers will bid below this amount",
-                    "ट्रकर इस राशि से कम में बोली लगाएंगे",
+                    "ट्रकर इस राशि से कम में बोली लगाएंगे"
                   )}
                 </p>
               </div>
@@ -430,7 +430,7 @@ export default function PostLoad() {
           </Button>
         ) : (
           <Button
-            onClick={submit}
+            onClick={() => void submit()}
             disabled={loading}
             className="bg-linear-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-lg"
           >

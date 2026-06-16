@@ -54,7 +54,7 @@ export function NotificationDrawer() {
           <DrawerDescription>
             {t(
               "Recent updates across your account",
-              "आपके खाते के हालिया अपडेट",
+              "आपके खाते के हालिया अपडेट"
             )}
           </DrawerDescription>
         </DrawerHeader>

@@ -12,7 +12,6 @@ import {
 import { Plus, Pencil, Trash2, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -112,14 +111,14 @@ export default function LoadAssignmentsPage() {
       setError(
         err instanceof Error
           ? err.message
-          : t("Failed to load assignments", "असाइनमेंट लोड करने में विफल"),
+          : t("Failed to load assignments", "असाइनमेंट लोड करने में विफल")
       );
     }
     setLoading(false);
   }, [session, t]);
 
   useEffect(() => {
-    loadData();
+    void loadData();
   }, [loadData]);
 
   const vehicleById = useMemo(() => {
@@ -206,7 +205,7 @@ export default function LoadAssignmentsPage() {
       setError(
         err instanceof Error
           ? err.message
-          : t("Failed to save assignment", "असाइनमेंट सहेजने में विफल"),
+          : t("Failed to save assignment", "असाइनमेंट सहेजने में विफल")
       );
     }
     setSaving(false);
@@ -224,7 +223,7 @@ export default function LoadAssignmentsPage() {
       setError(
         err instanceof Error
           ? err.message
-          : t("Failed to delete assignment", "असाइनमेंट हटाने में विफल"),
+          : t("Failed to delete assignment", "असाइनमेंट हटाने में विफल")
       );
     }
   }
@@ -246,11 +245,11 @@ export default function LoadAssignmentsPage() {
 
   const trucks = useMemo(
     () => trucksAndTrailers.filter((v) => v.type === "truck"),
-    [trucksAndTrailers],
+    [trucksAndTrailers]
   );
   const trailers = useMemo(
     () => trucksAndTrailers.filter((v) => v.type === "trailer"),
-    [trucksAndTrailers],
+    [trucksAndTrailers]
   );
 
   const assignmentLabel = (a: BackendLoadAssignment) => {
@@ -346,7 +345,7 @@ export default function LoadAssignmentsPage() {
               </DropdownMenuItem>
               <DropdownMenuItem
                 variant="destructive"
-                onClick={() => handleDelete(row.original.id)}
+                onClick={() => void handleDelete(row.original.id)}
               >
                 <Trash2 className="size-4 mr-2" /> {t("Delete", "हटाएं")}
               </DropdownMenuItem>
@@ -355,7 +354,7 @@ export default function LoadAssignmentsPage() {
         ),
       },
     ],
-    [t, loadById, driverById, vehicleById, assignmentLabel],
+    [t, loadById, driverById, vehicleById, assignmentLabel]
   );
 
   const filtered = useMemo(
@@ -372,7 +371,7 @@ export default function LoadAssignmentsPage() {
           info.trailer.toLowerCase().includes(term)
         );
       }),
-    [assignments, globalFilter, assignmentLabel],
+    [assignments, globalFilter, assignmentLabel]
   );
 
   const table = useReactTable({
@@ -397,7 +396,7 @@ export default function LoadAssignmentsPage() {
           <p className="text-muted-foreground">
             {t(
               "Assign drivers and vehicles to loads",
-              "लोड को ड्राइवर और वाहनों में असाइन करें",
+              "लोड को ड्राइवर और वाहनों में असाइन करें"
             )}
           </p>
         </div>
@@ -463,7 +462,7 @@ export default function LoadAssignmentsPage() {
                               ? null
                               : flexRender(
                                   header.column.columnDef.header,
-                                  header.getContext(),
+                                  header.getContext()
                                 )}
                           </TableHead>
                         ))}
@@ -478,7 +477,7 @@ export default function LoadAssignmentsPage() {
                             <TableCell key={cell.id}>
                               {flexRender(
                                 cell.column.columnDef.cell,
-                                cell.getContext(),
+                                cell.getContext()
                               )}
                             </TableCell>
                           ))}
@@ -492,7 +491,7 @@ export default function LoadAssignmentsPage() {
                         >
                           {t(
                             "No assignments found.",
-                            "कोई असाइनमेंट नहीं मिला।",
+                            "कोई असाइनमेंट नहीं मिला।"
                           )}
                         </TableCell>
                       </TableRow>
@@ -633,7 +632,7 @@ export default function LoadAssignmentsPage() {
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
               {t("Cancel", "रद्द करें")}
             </Button>
-            <Button onClick={handleSave} disabled={saving}>
+            <Button onClick={() => void handleSave()} disabled={saving}>
               {saving
                 ? t("Saving...", "सहेज रहे हैं...")
                 : editAssignment

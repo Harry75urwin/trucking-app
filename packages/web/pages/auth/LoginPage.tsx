@@ -35,7 +35,7 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
       icon: Truck,
       description: t(
         "Individual truck owner or driver",
-        "व्यक्तिगत ट्रक मालिक या चालक",
+        "व्यक्तिगत ट्रक मालिक या चालक"
       ),
     },
     {
@@ -80,7 +80,7 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
       setError(
         loginError instanceof Error
           ? loginError.message
-          : t("Login failed", "लॉगिन विफल"),
+          : t("Login failed", "लॉगिन विफल")
       );
     } finally {
       setIsLoading(false);
@@ -119,7 +119,7 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
             <CardDescription className="text-base">
               {t(
                 "Select your role and sign in to your account",
-                "अपनी भूमिका चुनें और अपने खाते में साइन इन करें",
+                "अपनी भूमिका चुनें और अपने खाते में साइन इन करें"
               )}
             </CardDescription>
           </CardHeader>
@@ -128,7 +128,7 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
               className="space-y-6"
               onSubmit={(event) => {
                 event.preventDefault();
-                handleLogin();
+                void handleLogin();
               }}
             >
               {/* User Type Selection */}
@@ -236,7 +236,7 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
               💡{" "}
               {t(
                 "Use any credentials for demo",
-                "डेमो के लिए किसी भी क्रेडेंशियल का उपयोग करें",
+                "डेमो के लिए किसी भी क्रेडेंशियल का उपयोग करें"
               )}
             </p>
           </CardContent>

@@ -13,11 +13,9 @@ import {
   MapPin,
   Calendar,
   Weight,
-  DollarSign,
   User,
   Phone,
   Truck,
-  Clock,
   Navigation,
 } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";

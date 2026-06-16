@@ -62,7 +62,7 @@ export default function Dispatch() {
         supabase
           .from("loads")
           .select(
-            "*, customers(name), load_assignments(*, drivers(*), trucks:vehicles!load_assignments_truck_id_fkey(*), trailers:vehicles!load_assignments_trailer_id_fkey(*))",
+            "*, customers(name), load_assignments(*, drivers(*), trucks:vehicles!load_assignments_truck_id_fkey(*), trailers:vehicles!load_assignments_trailer_id_fkey(*))"
           )
           .in("status", ["pending", "dispatched", "in_transit", "problem"])
           .order("pickup_date", { ascending: true }),
@@ -78,7 +78,7 @@ export default function Dispatch() {
   }, []);
 
   useEffect(() => {
-    fetchData();
+    void fetchData();
   }, [fetchData]);
 
   function getAssignment(load: LoadWithAssignment) {
@@ -118,12 +118,12 @@ export default function Dispatch() {
 
     setSaving(null);
     setAssigning(null);
-    fetchData();
+    void fetchData();
   }
 
   const pendingLoads = loads.filter((l) => l.status === "pending");
   const activeLoads = loads.filter((l) =>
-    ["dispatched", "in_transit"].includes(l.status),
+    ["dispatched", "in_transit"].includes(l.status)
   );
   const problemLoads = loads.filter((l) => l.status === "problem");
 
@@ -305,7 +305,7 @@ export default function Dispatch() {
                       <SelectValue
                         placeholder={t(
                           "Select trailer (optional)",
-                          "ट्रेलर चुनें (वैकल्पिक)",
+                          "ट्रेलर चुनें (वैकल्पिक)"
                         )}
                       />
                     </SelectTrigger>
@@ -324,7 +324,7 @@ export default function Dispatch() {
                     <Button
                       size="sm"
                       className="flex-1"
-                      onClick={() => handleAssign(load.id)}
+                      onClick={() => void handleAssign(load.id)}
                       disabled={!a.driver_id || saving === load.id}
                     >
                       <CheckCircle2 className="size-3" />
@@ -359,7 +359,7 @@ export default function Dispatch() {
           <p className="text-muted-foreground">
             {t(
               "Assign drivers and trucks to loads",
-              "ड्राइवरों और ट्रक को लोड में असाइन करें",
+              "ड्राइवरों और ट्रक को लोड में असाइन करें"
             )}
           </p>
         </div>

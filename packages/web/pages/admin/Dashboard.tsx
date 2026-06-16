@@ -1,6 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Users,
   Package,
@@ -74,7 +72,7 @@ export default function AdminDashboard() {
       type: "user",
       text: t(
         "New trucker registered: Suresh Kumar",
-        "नया ट्रकर पंजीकृत: सुरेश कुमार",
+        "नया ट्रकर पंजीकृत: सुरेश कुमार"
       ),
       time: "5m ago",
     },
@@ -82,7 +80,7 @@ export default function AdminDashboard() {
       type: "load",
       text: t(
         "Load LD-2024-342 marked delivered",
-        "लोड LD-2024-342 डिलीवर मार्क किया",
+        "लोड LD-2024-342 डिलीवर मार्क किया"
       ),
       time: "12m ago",
     },
@@ -90,7 +88,7 @@ export default function AdminDashboard() {
       type: "dispute",
       text: t(
         "New dispute filed on LD-2024-310",
-        "LD-2024-310 पर नया विवाद दायर",
+        "LD-2024-310 पर नया विवाद दायर"
       ),
       time: "30m ago",
     },
@@ -109,7 +107,7 @@ export default function AdminDashboard() {
         <p className="text-muted-foreground">
           {t(
             "Platform overview and management",
-            "प्लेटफॉर्म अवलोकन और प्रबंधन",
+            "प्लेटफॉर्म अवलोकन और प्रबंधन"
           )}
         </p>
       </div>

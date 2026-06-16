@@ -83,7 +83,7 @@ export default function OnboardingPage({ onComplete }: OnboardingPageProps) {
       setError(
         registerError instanceof Error
           ? registerError.message
-          : t("Registration failed", "पंजीकरण विफल"),
+          : t("Registration failed", "पंजीकरण विफल")
       );
     } finally {
       setIsLoading(false);
@@ -93,7 +93,7 @@ export default function OnboardingPage({ onComplete }: OnboardingPageProps) {
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    >
   ) => {
     setFormData({
       ...formData,

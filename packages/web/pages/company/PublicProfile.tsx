@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   Card,
@@ -86,7 +85,7 @@ export default function PublicProfilePage() {
     .toUpperCase();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+    <div className="min-h-screen bg-linear-to-b from-background to-muted/20">
       <div className="max-w-5xl mx-auto p-6 space-y-6">
         <Link
           to="/login"
@@ -203,7 +202,7 @@ export default function PublicProfilePage() {
             <CardDescription>
               {t(
                 "Rated drivers from this organization",
-                "इस संगठन के रेटेड ड्राइवर",
+                "इस संगठन के रेटेड ड्राइवर"
               )}
             </CardDescription>
           </CardHeader>

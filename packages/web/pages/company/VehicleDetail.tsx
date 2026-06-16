@@ -98,7 +98,7 @@ function DetailItem({
         {icon}
         <span>{label}</span>
       </div>
-      <p className="mt-2 font-semibold break-words">
+      <p className="mt-2 font-semibold wrap-break-word">
         {value || "Not available"}
       </p>
     </div>
@@ -176,7 +176,7 @@ export default function VehicleDetailPage() {
       .catch((err) => {
         if (!cancelled)
           setError(
-            err instanceof Error ? err.message : "Failed to load vehicle",
+            err instanceof Error ? err.message : "Failed to load vehicle"
           );
       })
       .finally(() => {
@@ -193,7 +193,7 @@ export default function VehicleDetailPage() {
   };
 
   const uploadVehicleImage = async (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
     if (!file || !id) return;
@@ -202,7 +202,9 @@ export default function VehicleDetailPage() {
     try {
       const imageUrl = await uploadFileToR2(session, file, "vehicle");
       setForm((current) =>
-        current ? { ...current, imageUrls: [...(current.imageUrls ?? []), imageUrl] } : current,
+        current
+          ? { ...current, imageUrls: [...(current.imageUrls ?? []), imageUrl] }
+          : current
       );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to upload image");
@@ -217,9 +219,11 @@ export default function VehicleDetailPage() {
       current
         ? {
             ...current,
-            imageUrls: (current.imageUrls ?? []).filter((url) => url !== imageUrl),
+            imageUrls: (current.imageUrls ?? []).filter(
+              (url) => url !== imageUrl
+            ),
           }
-        : current,
+        : current
     );
   };
 
@@ -357,7 +361,7 @@ export default function VehicleDetailPage() {
         <form
           id="vehicle-detail-form"
           className="space-y-6"
-          onSubmit={saveVehicle}
+          onSubmit={(e) => void saveVehicle(e)}
         >
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             <div className="space-y-6 xl:col-span-2">
@@ -374,7 +378,7 @@ export default function VehicleDetailPage() {
                       <CardDescription>
                         {t(
                           "Service status and mileage tracking",
-                          "सेवा स्थिति और माइलेज ट्रैकिंग",
+                          "सेवा स्थिति और माइलेज ट्रैकिंग"
                         )}
                       </CardDescription>
                     </div>
@@ -430,7 +434,7 @@ export default function VehicleDetailPage() {
                             onChange={(event) =>
                               updateField(
                                 "next_service_miles",
-                                Number(event.target.value),
+                                Number(event.target.value)
                               )
                             }
                           />
@@ -478,11 +482,11 @@ export default function VehicleDetailPage() {
                         {milesUntilService >= 0
                           ? t(
                               `${formatNumber(milesUntilService)} miles until service`,
-                              `${formatNumber(milesUntilService)} माइल सेवा तक बाकी`,
+                              `${formatNumber(milesUntilService)} माइल सेवा तक बाकी`
                             )
                           : t(
                               `${formatNumber(Math.abs(milesUntilService))} miles overdue`,
-                              `${formatNumber(Math.abs(milesUntilService))} माइल विलंबित`,
+                              `${formatNumber(Math.abs(milesUntilService))} माइल विलंबित`
                             )}
                       </p>
                     </div>
@@ -549,7 +553,7 @@ export default function VehicleDetailPage() {
                       <CardDescription>
                         {t(
                           "Upload truck images stored in Cloudflare R2",
-                          "Cloudflare R2 में ट्रक छवियां अपलोड करें",
+                          "Cloudflare R2 में ट्रक छवियां अपलोड करें"
                         )}
                       </CardDescription>
                     </div>
@@ -572,7 +576,7 @@ export default function VehicleDetailPage() {
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    onChange={uploadVehicleImage}
+                    onChange={(e) => void uploadVehicleImage(e)}
                   />
                 </CardHeader>
                 <CardContent>
@@ -603,7 +607,7 @@ export default function VehicleDetailPage() {
                     <p className="text-sm text-muted-foreground">
                       {t(
                         "No vehicle images uploaded yet.",
-                        "अभी तक वाहन छवियां अपलोड नहीं की गईं।",
+                        "अभी तक वाहन छवियां अपलोड नहीं की गईं।"
                       )}
                     </p>
                   )}
@@ -623,7 +627,7 @@ export default function VehicleDetailPage() {
                       <CardDescription>
                         {t(
                           "Vehicle identity and registration details",
-                          "वाहन पहचान और पंजीकरण विवरण",
+                          "वाहन पहचान और पंजीकरण विवरण"
                         )}
                       </CardDescription>
                     </div>

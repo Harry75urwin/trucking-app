@@ -62,7 +62,7 @@ export default function VehicleFormPage() {
       .catch((err) => {
         if (!cancelled)
           setError(
-            err instanceof Error ? err.message : "Failed to load vehicle",
+            err instanceof Error ? err.message : "Failed to load vehicle"
           );
       })
       .finally(() => {
@@ -82,7 +82,7 @@ export default function VehicleFormPage() {
 
   const update = (
     key: keyof BackendVehicle,
-    value: string | number | boolean,
+    value: string | number | boolean
   ) => setForm((prev) => ({ ...prev, [key]: value }));
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -91,7 +91,7 @@ export default function VehicleFormPage() {
     setError(null);
     try {
       const action = isEdit ? "Vehicle updated" : "Vehicle added";
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      await new Promise((_resolve) => setTimeout(_resolve, 300));
       alert(t(action, isEdit ? "वाहन अपडेट हो गया!" : "वाहन जोड़ दिया गया!"));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Save failed");
@@ -139,7 +139,7 @@ export default function VehicleFormPage() {
               <CardDescription>
                 {t(
                   "Fill in the vehicle information below",
-                  "नीचे वाहन की जानकारी भरें",
+                  "नीचे वाहन की जानकारी भरें"
                 )}
               </CardDescription>
             </div>
@@ -147,7 +147,7 @@ export default function VehicleFormPage() {
         </CardHeader>
         <CardContent>
           {error && <p className="text-sm text-rose-500 mb-4">{error}</p>}
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form className="space-y-6" onSubmit={(e) => void handleSubmit(e)}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="unit_number">

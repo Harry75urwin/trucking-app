@@ -205,7 +205,7 @@ export default function DisputesPage() {
       type: "success",
       message: t(
         "Dispute escalated to senior support",
-        "विवाद को वरिष्ठ समर्थन के स्तर पर उठाया गया",
+        "विवाद को वरिष्ठ समर्थन के स्तर पर उठाया गया"
       ),
     });
     updateStatus(id, "escalated");
@@ -234,7 +234,7 @@ export default function DisputesPage() {
           <p className="text-muted-foreground">
             {t(
               "Review and resolve platform disputes",
-              "प्लेटफॉर्म विवाद समीक्षा और हल करें",
+              "प्लेटफॉर्म विवाद समीक्षा और हल करें"
             )}
           </p>
         </div>
@@ -260,7 +260,7 @@ export default function DisputesPage() {
               disputes.filter(
                 (d) =>
                   currentStatusMap(d.id) === "resolved" ||
-                  currentStatusMap(d.id) === "rejected",
+                  currentStatusMap(d.id) === "rejected"
               ).length
             }{" "}
             {t("Resolved", "हल हुआ")}
@@ -430,7 +430,7 @@ export default function DisputesPage() {
               <CardDescription>
                 {t(
                   "History of all actions taken on this dispute",
-                  "इस विवाद पर लिए गए सभी कार्रवाइयों का इतिहास",
+                  "इस विवाद पर लिए गए सभी कार्रवाइयों का इतिहास"
                 )}
               </CardDescription>
             </CardHeader>
@@ -532,7 +532,7 @@ export default function DisputesPage() {
                   rows={3}
                   placeholder={t(
                     "Add notes for this resolution...",
-                    "इस समाधान के लिए नोट जोड़ें...",
+                    "इस समाधान के लिए नोट जोड़ें..."
                   )}
                   value={resolutionNotes[detail?.id || ""] || ""}
                   onChange={(e) => setNote(detail?.id || "", e.target.value)}

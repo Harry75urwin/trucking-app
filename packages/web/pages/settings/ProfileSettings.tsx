@@ -88,7 +88,7 @@ export default function ProfileSettingsPage() {
       setMessage(t("Profile updated", "प्रोफ़ाइल अपडेट हो गई"));
     } catch (err) {
       setMessage(
-        err instanceof Error ? err.message : "Failed to update profile",
+        err instanceof Error ? err.message : "Failed to update profile"
       );
     }
     setSaving(false);
@@ -104,7 +104,7 @@ export default function ProfileSettingsPage() {
       setMessage(t("Organization updated", "संगठन अपडेट हो गया"));
     } catch (err) {
       setMessage(
-        err instanceof Error ? err.message : "Failed to update organization",
+        err instanceof Error ? err.message : "Failed to update organization"
       );
     }
     setSaving(false);
@@ -129,7 +129,7 @@ export default function ProfileSettingsPage() {
         setMessage(t("Avatar updated", "अवतार अपडेट हो गया"));
       } catch (err) {
         setMessage(
-          err instanceof Error ? err.message : "Failed to upload avatar",
+          err instanceof Error ? err.message : "Failed to upload avatar"
         );
       }
       setSaving(false);
@@ -143,18 +143,12 @@ export default function ProfileSettingsPage() {
     setUploadingLogo(true);
     setMessage(null);
     try {
-      const logoUrl = await uploadFileToR2(
-        session,
-        file,
-        "organization-logo",
-      );
+      const logoUrl = await uploadFileToR2(session, file, "organization-logo");
       setOrgForm((prev) => ({ ...prev, logoUrl }));
       await updateOrganization(session, user.organizationId, { logoUrl });
       setMessage(t("Logo uploaded", "लोगो अपलोड हो गया"));
     } catch (err) {
-      setMessage(
-        err instanceof Error ? err.message : "Failed to upload logo",
-      );
+      setMessage(err instanceof Error ? err.message : "Failed to upload logo");
     } finally {
       setUploadingLogo(false);
       e.target.value = "";
@@ -170,7 +164,7 @@ export default function ProfileSettingsPage() {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate("/settings")}
+          onClick={() => void navigate("/settings")}
         >
           <ArrowLeft className="w-4 h-4" />
         </Button>
@@ -179,7 +173,7 @@ export default function ProfileSettingsPage() {
           <p className="text-muted-foreground">
             {t(
               "Update your account identity and contact details",
-              "अपनी खाता पहचान और संपर्क विवरण अपडेट करें",
+              "अपनी खाता पहचान और संपर्क विवरण अपडेट करें"
             )}
           </p>
         </div>
@@ -188,7 +182,9 @@ export default function ProfileSettingsPage() {
       <Tabs
         defaultValue="profile"
         className="w-full"
-        onValueChange={(v) => v === "branding" && loadOrg()}
+        onValueChange={(v) => {
+          if (v === "branding") void loadOrg();
+        }}
       >
         <TabsList className="grid w-full grid-cols-2 max-w-md">
           <TabsTrigger value="profile">
@@ -211,14 +207,17 @@ export default function ProfileSettingsPage() {
                   <CardDescription>
                     {t(
                       "Manage your personal information",
-                      "अपनी व्यक्तिगत जानकारी प्रबंधित करें",
+                      "अपनी व्यक्तिगत जानकारी प्रबंधित करें"
                     )}
                   </CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              <form className="space-y-6" onSubmit={handleProfileSubmit}>
+              <form
+                className="space-y-6"
+                onSubmit={(e) => void handleProfileSubmit(e)}
+              >
                 <div className="flex items-center gap-4">
                   <div className="relative">
                     <Avatar
@@ -244,7 +243,7 @@ export default function ProfileSettingsPage() {
                       type="file"
                       accept="image/*"
                       className="hidden"
-                      onChange={handleFileChange}
+                      onChange={(e) => void handleFileChange(e)}
                     />
                   </div>
                   <div>
@@ -254,7 +253,7 @@ export default function ProfileSettingsPage() {
                     <p className="text-xs text-muted-foreground">
                       {t(
                         "JPG, PNG or GIF. Max 2MB.",
-                        "JPG, PNG या GIF। अधिकतम 2MB।",
+                        "JPG, PNG या GIF। अधिकतम 2MB।"
                       )}
                     </p>
                   </div>
@@ -353,14 +352,17 @@ export default function ProfileSettingsPage() {
                     <CardDescription>
                       {t(
                         "Customize your public profile appearance",
-                        "अपने सार्वजनिक प्रोफ़ाइल का स्वरूप अनुकूलित करें",
+                        "अपने सार्वजनिक प्रोफ़ाइल का स्वरूप अनुकूलित करें"
                       )}
                     </CardDescription>
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <form className="space-y-4" onSubmit={handleOrgSubmit}>
+                <form
+                  className="space-y-4"
+                  onSubmit={(e) => void handleOrgSubmit(e)}
+                >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>{t("Company Name", "कंपनी का नाम")}</Label>
@@ -459,7 +461,7 @@ export default function ProfileSettingsPage() {
                           type="file"
                           accept="image/*"
                           className="hidden"
-                          onChange={handleLogoUpload}
+                          onChange={(e) => void handleLogoUpload(e)}
                         />
                         <Button
                           type="button"
@@ -532,7 +534,7 @@ export default function ProfileSettingsPage() {
               <CardContent className="py-8 text-center text-muted-foreground">
                 {t(
                   "No organization linked to this account.",
-                  "इस खाते से कोई संगठन संबद्ध नहीं है।",
+                  "इस खाते से कोई संगठन संबद्ध नहीं है।"
                 )}
               </CardContent>
             </Card>

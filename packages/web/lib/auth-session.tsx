@@ -32,7 +32,7 @@ interface AuthSessionContextType {
 }
 
 const AuthSessionContext = createContext<AuthSessionContextType | undefined>(
-  undefined,
+  undefined
 );
 
 export function getStoredAuthSession(): AuthSession {
@@ -90,7 +90,7 @@ export function clearAuthSession() {
 
 export function AuthSessionProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<AuthSession>(() =>
-    getStoredAuthSession(),
+    getStoredAuthSession()
   );
 
   useEffect(() => {
@@ -112,7 +112,7 @@ export function AuthSessionProvider({ children }: { children: ReactNode }) {
         });
       },
     }),
-    [session],
+    [session]
   );
 
   return (

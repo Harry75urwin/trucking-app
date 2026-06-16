@@ -14,7 +14,10 @@ export default function AdminReports() {
     },
     {
       name: t("Revenue Report", "आय रिपोर्ट"),
-      desc: t("Monthly revenue breakdown by category", "श्रेणी के अनुसार मासिक आय विवरण"),
+      desc: t(
+        "Monthly revenue breakdown by category",
+        "श्रेणी के अनुसार मासिक आय विवरण"
+      ),
     },
     {
       name: t("Load Performance Report", "लोड प्रदर्शन रिपोर्ट"),
@@ -40,7 +43,10 @@ export default function AdminReports() {
             {t("Reports", "रिपोर्ट")}
           </h1>
           <p className="text-muted-foreground">
-            {t("Generate and export reports", "रिपोर्ट जनरेट करें और निर्यात करें")}
+            {t(
+              "Generate and export reports",
+              "रिपोर्ट जनरेट करें और निर्यात करें"
+            )}
           </p>
         </div>
         <div className="flex gap-2">

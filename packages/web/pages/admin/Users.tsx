@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, Users, CheckCircle2, XCircle, Clock } from "lucide-react";
+import { Search, CheckCircle2, XCircle } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
 
 const users = [
@@ -74,7 +74,7 @@ export default function UsersManagement() {
     (u) =>
       (roleFilter === "all" || u.role === roleFilter) &&
       (u.name.toLowerCase().includes(search.toLowerCase()) ||
-        u.city.toLowerCase().includes(search.toLowerCase())),
+        u.city.toLowerCase().includes(search.toLowerCase()))
   );
   return (
     <div className="p-6 space-y-6">
@@ -85,7 +85,7 @@ export default function UsersManagement() {
         <p className="text-muted-foreground">
           {t(
             "Manage all platform users",
-            "सभी प्लेटफॉर्म उपयोगकर्ताओं को प्रबंधित करें",
+            "सभी प्लेटफॉर्म उपयोगकर्ताओं को प्रबंधित करें"
           )}
         </p>
       </div>

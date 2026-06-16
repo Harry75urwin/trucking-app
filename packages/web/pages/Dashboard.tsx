@@ -78,7 +78,7 @@ export default function Dashboard() {
 
       if (loads) {
         const active = loads.filter((l: Load) =>
-          ["dispatched", "in_transit"].includes(l.status),
+          ["dispatched", "in_transit"].includes(l.status)
         );
         const problems = loads.filter((l: Load) => l.status === "problem");
         const pending = loads.filter((l: Load) => l.status === "pending");
@@ -104,12 +104,12 @@ export default function Dashboard() {
 
       if (vehicles) {
         const active = vehicles.filter(
-          (v: any) => v.status === "active" && v.type === "truck",
+          (v: any) => v.status === "active" && v.type === "truck"
         );
         setStats((prev) => ({ ...prev, activeVehicles: active.length }));
       }
     }
-    fetchData();
+    void fetchData();
   }, []);
 
   return (
@@ -212,7 +212,7 @@ export default function Dashboard() {
             <CardDescription>
               {t(
                 "Monthly revenue over the past 6 months",
-                "पिछले 6 महीने का मासिक राजस्व",
+                "पिछले 6 महीने का मासिक राजस्व"
               )}
             </CardDescription>
           </CardHeader>

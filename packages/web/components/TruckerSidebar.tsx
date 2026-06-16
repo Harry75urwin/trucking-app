@@ -114,7 +114,7 @@ export function TruckerSidebar() {
             <SidebarMenuButton
               onClick={() => {
                 logout();
-                navigate("/login");
+                void navigate("/login");
               }}
             >
               <LogOut className="size-4" />
