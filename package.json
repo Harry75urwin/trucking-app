@@ -16,8 +16,7 @@
     "lint": "pnpm lint:web && pnpm lint:backend",
     "format": "pnpm --filter backend format && pnpm --filter web exec prettier --write .",
     "format:check": "pnpm --filter backend format:check && pnpm --filter web exec prettier --check .",
-    "test": "pnpm --filter backend test",
-    "install": "pnpm install"
+    "test": "pnpm --filter backend test"
   },
   "devDependencies": {
     "typescript": "^5.9.3"
