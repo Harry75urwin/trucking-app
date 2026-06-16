@@ -19,7 +19,8 @@ async function bootstrap() {
         endpoint: s3Endpoint,
         credentials: {
           accessKeyId: configService.get<string>('AWS_ACCESS_KEY_ID') ?? 'test',
-          secretAccessKey: configService.get<string>('AWS_SECRET_ACCESS_KEY') ?? 'test',
+          secretAccessKey:
+            configService.get<string>('AWS_SECRET_ACCESS_KEY') ?? 'test',
         },
         forcePathStyle: true,
       });
