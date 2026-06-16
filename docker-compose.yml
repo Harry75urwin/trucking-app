@@ -12,5 +12,21 @@ services:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
 
+  localstack:
+    image: localstack/localstack:latest
+    container_name: truck-app-localstack
+    ports:
+      - '4566:4566'
+    environment:
+      - SERVICES=s3
+      - DEBUG=0
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=us-east-1
+    volumes:
+      - localstack_data:/var/lib/localstack
+    restart: unless-stopped
+
 volumes:
   postgres_data:
+  localstack_data:

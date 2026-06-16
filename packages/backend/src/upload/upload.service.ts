@@ -25,19 +25,20 @@ export class UploadService {
 
   constructor(private readonly configService: ConfigService) {
     this.s3 = new S3Client({
-      region: this.configService.get<string>('R2_REGION') ?? 'auto',
-      endpoint: this.configService.get<string>('R2_ENDPOINT'),
+      region: this.configService.get<string>('AWS_REGION') ?? 'us-east-1',
+      endpoint: this.configService.get<string>('S3_ENDPOINT'),
       credentials: {
-        accessKeyId: this.configService.get<string>('R2_ACCESS_KEY_ID') ?? '',
+        accessKeyId:
+          this.configService.get<string>('AWS_ACCESS_KEY_ID') ?? 'test',
         secretAccessKey:
-          this.configService.get<string>('R2_SECRET_ACCESS_KEY') ?? '',
+          this.configService.get<string>('AWS_SECRET_ACCESS_KEY') ?? 'test',
       },
       forcePathStyle: true,
     });
   }
 
   async createPresignedUpload(dto: CreatePresignedUploadDto) {
-    const bucket = this.requiredConfig('R2_BUCKET_NAME');
+    const bucket = this.requiredConfig('AWS_S3_BUCKET');
     const contentType = this.normalizeContentType(dto.contentType);
     if (!allowedImageContentTypes.has(contentType)) {
       throw new BadRequestException('Only image files are supported');
@@ -62,8 +63,8 @@ export class UploadService {
     };
   }
 
-  private async publicUrlFor(bucket: string, key: string) {
-    const publicBucketUrl = this.configService.get<string>('R2_PUBLIC_BUCKET_URL');
+  private publicUrlFor(bucket: string, key: string) {
+    const publicBucketUrl = this.configService.get<string>('S3_PUBLIC_URL');
     if (publicBucketUrl) {
       const base = publicBucketUrl.replace(/\/$/, '');
       return `${base}/${this.encodeKey(key)}`;

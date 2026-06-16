@@ -33,7 +33,6 @@ pnpm-debug.log*
 
 # dotenv
 packages/backend/.env
-packages/backend/.env.*
 packages/web/.env*
 
 # temp

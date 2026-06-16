@@ -8,16 +8,16 @@ Full-stack trucking platform with a Vite + React frontend and NestJS + PostgreSQ
 trucking/
 ├── package.json           # Root config with workspace scripts
 ├── packages/
-│   ├── web/             # Vite + React frontend
-│   └── backend/         # NestJS API backend
-└── docker-compose.yml     # PostgreSQL database
+│   ├── web/               # Vite + React frontend
+│   └── backend/           # NestJS API backend
+└── docker-compose.yml       # PostgreSQL and LocalStack services
 ```
 
 ## Prerequisites
 
 - Node.js >= 18
 - pnpm >= 8
-- PostgreSQL (via Docker or local)
+- Docker
 
 ## Setup
 
@@ -27,22 +27,23 @@ trucking/
 pnpm install
 ```
 
-### 2. Start PostgreSQL
+### 2. Start services
 
 ```bash
 docker compose up -d
 ```
 
+This starts PostgreSQL (port 5433) and LocalStack S3 (port 4566).
+
 ### 3. Configure environment
 
-Copy the example files and update values:
+Copy the example files:
 
 ```bash
 cp packages/backend/.env.example packages/backend/.env
-cp packages/web/.env.example packages/web/.env.development
 ```
 
-Required environment variables are documented in the respective `.env.example` files.
+Environment variables are documented in `packages/backend/.env.example`. Default values work with LocalStack.
 
 ## Development
 
@@ -62,6 +63,14 @@ pnpm dev:backend
 pnpm dev:web
 ```
 
+### Initialize S3 bucket
+
+The backend automatically creates the S3 bucket on startup. If using LocalStack CLI:
+
+```bash
+awslocal s3 mb s3://truck-app-bucket
+```
+
 ## Production
 
 ```bash
@@ -76,17 +85,21 @@ pnpm start
 
 Swagger UI is available at `http://localhost:3000/docs` when the backend is running.
 
+## File Uploads
+
+The app uses LocalStack S3 for file uploads. Files are accessible at:
+- Local: `http://localhost:4566/truck-app-bucket/<path>`
+
 ## Demo Credentials
 
 - Phone: `+91-9000000001`
 - Password: `Demo@1234`
 
-## Deploy to GitHub
+## Services
 
-```bash
-git init
-git add .
-git commit -m "Initial commit"
-git remote add origin https://github.com/yourusername/trucking-app.git
-git push -u origin main
-```
+| Service     | Port  | Description          |
+|-------------|-------|----------------------|
+| PostgreSQL  | 5433  | Database (mapped to 5432 in container) |
+| LocalStack  | 4566  | S3-compatible storage |
+| Backend API | 3000  | NestJS REST API      |
+| Frontend    | 5173  | Vite + React dev server |
