@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -55,7 +55,6 @@ const mockAuction = {
 };
 
 export default function BidDetailPage() {
-  const { id } = useParams();
   const { t } = useLanguage();
   const [myBid, setMyBid] = useState("");
   const [bidStatus, setBidStatus] = useState<BidStatus>("active");

@@ -91,7 +91,9 @@ export default function ChatPage() {
       setUsers(otherUsers);
       setLoads(allLoads);
       if (convos.length > 0) setSelectedConversation(convos[0]);
-    } catch {}
+    } catch (err) {
+      console.error("Failed to load initial data:", err);
+    }
     setLoading(false);
   }, [session, currentUserId]);
 
@@ -112,7 +114,9 @@ export default function ChatPage() {
             return prev;
           return data;
         });
-      } catch {}
+      } catch (err) {
+        console.error("Failed to load messages:", err);
+      }
       if (!silent) setLoading(false);
     },
     [session]
@@ -289,7 +293,10 @@ export default function ChatPage() {
         return [...prev, saved];
       });
       setMessageBody("");
-    } catch {}
+    } catch (err) {
+      console.error("Failed to send message:", err);
+      // Optionally show an error toast here
+    }
     setSending(false);
   };
 
@@ -308,7 +315,10 @@ export default function ChatPage() {
       setNewConvoReceiver("");
       setNewConvoLoad("");
       setTab("conversations");
-    } catch {}
+    } catch (err) {
+      console.error("Failed to create conversation:", err);
+      // Optionally show an error toast here
+    }
     setLoading(false);
   };
 

@@ -28,7 +28,9 @@ async function requestJson<T>(
       typeof body === "string"
         ? body
         : (body?.message ?? `Request failed with status ${response.status}`);
-    throw new Error(Array.isArray(message) ? message.join(", ") : message);
+    throw new Error(
+      Array.isArray(message) ? message.join(", ") : String(message)
+    );
   }
 
   return body as T;

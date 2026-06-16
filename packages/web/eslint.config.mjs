@@ -4,7 +4,7 @@ import tseslint from "typescript-eslint";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 
 export default tseslint.config(
-  { ignores: ["dist", "node_modules"] },
+  { ignores: ["dist", "node_modules", "eslint.config.mjs"] },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   eslintPluginPrettierRecommended,
@@ -13,6 +13,7 @@ export default tseslint.config(
       globals: { ...globals.browser, ...globals.es2021 },
       parserOptions: {
         projectService: true,
+        allowDefaultProject: ["eslint.config.mjs"],
         tsconfigRootDir: import.meta.dirname,
       },
     },

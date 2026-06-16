@@ -41,22 +41,6 @@ import {
   type BackendDriver,
 } from "@/lib/trucker-api";
 
-const emptyDriver: BackendDriver = {
-  id: "",
-  first_name: "",
-  last_name: "",
-  email: "",
-  phone: "",
-  cdl_number: "",
-  cdl_expiry: "",
-  medical_expiry: "",
-  home_city: "",
-  home_state: "",
-  status: "available",
-  created_at: "",
-  updated_at: "",
-};
-
 const statusColor: Record<string, string> = {
   available: "bg-linear-to-r from-emerald-500 to-teal-600 text-white border-0",
   on_load: "bg-linear-to-r from-blue-500 to-indigo-600 text-white border-0",

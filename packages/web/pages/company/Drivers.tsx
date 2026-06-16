@@ -44,7 +44,7 @@ export default function DriversPage() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [drivers, setDrivers] = useState<BackendDriver[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [assigningDriverId, setAssigningDriverId] = useState<string | null>(
     null
@@ -78,7 +78,11 @@ export default function DriversPage() {
     try {
       const data = await fetchLoadAssignments(session);
       setAssignments(data);
-    } catch {}
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to load assignments"
+      );
+    }
   };
 
   useEffect(() => {

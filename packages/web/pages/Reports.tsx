@@ -35,12 +35,7 @@ import {
 } from "@/components/ui/select";
 import { Download, FileText, Calendar } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
-import {
-  fetchLoads,
-  fetchTrackingEvents,
-  type BackendLoad,
-  type BackendTrackingEvent,
-} from "@/lib/trucker-api";
+import { fetchLoads, type BackendLoad } from "@/lib/trucker-api";
 
 const statusConfigData = {
   delivered: { color: "var(--chart-1)" },
@@ -58,12 +53,6 @@ const statusLabels: Record<string, { en: string; hi: string }> = {
   problem: { en: "Problem", hi: "समस्या" },
 };
 
-interface MonthlyData {
-  month: string;
-  revenue: number;
-  count: number;
-}
-
 interface StatusData {
   status: string;
   count: number;
@@ -79,9 +68,14 @@ function exportToCsv(filename: string, rows: Record<string, unknown>[]) {
       headers
         .map((field) => {
           const val = row[field];
-          return typeof val === "string" && val.includes(",")
-            ? `"${val}"`
-            : String(val ?? "");
+          if (val == null) return "";
+          if (typeof val === "string") {
+            return `"${val.includes(",") ? val.replace(/"/g, '""') : val}"`;
+          }
+          if (typeof val === "number" || typeof val === "boolean") {
+            return val.toString();
+          }
+          return JSON.stringify(val);
         })
         .join(",")
     ),
@@ -98,24 +92,16 @@ function exportToCsv(filename: string, rows: Record<string, unknown>[]) {
 export default function Reports() {
   const { t } = useLanguage();
   const [loads, setLoads] = useState<BackendLoad[]>([]);
-  const [trackingEvents, setTrackingEvents] = useState<BackendTrackingEvent[]>(
-    []
-  );
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState("6m");
-  const { session } = { session: { accessToken: "" } };
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    Promise.all([
-      fetchLoads({ accessToken: "" } as any).catch(() => []),
-      fetchTrackingEvents({ accessToken: "" } as any).catch(() => []),
-    ])
-      .then(([loadsData, eventsData]) => {
+    Promise.all([fetchLoads({ accessToken: "" }).catch(() => [])])
+      .then(([loadsData]) => {
         if (!cancelled) {
           setLoads(loadsData);
-          setTrackingEvents(eventsData);
         }
       })
       .catch(() => {})

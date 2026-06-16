@@ -75,11 +75,6 @@ export default function CustomerDashboard() {
     },
   ];
 
-  const statusColor: Record<string, string> = {
-    in_transit: "bg-blue-100 text-blue-700",
-    delivered: "bg-green-100 text-green-700",
-    pending: "bg-yellow-100 text-yellow-700",
-  };
   const statusLabel: Record<string, string> = {
     in_transit: t("In Transit", "यातायात में"),
     delivered: t("Delivered", "डिलीवर हुआ"),

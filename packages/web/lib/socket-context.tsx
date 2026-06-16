@@ -10,6 +10,7 @@ import type { ReactNode } from "react";
 import { io, type Socket } from "socket.io-client";
 
 const SOCKET_URL =
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ??
   "http://localhost:3000";
 

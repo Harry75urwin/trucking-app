@@ -21,12 +21,7 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
 import { useAuthSession } from "@/lib/auth-session";
-import {
-  fetchLoad,
-  fetchTrackingEvents,
-  type BackendLoad,
-  type BackendTrackingEvent,
-} from "@/lib/trucker-api";
+import { fetchLoad, type BackendLoad } from "@/lib/trucker-api";
 
 function RouteMap({
   from,
@@ -169,7 +164,6 @@ export default function TruckerTrackingPage() {
   const { t } = useLanguage();
   const { session } = useAuthSession();
   const [load, setLoad] = useState<BackendLoad | null>(null);
-  const [events, setEvents] = useState<BackendTrackingEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -180,11 +174,10 @@ export default function TruckerTrackingPage() {
     setLoading(true);
     setError(null);
 
-    Promise.all([fetchLoad(session, id), fetchTrackingEvents(session)])
-      .then(([loadData, trackingData]) => {
+    fetchLoad(session, id)
+      .then((loadData) => {
         if (!cancelled) {
           setLoad(loadData);
-          setEvents(trackingData.filter((e) => e.loadId === id));
         }
       })
       .catch((err) => {

@@ -55,7 +55,7 @@ export default function ProfileSettingsPage() {
     logoUrl: "",
     primaryColor: "",
   });
-  const [loadingOrg, setLoadingOrg] = useState(false);
+  const [, setLoadingOrg] = useState(false);
 
   const loadOrg = async () => {
     if (!user?.organizationId) return;
@@ -74,7 +74,11 @@ export default function ProfileSettingsPage() {
         logoUrl: org.logoUrl ?? "",
         primaryColor: org.primaryColor ?? "",
       });
-    } catch {}
+    } catch (err) {
+      setMessage(
+        err instanceof Error ? err.message : "Failed to load organization"
+      );
+    }
     setLoadingOrg(false);
   };
 
@@ -112,7 +116,7 @@ export default function ProfileSettingsPage() {
 
   const handleAvatarClick = () => fileInputRef.current?.click();
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();

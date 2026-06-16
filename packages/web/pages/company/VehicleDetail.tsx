@@ -41,22 +41,6 @@ import {
   type BackendVehicle,
 } from "@/lib/trucker-api";
 
-const emptyVehicle: BackendVehicle = {
-  id: "",
-  unit_number: "",
-  type: "truck",
-  year: new Date().getFullYear(),
-  make: "",
-  model: "",
-  license_plate: "",
-  mileage: 0,
-  next_service_miles: 0,
-  imageUrls: [],
-  status: "active",
-  created_at: "",
-  updated_at: "",
-};
-
 const statusColor: Record<string, string> = {
   active: "bg-linear-to-r from-emerald-500 to-teal-600 text-white border-0",
   idle: "bg-linear-to-r from-blue-500 to-indigo-600 text-white border-0",

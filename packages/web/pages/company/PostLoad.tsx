@@ -121,8 +121,6 @@ export default function PostLoadCompany() {
     setImageUrls((prev) => prev.filter((url) => url !== imageUrl));
   };
 
-  const progress = ((step - 1) / 2) * 100;
-
   if (submitted) {
     return (
       <div className="flex items-center justify-center min-h-[60vh] p-6">
