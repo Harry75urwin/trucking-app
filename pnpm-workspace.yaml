@@ -1,5 +1,7 @@
 packages:
-  - 'packages/*'
+  - packages/*
 
-# Optional: workspace protocol settings
-# nodeLinker: node-modules
+ignoredBuiltDependencies:
+  - '@scarf/scarf'
+  - esbuild
+  - unrs-resolver
