@@ -1,1 +1,5 @@
-packages:*
+packages:
+  - 'packages/*'
+
+# Optional: workspace protocol settings
+# nodeLinker: node-modules

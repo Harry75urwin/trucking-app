@@ -81,6 +81,19 @@ pnpm build
 pnpm start
 ```
 
+## Code Quality
+
+```bash
+# Lint all code
+pnpm lint
+
+# Format all code
+pnpm format
+
+# Check formatting
+pnpm format:check
+```
+
 ## API Documentation
 
 Swagger UI is available at `http://localhost:3000/docs` when the backend is running.

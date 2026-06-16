@@ -45,5 +45,9 @@ pids
 *.seed
 *.pid.lock
 
+# ESLint and Prettier
+*.eslintcache
+.prettiercache
+
 # Diagnostic reports
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
