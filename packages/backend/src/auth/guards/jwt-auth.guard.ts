@@ -1,4 +1,9 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createHmac } from 'crypto';
 
@@ -25,7 +30,8 @@ export class JwtAuthGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
-    const authorization = request.headers?.authorization ?? request.headers?.Authorization;
+    const authorization =
+      request.headers?.authorization ?? request.headers?.Authorization;
     if (!authorization || typeof authorization !== 'string') {
       throw new UnauthorizedException('Missing authorization header');
     }
@@ -36,13 +42,16 @@ export class JwtAuthGuard implements CanActivate {
     }
 
     const token = match[1];
-    const secret = this.configService.get<string>('AUTH_SECRET') ?? 'development-secret';
+    const secret =
+      this.configService.get<string>('AUTH_SECRET') ?? 'development-secret';
     const parts = token.split('.');
     if (parts.length !== 3) {
       throw new UnauthorizedException('Invalid token format');
     }
 
-    const signature = createHmac('sha256', secret).update(`${parts[0]}.${parts[1]}`).digest('base64url');
+    const signature = createHmac('sha256', secret)
+      .update(`${parts[0]}.${parts[1]}`)
+      .digest('base64url');
     if (signature !== parts[2]) {
       throw new UnauthorizedException('Invalid token signature');
     }
@@ -58,10 +67,14 @@ export class JwtAuthGuard implements CanActivate {
     }
 
     request.user = {
-      userId: typeof payload.sub === 'number' ? payload.sub : Number(payload.sub),
+      userId:
+        typeof payload.sub === 'number' ? payload.sub : Number(payload.sub),
       email: typeof payload.email === 'string' ? payload.email : undefined,
       role: typeof payload.role === 'string' ? payload.role : undefined,
-      organizationId: typeof payload.organizationId === 'number' ? payload.organizationId : undefined,
+      organizationId:
+        typeof payload.organizationId === 'number'
+          ? payload.organizationId
+          : undefined,
     };
 
     return true;

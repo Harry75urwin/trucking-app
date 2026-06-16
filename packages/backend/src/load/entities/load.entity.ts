@@ -53,7 +53,12 @@ export class Load {
   @Column({ nullable: true })
   notes?: string;
 
-  @Column({ name: 'image_urls', type: 'jsonb', nullable: true, default: () => '[]' })
+  @Column({
+    name: 'image_urls',
+    type: 'jsonb',
+    nullable: true,
+    default: () => '[]',
+  })
   imageUrls?: string[];
 
   @Column()

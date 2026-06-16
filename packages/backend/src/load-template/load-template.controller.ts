@@ -52,7 +52,10 @@ export class LoadTemplateController {
   @ApiParam({ name: 'id', type: String })
   @ApiOkResponse({ description: 'Load template updated successfully' })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLoadTemplateDto: UpdateLoadTemplateDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateLoadTemplateDto: UpdateLoadTemplateDto,
+  ) {
     return this.loadTemplateService.update(id, updateLoadTemplateDto);
   }
 

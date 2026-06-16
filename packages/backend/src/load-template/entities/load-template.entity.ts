@@ -1,5 +1,4 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { Organization } from '../../organization/entities/organization.entity';
+import { Entity, PrimaryColumn, Column } from 'typeorm';
 
 @Entity('load_templates')
 export class LoadTemplate {

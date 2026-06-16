@@ -14,12 +14,18 @@ import { CreateMessageDto } from './dto/create-message.dto';
 
 @WebSocketGateway({
   cors: {
-    origin: ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:4173'],
+    origin: [
+      'http://localhost:5173',
+      'http://localhost:3000',
+      'http://localhost:4173',
+    ],
     credentials: true,
   },
   namespace: '/messaging',
 })
-export class MessagingGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class MessagingGateway
+  implements OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer()
   server: Server;
 
@@ -63,7 +69,10 @@ export class MessagingGateway implements OnGatewayConnection, OnGatewayDisconnec
   ) {
     client.join(`conversation:${data.conversationId}`);
     client.emit('joinedConversation', { conversationId: data.conversationId });
-    return { event: 'joinedConversation', data: { conversationId: data.conversationId } };
+    return {
+      event: 'joinedConversation',
+      data: { conversationId: data.conversationId },
+    };
   }
 
   @SubscribeMessage('leaveConversation')
@@ -72,7 +81,10 @@ export class MessagingGateway implements OnGatewayConnection, OnGatewayDisconnec
     @MessageBody() data: { conversationId: string },
   ) {
     client.leave(`conversation:${data.conversationId}`);
-    return { event: 'leftConversation', data: { conversationId: data.conversationId } };
+    return {
+      event: 'leftConversation',
+      data: { conversationId: data.conversationId },
+    };
   }
 
   @SubscribeMessage('sendMessage')
@@ -101,10 +113,16 @@ export class MessagingGateway implements OnGatewayConnection, OnGatewayDisconnec
     const userId = this.getUserIdFromClient(client);
     if (!userId) return { event: 'error', data: { message: 'Unauthorized' } };
 
-    const message = await this.messagingService.markAsRead(data.messageId, userId);
-    if (!message) return { event: 'error', data: { message: 'Message not found' } };
+    const message = await this.messagingService.markAsRead(
+      data.messageId,
+      userId,
+    );
+    if (!message)
+      return { event: 'error', data: { message: 'Message not found' } };
 
-    this.server.to(`user:${message.senderId}`).emit('messageRead', { messageId: data.messageId });
+    this.server
+      .to(`user:${message.senderId}`)
+      .emit('messageRead', { messageId: data.messageId });
     return { event: 'messageRead', data: { messageId: data.messageId } };
   }
 
@@ -117,7 +135,10 @@ export class MessagingGateway implements OnGatewayConnection, OnGatewayDisconnec
       conversationId: data.conversationId,
       userId: this.getUserIdFromClient(client),
     });
-    return { event: 'userTyping', data: { conversationId: data.conversationId } };
+    return {
+      event: 'userTyping',
+      data: { conversationId: data.conversationId },
+    };
   }
 
   @SubscribeMessage('stopTyping')
@@ -129,12 +150,17 @@ export class MessagingGateway implements OnGatewayConnection, OnGatewayDisconnec
       conversationId: data.conversationId,
       userId: this.getUserIdFromClient(client),
     });
-    return { event: 'userStopTyping', data: { conversationId: data.conversationId } };
+    return {
+      event: 'userStopTyping',
+      data: { conversationId: data.conversationId },
+    };
   }
 
   private getUserIdFromClient(client: Socket): number | null {
     const handshake = client.handshake;
-    const token = (handshake.auth?.token ?? handshake.headers?.authorization ?? '') as string;
+    const token = (handshake.auth?.token ??
+      handshake.headers?.authorization ??
+      '') as string;
     const match = token.match(/Bearer\s+(.+)/i);
     if (!match) return null;
 

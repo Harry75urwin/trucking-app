@@ -29,7 +29,12 @@ export class Vehicle {
   @Column()
   next_service_miles!: number;
 
-  @Column({ name: 'image_urls', type: 'jsonb', nullable: true, default: () => '[]' })
+  @Column({
+    name: 'image_urls',
+    type: 'jsonb',
+    nullable: true,
+    default: () => '[]',
+  })
   imageUrls?: string[];
 
   @Column()

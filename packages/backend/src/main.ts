@@ -24,11 +24,11 @@ async function bootstrap() {
         },
         forcePathStyle: true,
       });
-      await s3.send(
-        new CreateBucketCommand({ Bucket: bucketName }),
-      ).catch(() => {
-        // Bucket may already exist, ignore error
-      });
+      await s3
+        .send(new CreateBucketCommand({ Bucket: bucketName }))
+        .catch(() => {
+          // Bucket may already exist, ignore error
+        });
     } catch {
       // S3 initialization is optional
     }
