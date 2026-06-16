@@ -2,6 +2,66 @@
 
 Full-stack trucking platform with a Vite + React frontend and NestJS + PostgreSQL backend.
 
+## Quick Start
+
+Follow these steps to get the project running locally:
+
+### 1. Install Prerequisites
+
+- **Node.js** >= 18
+- **pnpm** >= 8 (install with `npm install -g pnpm`)
+- **Docker** (for PostgreSQL and LocalStack)
+
+### 2. Install Dependencies
+
+```bash
+pnpm install
+```
+
+### 3. Start Infrastructure Services
+
+```bash
+docker compose up -d
+```
+
+This starts:
+- **PostgreSQL** on port 5433 (database: `truckapp`, user: `truckuser`, pass: `truckpass`)
+- **LocalStack S3** on port 4566 (for file uploads)
+
+**Note:** If you get a container name conflict error, run:
+```bash
+docker rm -f truck-app-postgres truck-app-localstack && docker compose up -d
+```
+
+### 4. Configure Environment
+
+```bash
+cp packages/backend/.env.example packages/backend/.env
+```
+
+The default values in `.env.example` work with LocalStack. No changes needed for local development.
+
+### 5. Start Development Servers
+
+```bash
+pnpm dev
+```
+
+This starts both frontend (port 5173) and backend (port 3000).
+
+## Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start both frontend and backend |
+| `pnpm dev:web` | Start frontend only (port 5173) |
+| `pnpm dev:backend` | Start backend only (port 3000) |
+| `pnpm build` | Build both apps for production |
+| `pnpm start` | Run backend in production mode |
+| `pnpm lint` | Lint all code |
+| `pnpm format` | Format all code |
+| `pnpm test` | Run backend tests |
+
 ## Project Structure
 
 ```
@@ -13,86 +73,14 @@ trucking/
 └── docker-compose.yml       # PostgreSQL and LocalStack services
 ```
 
-## Prerequisites
+## Services
 
-- Node.js >= 18
-- pnpm >= 8
-- Docker
-
-## Setup
-
-### 1. Install dependencies
-
-```bash
-pnpm install
-```
-
-### 2. Start services
-
-```bash
-docker compose up -d
-```
-
-This starts PostgreSQL (port 5433) and LocalStack S3 (port 4566).
-
-### 3. Configure environment
-
-Copy the example files:
-
-```bash
-cp packages/backend/.env.example packages/backend/.env
-```
-
-Environment variables are documented in `packages/backend/.env.example`. Default values work with LocalStack.
-
-## Development
-
-### Start both apps
-
-```bash
-pnpm dev
-```
-
-### Start separately
-
-```bash
-# Backend (port 3000)
-pnpm dev:backend
-
-# Frontend (port 5173)
-pnpm dev:web
-```
-
-### Initialize S3 bucket
-
-The backend automatically creates the S3 bucket on startup. If using LocalStack CLI:
-
-```bash
-awslocal s3 mb s3://truck-app-bucket
-```
-
-## Production
-
-```bash
-# Build both
-pnpm build
-
-# Run backend
-pnpm start
-```
-
-## Code Quality
-
-```bash
-# Lint all code
-pnpm lint
-
-# Format all code
-pnpm format
-
-# Check formatting
-pnpm format:check
-```
+| Service | Port | Description |
+|---------|------|-------------|
+| PostgreSQL | 5433 | Database (credentials in `.env.example`) |
+| LocalStack S3 | 4566 | S3-compatible storage for file uploads |
+| Backend API | 3000 | NestJS REST API |
+| Frontend | 5173 | Vite + React dev server |
 
 ## API Documentation
 
@@ -100,7 +88,7 @@ Swagger UI is available at `http://localhost:3000/docs` when the backend is runn
 
 ## File Uploads
 
-The app uses LocalStack S3 for file uploads. Files are accessible at:
+Files are stored in LocalStack S3 and accessible at:
 - Local: `http://localhost:4566/truck-app-bucket/<path>`
 
 ## Demo Credentials
@@ -108,11 +96,25 @@ The app uses LocalStack S3 for file uploads. Files are accessible at:
 - Phone: `+91-9000000001`
 - Password: `Demo@1234`
 
-## Services
+With `DEMO_DATA_ENABLED=true`, the following demo records are seeded:
+- 3 customers
+- 4 drivers
+- 4 vehicles
+- 5 loads
+- 2 load assignments
+- 1 dispatch record
+- 2 tracking events
+- 1 organization
 
-| Service     | Port  | Description          |
-|-------------|-------|----------------------|
-| PostgreSQL  | 5433  | Database (mapped to 5432 in container) |
-| LocalStack  | 4566  | S3-compatible storage |
-| Backend API | 3000  | NestJS REST API      |
-| Frontend    | 5173  | Vite + React dev server |
+## Viewing the Database
+
+```bash
+psql -h localhost -p 5433 -U truckuser -d truckapp
+```
+
+Or use any PostgreSQL client (pgAdmin, TablePlus, DBeaver) with:
+- Host: `localhost`
+- Port: `5433`
+- Database: `truckapp`
+- Username: `truckuser`
+- Password: `truckpass`

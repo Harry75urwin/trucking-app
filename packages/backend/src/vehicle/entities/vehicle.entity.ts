@@ -33,7 +33,7 @@ export class Vehicle {
     name: 'image_urls',
     type: 'jsonb',
     nullable: true,
-    default: () => '[]',
+    default: () => "'[]'::jsonb",
   })
   imageUrls?: string[];
 
