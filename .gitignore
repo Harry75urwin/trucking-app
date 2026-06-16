@@ -1,0 +1,50 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Build outputs
+packages/backend/dist
+packages/web/dist
+
+# Coverage
+packages/backend/coverage
+coverage
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+
+# IDEs
+.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# dotenv
+packages/backend/.env
+packages/backend/.env.*
+packages/web/.env*
+
+# temp
+.temp
+.tmp
+
+# Runtime
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Diagnostic reports
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json

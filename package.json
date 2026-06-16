@@ -1,0 +1,25 @@
+{
+  "name": "trucking-app",
+  "version": "1.0.0",
+  "description": "Full-stack trucking platform with a Vite + React frontend and NestJS backend",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm -r dev",
+    "dev:web": "pnpm --filter web dev",
+    "dev:backend": "pnpm --filter backend start:dev",
+    "build": "pnpm -r build",
+    "build:web": "pnpm --filter web build",
+    "build:backend": "pnpm --filter backend build",
+    "start": "pnpm --filter backend start:prod",
+    "lint": "pnpm -r lint",
+    "test": "pnpm --filter backend test",
+    "install": "pnpm install"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=8"
+  }
+}

@@ -1,0 +1,276 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/*
+  ============================================================
+  THEME CONFIGURATION
+  ============================================================
+
+  Theme: neutral (default)
+  Mode:  light (:root) / dark (.dark)
+
+  To switch to dark mode by default, change the ThemeProvider
+  defaultTheme prop in src/main.tsx:
+    <ThemeProvider defaultTheme="dark">
+
+  To change theme colors, replace the OKLCH values below.
+  Visit https://ui.shadcn.com/themes to generate theme CSS.
+
+  To change the base color palette (e.g. stone, zinc, gray),
+  re-initialize with the shadcn CLI:
+    npx shadcn@latest init -t vite --preset nova -y -f
+    npx shadcn@latest init -t vite --preset vega -y -f
+
+  Available presets: nova, vega, maia, lyra, mira
+  Available base colors: neutral, stone, zinc, gray, mauve,
+                         olive, mist, taupe
+
+  CLI non-interactive theme change:
+    npx shadcn@latest init -t vite -d -y -f
+  ============================================================
+*/
+
+:root {
+  --radius: 0.75rem;
+  --background: #fafbff;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #6366f1;
+  --primary-foreground: #ffffff;
+  --secondary: #ec4899;
+  --secondary-foreground: #ffffff;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #10b981;
+  --accent-foreground: #ffffff;
+  --destructive: #f43f5e;
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;
+  --input: #ffffff;
+  --ring: #6366f1;
+  --chart-1: #6366f1;
+  --chart-2: #8b5cf6;
+  --chart-3: #ec4899;
+  --chart-4: #10b981;
+  --chart-5: #f59e0b;
+  --success: #10b981;
+  --success-foreground: #ffffff;
+  --warning: #f59e0b;
+  --warning-foreground: #ffffff;
+  --sidebar: #1e293b;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #6366f1;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #334155;
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: rgba(99, 102, 241, 0.3);
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --card: rgba(30, 41, 59, 0.7);
+  --card-foreground: #f8fafc;
+  --popover: rgba(25, 36, 52, 0.9);
+  --popover-foreground: #f8fafc;
+  --primary: #818cf8;
+  --primary-foreground: #0f172a;
+  --secondary: #f472b6;
+  --secondary-foreground: #0f172a;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #34d399;
+  --accent-foreground: #0f172a;
+  --destructive: #fb7185;
+  --destructive-foreground: #0f172a;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.05);
+  --ring: #818cf8;
+  --chart-1: #818cf8;
+  --chart-2: #a78bfa;
+  --chart-3: #f472b6;
+  --chart-4: #34d399;
+  --chart-5: #fbbd62;
+  --success: #34d399;
+  --success-foreground: #0f172a;
+  --warning: #fbbd62;
+  --warning-foreground: #0f172a;
+  --sidebar: #0f172a;
+  --sidebar-foreground: #e6eef8;
+  --sidebar-primary: #818cf8;
+  --sidebar-primary-foreground: #001219;
+  --sidebar-accent: #334155;
+  --sidebar-accent-foreground: #e6eef8;
+  --sidebar-border: rgba(255, 255, 255, 0.06);
+  --sidebar-ring: rgba(129, 140, 248, 0.2);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+}
+
+/* Animated gradient background for modern vibrant look */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -10% -10% -10% -10%;
+  background: radial-gradient(900px 500px at 10% 20%, rgba(99, 102, 241, 0.15), transparent 30%),
+              radial-gradient(700px 400px at 90% 80%, rgba(236, 72, 153, 0.12), transparent 25%),
+              radial-gradient(600px 300px at 50% 50%, rgba(16, 185, 129, 0.1), transparent 25%),
+              radial-gradient(500px 250px at 30% 70%, rgba(245, 158, 11, 0.08), transparent 20%);
+  z-index: -1;
+  pointer-events: none;
+  filter: blur(40px) saturate(130%);
+  animation: bgFloat 20s ease-in-out infinite;
+}
+
+@keyframes bgFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+  33% { transform: translateY(-20px) rotate(1deg) scale(1.02); }
+  66% { transform: translateY(10px) rotate(-1deg) scale(0.98); }
+}
+
+/* Glass morphism for cards */
+.glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dark .glass-card {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Modern header gradient with glass effect */
+.header-gradient {
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.08), rgba(236, 72, 153, 0.05), rgba(16, 185, 129, 0.05));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+}
+
+.dark .header-gradient {
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.12), rgba(236, 72, 153, 0.08), rgba(16, 185, 129, 0.08));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Gradient text utility */
+.gradient-text {
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.sidebar-modern {
+  --sidebar: #f8fafc;
+  --sidebar-foreground: #0f172a;
+  --sidebar-border: rgba(0, 0, 0, 0.08);
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #0f172a;
+  --sidebar-primary-foreground: #ffffff;
+  background: linear-gradient(180deg, #f8fafc, #eef2ff);
+}
+
+.sidebar-modern [data-sidebar="sidebar"],
+.sidebar-modern [data-slot="sidebar-inner"] {
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.95), rgba(238, 242, 255, 0.98)) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.sidebar-modern [data-sidebar="menu-button"] {
+  color: #0f172a;
+}
+
+.dark .sidebar-modern [data-sidebar="menu-button"] {
+  color: #f8fafc;
+}
+
+.sidebar-modern [data-sidebar="menu-button"]:hover,
+.sidebar-modern [data-sidebar="menu-button"][data-active="true"] {
+  color: #0f172a;
+}
+
+.dark .sidebar-modern [data-sidebar="menu-button"]:hover,
+.dark .sidebar-modern [data-sidebar="menu-button"][data-active="true"] {
+  color: #f8fafc;
+}
+
+.sidebar-modern [data-sidebar="group-label"] {
+  color: #64748b;
+}
+
+.dark .sidebar-modern {
+  --sidebar: #0f172a;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-border: rgba(255, 255, 255, 0.06);
+  --sidebar-accent: #1e293b;
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-primary-foreground: #ffffff;
+  background: linear-gradient(180deg, #0f172a, #020617);
+}
+
+.dark .sidebar-modern [data-sidebar="sidebar"],
+.dark .sidebar-modern [data-slot="sidebar-inner"] {
+  background: linear-gradient(180deg, rgba(15, 23, 34, 0.95), rgba(2, 6, 23, 0.98)) !important;
+}
+
+.dark .sidebar-modern [data-sidebar="group-label"] {
+  color: #94a3b8;
+}
