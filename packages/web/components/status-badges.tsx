@@ -1,93 +1,76 @@
 import { Badge } from "@/components/ui/badge";
-import type { LoadStatus, DriverStatus, VehicleStatus } from "@/lib/supabase";
-import { useLanguage } from "@/lib/language-context";
+import { useStaticData } from "@/lib/hooks/use-static-data";
 
-const loadStatusLabels: Record<LoadStatus, { en: string; hi: string }> = {
-  pending: { en: "Pending", hi: "लंबित" },
-  dispatched: { en: "Dispatched", hi: "भेजा गया" },
-  in_transit: { en: "In Transit", hi: "यातायात में" },
-  delivered: { en: "Delivered", hi: "डिलीवर किया गया" },
-  cancelled: { en: "Cancelled", hi: "रद्द किया गया" },
-  problem: { en: "Problem", hi: "समस्या" },
-};
+export function LoadStatusBadge({ status }: { status: string }) {
+  const { getDisplay, isLoading } = useStaticData();
 
-const driverStatusLabels: Record<DriverStatus, { en: string; hi: string }> = {
-  available: { en: "Available", hi: "उपलब्ध" },
-  on_load: { en: "On Load", hi: "लोड पर" },
-  off_duty: { en: "Off Duty", hi: "ऑफ ड्यूटी" },
-};
+  if (isLoading) {
+    return (
+      <Badge
+        variant="outline"
+        className="border-gray-300 text-gray-800 dark:border-gray-700 dark:text-gray-300"
+      >
+        {status}
+      </Badge>
+    );
+  }
 
-const vehicleStatusLabels: Record<VehicleStatus, { en: string; hi: string }> = {
-  active: { en: "Active", hi: "सक्रिय" },
-  maintenance: { en: "Maintenance", hi: "रखरखाव" },
-  out_of_service: { en: "Out of Service", hi: "सेवा से बाहर" },
-};
-
-export function LoadStatusBadge({ status }: { status: LoadStatus }) {
-  const { t } = useLanguage();
-  const label = t(loadStatusLabels[status].en, loadStatusLabels[status].hi);
+  const label = getDisplay("load_status", status);
 
   return (
     <Badge
       variant="outline"
       className="border-gray-300 text-gray-800 dark:border-gray-700 dark:text-gray-300"
     >
-      {label}
+      {label || status}
     </Badge>
   );
 }
 
-export function DriverStatusBadge({ status }: { status: DriverStatus }) {
-  const { t } = useLanguage();
-  const colors: Record<DriverStatus, { className: string }> = {
-    available: {
-      className:
-        "border-green-300 text-green-800 dark:border-green-700 dark:text-green-300",
-    },
-    on_load: {
-      className:
-        "border-blue-300 text-blue-800 dark:border-blue-700 dark:text-blue-300",
-    },
-    off_duty: {
-      className:
-        "border-gray-300 text-gray-800 dark:border-gray-700 dark:text-gray-300",
-    },
-  };
+export function DriverStatusBadge({ status }: { status: string }) {
+  const { getDisplay, statusColor, isLoading } = useStaticData();
 
-  const label = t(driverStatusLabels[status].en, driverStatusLabels[status].hi);
+  if (isLoading) {
+    return (
+      <Badge
+        variant="outline"
+        className="border-gray-300 text-gray-800 dark:border-gray-700 dark:text-gray-300"
+      >
+        {status}
+      </Badge>
+    );
+  }
+
+  const label = getDisplay("driver_status", status);
+  const colors = statusColor(status);
 
   return (
-    <Badge variant="outline" className={colors[status].className}>
-      {label}
+    <Badge variant="outline" className={colors.className}>
+      {label || status}
     </Badge>
   );
 }
 
-export function VehicleStatusBadge({ status }: { status: VehicleStatus }) {
-  const { t } = useLanguage();
-  const colors: Record<VehicleStatus, { className: string }> = {
-    active: {
-      className:
-        "border-green-300 text-green-800 dark:border-green-700 dark:text-green-300",
-    },
-    maintenance: {
-      className:
-        "border-yellow-300 text-yellow-800 dark:border-yellow-700 dark:text-yellow-300",
-    },
-    out_of_service: {
-      className:
-        "border-red-300 text-red-800 dark:border-red-700 dark:text-red-300",
-    },
-  };
+export function VehicleStatusBadge({ status }: { status: string }) {
+  const { getDisplay, statusColor, isLoading } = useStaticData();
 
-  const label = t(
-    vehicleStatusLabels[status].en,
-    vehicleStatusLabels[status].hi
-  );
+  if (isLoading) {
+    return (
+      <Badge
+        variant="outline"
+        className="border-gray-300 text-gray-800 dark:border-gray-700 dark:text-gray-300"
+      >
+        {status}
+      </Badge>
+    );
+  }
+
+  const label = getDisplay("vehicle_status", status);
+  const colors = statusColor(status);
 
   return (
-    <Badge variant="outline" className={colors[status].className}>
-      {label}
+    <Badge variant="outline" className={colors.className}>
+      {label || status}
     </Badge>
   );
 }

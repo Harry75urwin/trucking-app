@@ -1,12 +1,15 @@
 {
   "name": "trucking-app",
   "version": "1.0.0",
-  "description": "Full-stack trucking platform with a Vite + React frontend and NestJS backend",
+  "description": "Full-stack trucking platform with a Vite + React frontend, React Native mobile app (Expo bare workflow), and NestJS backend",
   "private": true,
   "scripts": {
     "dev": "pnpm -r dev",
     "dev:web": "pnpm --filter web dev",
     "dev:backend": "pnpm --filter backend start:dev",
+    "dev:mobile": "pnpm --filter mobile start",
+    "run:ios": "pnpm --filter mobile ios",
+    "run:android": "pnpm --filter mobile android",
     "build": "pnpm -r build",
     "build:web": "pnpm --filter web build",
     "build:backend": "pnpm --filter backend build",

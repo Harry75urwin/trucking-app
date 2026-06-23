@@ -53,6 +53,14 @@ export interface BackendSignupPayload {
   password: string;
   phoneNumber?: string;
   role?: string;
+  organizationName?: string;
+  organizationEmail?: string;
+  organizationPhoneNumber?: string;
+  organizationWebsite?: string;
+  organizationAddress?: string;
+  organizationCity?: string;
+  organizationState?: string;
+  organizationPostalCode?: string;
 }
 
 async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {

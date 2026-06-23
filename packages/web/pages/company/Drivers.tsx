@@ -25,18 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-const statusColor: Record<string, string> = {
-  available: "bg-linear-to-r from-emerald-500 to-teal-600 text-white border-0",
-  on_load: "bg-linear-to-r from-blue-500 to-indigo-600 text-white border-0",
-  off_duty: "bg-linear-to-r from-amber-500 to-orange-600 text-white border-0",
-};
-
-const statusLabel: Record<string, string> = {
-  available: "Available",
-  on_load: "On Load",
-  off_duty: "Off Duty",
-};
+import { useStaticData } from "@/lib/hooks/use-static-data";
 
 export default function DriversPage() {
   const { t } = useLanguage();
@@ -53,6 +42,9 @@ export default function DriversPage() {
   const [selectedLoadId, setSelectedLoadId] = useState("");
   const [assignments, setAssignments] = useState<BackendLoadAssignment[]>([]);
   const [assignLoading, setAssignLoading] = useState(false);
+  const { getOptions, getDisplay, statusColor } = useStaticData();
+
+  const driverStatusOptions = getOptions("driver_status");
 
   const loadData = async () => {
     setLoading(true);
@@ -134,6 +126,11 @@ export default function DriversPage() {
   const getDriverAssignments = (driverId: string) =>
     assignments.filter((a) => a.driver_id === driverId);
 
+  const getStatusLabel = (status: string) => {
+    const display = getDisplay("driver_status", status);
+    return display || status.replace("_", " ");
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -173,7 +170,7 @@ export default function DriversPage() {
           />
         </div>
         <div className="flex gap-2 flex-wrap">
-          {["all", "available", "on_load", "off_duty"].map((s) => (
+          {["all", ...driverStatusOptions.map((o) => o.key)].map((s) => (
             <Button
               key={s}
               size="sm"
@@ -185,13 +182,7 @@ export default function DriversPage() {
               }
               onClick={() => setFilter(s)}
             >
-              {s === "all"
-                ? t("All", "सभी")
-                : s === "available"
-                  ? t("Available", "उपलब्ध")
-                  : s === "on_load"
-                    ? t("On Load", "लोड पर")
-                    : t("Off Duty", "ऑफ ड्यूटी")}
+              {getStatusLabel(s)}
             </Button>
           ))}
         </div>
@@ -207,6 +198,7 @@ export default function DriversPage() {
         )}
         {filtered.map((d) => {
           const driverAssignments = getDriverAssignments(d.id);
+          const colors = statusColor(d.status);
           return (
             <Card
               key={d.id}
@@ -227,8 +219,8 @@ export default function DriversPage() {
                           {d.cdl_number}
                         </p>
                       </div>
-                      <Badge className={statusColor[d.status]}>
-                        {statusLabel[d.status] || d.status}
+                      <Badge className={colors.className}>
+                        {getStatusLabel(d.status)}
                       </Badge>
                     </div>
                     <div className="grid grid-cols-2 gap-2 mt-3 text-sm">

@@ -1,6 +1,6 @@
 # Trucking App
 
-Full-stack trucking platform with a Vite + React frontend and NestJS + PostgreSQL backend.
+Full-stack trucking platform with a Vite + React frontend, React Native mobile app (Expo bare workflow), and NestJS + PostgreSQL backend.
 
 ## Quick Start
 
@@ -11,6 +11,8 @@ Follow these steps to get the project running locally:
 - **Node.js** >= 18
 - **pnpm** >= 8 (install with `npm install -g pnpm`)
 - **Docker** (for PostgreSQL and LocalStack)
+- **Xcode** (for iOS development, optional)
+- **Android Studio** (for Android development, optional)
 
 ### 2. Install Dependencies
 
@@ -56,9 +58,12 @@ This starts both frontend (port 5173) and backend (port 3000).
 | `pnpm dev` | Start both frontend and backend |
 | `pnpm dev:web` | Start frontend only (port 5173) |
 | `pnpm dev:backend` | Start backend only (port 3000) |
+| `pnpm dev:mobile` | Start mobile Metro bundler (port 8081) |
+| `pnpm run:ios` | Run iOS simulator |
+| `pnpm run:android` | Run Android emulator |
 | `pnpm build` | Build both apps for production |
 | `pnpm start` | Run backend in production mode |
-| `pnpm lint` | Lint all code |
+| `pnpm lint` | Lint web and backend code |
 | `pnpm format` | Format all code |
 | `pnpm test` | Run backend tests |
 
@@ -69,7 +74,8 @@ trucking/
 ├── package.json           # Root config with workspace scripts
 ├── packages/
 │   ├── web/               # Vite + React frontend
-│   └── backend/           # NestJS API backend
+│   ├── backend/           # NestJS API backend
+│   └── mobile/            # React Native mobile app (bare workflow)
 └── docker-compose.yml       # PostgreSQL and LocalStack services
 ```
 
@@ -81,6 +87,22 @@ trucking/
 | LocalStack S3 | 4566 | S3-compatible storage for file uploads |
 | Backend API | 3000 | NestJS REST API |
 | Frontend | 5173 | Vite + React dev server |
+| Mobile Metro Bundler | 8081 | React Native bundler (for mobile dev) |
+
+## Mobile App
+
+The mobile app uses Expo bare workflow. To run:
+
+```bash
+# Start Metro bundler
+pnpm dev:mobile
+
+# Run iOS simulator (requires Xcode)
+pnpm run:ios
+
+# Run Android emulator (requires Android Studio)
+pnpm run:android
+```
 
 ## API Documentation
 

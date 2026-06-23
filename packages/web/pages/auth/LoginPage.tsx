@@ -219,7 +219,7 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
               <div className="text-center text-sm text-muted-foreground">
                 {t("Don't have an account?", "खाता नहीं है?")}{" "}
                 <a
-                  href="/onboarding/trucker"
+                  href={`/onboarding/${userType}`}
                   className="bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent hover:opacity-80 font-medium"
                 >
                   {t("Register", "रजिस्टर करें")}

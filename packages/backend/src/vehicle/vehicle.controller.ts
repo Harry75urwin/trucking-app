@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -17,13 +18,20 @@ import {
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { VehicleService } from './vehicle.service';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+
+const OPERATIONS_ROLES = ['admin', 'dispatcher', 'fleet_manager'];
 
 @ApiTags('vehicles')
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('vehicles')
 export class VehicleController {
   constructor(private readonly vehicleService: VehicleService) {}
 
   @ApiOperation({ summary: 'Create a vehicle' })
+  @Roles(...OPERATIONS_ROLES)
   @ApiCreatedResponse({ description: 'Vehicle created successfully' })
   @Post()
   create(@Body() createVehicleDto: CreateVehicleDto) {
@@ -31,6 +39,7 @@ export class VehicleController {
   }
 
   @ApiOperation({ summary: 'List all vehicles' })
+  @Roles(...OPERATIONS_ROLES)
   @ApiOkResponse({ description: 'Vehicles returned successfully' })
   @Get()
   findAll() {
@@ -38,6 +47,7 @@ export class VehicleController {
   }
 
   @ApiOperation({ summary: 'Get a vehicle by id' })
+  @Roles(...OPERATIONS_ROLES)
   @ApiParam({ name: 'id', type: String })
   @ApiOkResponse({ description: 'Vehicle returned successfully' })
   @Get(':id')
@@ -46,6 +56,7 @@ export class VehicleController {
   }
 
   @ApiOperation({ summary: 'Update a vehicle by id' })
+  @Roles(...OPERATIONS_ROLES)
   @ApiParam({ name: 'id', type: String })
   @ApiOkResponse({ description: 'Vehicle updated successfully' })
   @Patch(':id')
@@ -54,6 +65,7 @@ export class VehicleController {
   }
 
   @ApiOperation({ summary: 'Delete a vehicle by id' })
+  @Roles(...OPERATIONS_ROLES)
   @ApiParam({ name: 'id', type: String })
   @ApiOkResponse({ description: 'Vehicle deleted successfully' })
   @Delete(':id')
