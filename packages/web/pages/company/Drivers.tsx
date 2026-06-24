@@ -4,7 +4,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, User, Phone, Plus, Trash2, MapPin, Truck } from "lucide-react";
+import {
+  Search,
+  User,
+  Phone,
+  Plus,
+  Trash2,
+  MapPin,
+  Truck,
+  RefreshCw,
+} from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
 import { useAuthSession } from "@/lib/auth-session";
 import {
@@ -34,7 +43,6 @@ export default function DriversPage() {
   const [filter, setFilter] = useState("all");
   const [drivers, setDrivers] = useState<BackendDriver[]>([]);
   const [, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [assigningDriverId, setAssigningDriverId] = useState<string | null>(
     null
   );
@@ -42,13 +50,20 @@ export default function DriversPage() {
   const [selectedLoadId, setSelectedLoadId] = useState("");
   const [assignments, setAssignments] = useState<BackendLoadAssignment[]>([]);
   const [assignLoading, setAssignLoading] = useState(false);
-  const { getOptions, getDisplay, statusColor } = useStaticData();
+  const {
+    getOptions,
+    getDisplay,
+    statusColor,
+    error: staticDataError,
+    retry,
+  } = useStaticData();
 
-  const driverStatusOptions = getOptions("driver_status");
+  const driverStatusOptions = staticDataError
+    ? []
+    : getOptions("driver_status");
 
   const loadData = async () => {
     setLoading(true);
-    setError(null);
     try {
       const [driversData, loadsData] = await Promise.all([
         fetchDrivers(session),
@@ -57,7 +72,7 @@ export default function DriversPage() {
       setDrivers(driversData);
       setLoads(loadsData);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load");
+      console.error("Failed to load drivers/loads:", err);
     }
     setLoading(false);
   };
@@ -71,9 +86,7 @@ export default function DriversPage() {
       const data = await fetchLoadAssignments(session);
       setAssignments(data);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to load assignments"
-      );
+      console.error("Failed to load assignments:", err);
     }
   };
 
@@ -151,10 +164,21 @@ export default function DriversPage() {
         </Button>
       </div>
 
-      {error && (
+      {staticDataError && (
         <Card className="border-0 bg-rose-50 dark:bg-rose-950/20">
-          <CardContent className="py-3 text-sm text-rose-600">
-            {error}
+          <CardContent className="py-3 text-sm text-rose-600 flex items-center justify-between">
+            <span>
+              {t("Failed to load status data", "स्थिति डेटा लोड करने में विफल")}
+            </span>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-7 w-7 p-0 text-rose-600"
+              onClick={retry}
+              title="Retry loading status data"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </Button>
           </CardContent>
         </Card>
       )}
