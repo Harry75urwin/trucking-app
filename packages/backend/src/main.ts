@@ -4,10 +4,14 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { IoAdapter } from '@nestjs/platform-socket.io';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
+import { HttpAdapterHost } from '@nestjs/core';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, new IoAdapter());
   const configService = app.get(ConfigService);
+
+  app.useGlobalFilters(new AllExceptionsFilter(app.get(HttpAdapterHost)));
 
   // Initialize S3 bucket for LocalStack
   const s3Endpoint = configService.get<string>('S3_ENDPOINT');

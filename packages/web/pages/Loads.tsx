@@ -526,7 +526,7 @@ export default function Loads() {
               <select
                 value={form.status}
                 onChange={(e) =>
-                  setForm((p) => ({ ...p, status: e.target.value as any }))
+                  setForm((p) => ({ ...p, status: e.target.value }))
                 }
                 className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm"
               >

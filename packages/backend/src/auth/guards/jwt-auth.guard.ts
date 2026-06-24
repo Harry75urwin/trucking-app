@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { createHmac } from 'crypto';
+import { createHmac, timingSafeEqual } from 'crypto';
 
 function base64UrlDecode(value: string): string {
   const normalized = value.replace(/-/g, '+').replace(/_/g, '/');
@@ -49,10 +49,26 @@ export class JwtAuthGuard implements CanActivate {
       throw new UnauthorizedException('Invalid token format');
     }
 
-    const signature = createHmac('sha256', secret)
+    const header = JSON.parse(base64UrlDecode(parts[0])) as Record<
+      string,
+      unknown
+    >;
+    const alg = typeof header.alg === 'string' ? header.alg : null;
+    if (alg !== 'HS256') {
+      throw new UnauthorizedException('Unsupported algorithm');
+    }
+
+    const expectedSignature = createHmac('sha256', secret)
       .update(`${parts[0]}.${parts[1]}`)
       .digest('base64url');
-    if (signature !== parts[2]) {
+
+    const signatureBuffer = Buffer.from(parts[2]);
+    const expectedBuffer = Buffer.from(expectedSignature);
+
+    if (
+      signatureBuffer.length !== expectedBuffer.length ||
+      !timingSafeEqual(signatureBuffer, expectedBuffer)
+    ) {
       throw new UnauthorizedException('Invalid token signature');
     }
 

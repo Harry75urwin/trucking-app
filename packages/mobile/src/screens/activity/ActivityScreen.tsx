@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, FlatList, RefreshControl, Alert } from 'react-native';
 import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -19,7 +19,12 @@ export default function ActivityScreen({ navigation }: any) {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await refreshUserData();
+    try {
+      await refreshUserData();
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'Failed to refresh activity';
+      Alert.alert('Error', message);
+    }
     setRefreshing(false);
   };
 

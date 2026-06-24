@@ -3,12 +3,25 @@ export const API_URL =
 
 export type ApiError = { message: string };
 
+const DEFAULT_TIMEOUT = 15000;
+
+function getUserFriendlyMessage(status: number, fallback: string): string {
+  if (status === 401) return 'Session expired';
+  if (status === 403) return 'Access denied';
+  if (status >= 500) return 'Server error. Please try again later.';
+  if (status === 0 || status === -1) return 'No internet connection';
+  return fallback;
+}
+
 async function request<T>(
   path: string,
   options: RequestInit = {},
   token?: string | null,
 ): Promise<T> {
   const url = `${API_URL}${path}`;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT);
+
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string> | undefined),
@@ -17,18 +30,47 @@ async function request<T>(
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const res = await fetch(url, {
-    ...options,
-    headers,
-  });
+  try {
+    const res = await fetch(url, {
+      ...options,
+      headers,
+      signal: controller.signal,
+    });
 
-  const data = await res.json().catch(() => ({}));
+    clearTimeout(timeoutId);
 
-  if (!res.ok) {
-    throw new Error((data as ApiError)?.message ?? 'Unexpected API error');
+    const contentType = res.headers.get('content-type') ?? '';
+    let data: unknown;
+    if (contentType.includes('application/json')) {
+      data = await res.json();
+    } else {
+      data = await res.text().catch(() => 'Unexpected response format');
+    }
+
+    if (!res.ok) {
+      let message = 'Unexpected API error';
+      if (typeof data === 'string') {
+        message = data;
+      } else if (data && typeof data === 'object' && 'message' in data) {
+        message = String((data as ApiError).message);
+      } else {
+        message = `Request failed with status ${res.status}`;
+      }
+      message = getUserFriendlyMessage(res.status, message);
+      throw new Error(message);
+    }
+
+    return data as T;
+  } catch (e) {
+    clearTimeout(timeoutId);
+    if (e instanceof Error) {
+      if (e.name === 'AbortError') {
+        throw new Error('Request timed out. Please try again.');
+      }
+      throw e;
+    }
+    throw new Error('Unexpected API error');
   }
-
-  return data as T;
 }
 
 export const apiClient = {

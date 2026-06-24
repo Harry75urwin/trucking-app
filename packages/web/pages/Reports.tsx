@@ -98,7 +98,13 @@ export default function Reports() {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    Promise.all([fetchLoads({ accessToken: "" }).catch(() => [])])
+    Promise.all([
+      fetchLoads({
+        isAuthenticated: false,
+        userType: null,
+        accessToken: "",
+      }).catch(() => []),
+    ])
       .then(([loadsData]) => {
         if (!cancelled) {
           setLoads(loadsData);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl, TextInput } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl, TextInput, Alert } from 'react-native';
 import { useAuth } from '../../contexts/AuthContext';
 import type { Conversation, Message } from '../../types';
 
@@ -14,7 +14,12 @@ export default function MessagingScreen({ navigation }: any) {
   const onRefresh = async () => {
     setRefreshing(true);
     if (token) {
-      await refreshUserData();
+      try {
+        await refreshUserData();
+      } catch (e) {
+        const message = e instanceof Error ? e.message : 'Failed to refresh messages';
+        Alert.alert('Error', message);
+      }
     }
     setRefreshing(false);
   };

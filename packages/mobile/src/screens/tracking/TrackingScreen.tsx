@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator, FlatList } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator, FlatList, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../contexts/AuthContext';
 import type { Load } from '../../types';
@@ -10,13 +10,23 @@ export default function TrackingScreen({ route, navigation }: any) {
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    if (token) refreshUserData();
+    if (token) {
+      refreshUserData().catch((e) => {
+        const message = e instanceof Error ? e.message : 'Failed to load tracking data';
+        Alert.alert('Error', message);
+      });
+    }
   }, [token]);
 
   const onRefresh = async () => {
     setRefreshing(true);
     if (token) {
-      await refreshUserData();
+      try {
+        await refreshUserData();
+      } catch (e) {
+        const message = e instanceof Error ? e.message : 'Failed to refresh tracking data';
+        Alert.alert('Error', message);
+      }
     }
     setRefreshing(false);
   };

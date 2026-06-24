@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../contexts/AuthContext';
 import type { Load } from '../../types';
@@ -11,7 +11,12 @@ export default function LoadsScreen({ navigation }: any) {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await refreshUserData();
+    try {
+      await refreshUserData();
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'Failed to refresh loads';
+      Alert.alert('Error', message);
+    }
     setRefreshing(false);
   };
 

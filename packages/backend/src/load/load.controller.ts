@@ -22,7 +22,13 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 
-const ALL_ROLES = ['admin', 'dispatcher', 'fleet_manager', 'driver', 'customer'];
+const ALL_ROLES = [
+  'admin',
+  'dispatcher',
+  'fleet_manager',
+  'driver',
+  'customer',
+];
 const OPERATIONS_ROLES = ['admin', 'dispatcher', 'fleet_manager'];
 
 @ApiTags('loads')

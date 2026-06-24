@@ -26,6 +26,36 @@ let isLoaded = false;
 export function useStaticData() {
   const [staticData, setStaticData] = useState<StaticDataItem[]>([]);
   const [isLoading, setIsLoading] = useState(!isLoaded);
+  const [error, setError] = useState<string | null>(null);
+
+  const retry = useCallback(() => {
+    setIsLoading(true);
+    setError(null);
+    const loadStaticData = async () => {
+      try {
+        const response = await fetch("/api/static-data");
+        if (response.ok) {
+          const data: StaticDataItem[] = await response.json();
+          setStaticData(data);
+          data.forEach((item) => {
+            cachedData.set(`${item.category}:${item.key}`, item);
+            cachedData.set(`${item.category}:${item.value}`, item);
+          });
+          isLoaded = true;
+        } else {
+          throw new Error(`Failed with status ${response.status}`);
+        }
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : "Failed to load static data";
+        setError(message);
+        console.error("Failed to load static data:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    void loadStaticData();
+  }, []);
 
   useEffect(() => {
     if (isLoaded) {
@@ -44,9 +74,14 @@ export function useStaticData() {
             cachedData.set(`${item.category}:${item.value}`, item);
           });
           isLoaded = true;
+        } else {
+          throw new Error(`Failed with status ${response.status}`);
         }
-      } catch (error) {
-        console.error("Failed to load static data:", error);
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : "Failed to load static data";
+        setError(message);
+        console.error("Failed to load static data:", err);
       } finally {
         setIsLoading(false);
       }
@@ -122,6 +157,8 @@ export function useStaticData() {
   return {
     staticData,
     isLoading,
+    error,
+    retry,
     getDisplay,
     getOptions,
     statusColor,

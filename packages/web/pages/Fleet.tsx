@@ -413,7 +413,7 @@ export default function Fleet() {
               <select
                 value={form.type}
                 onChange={(e) =>
-                  setForm((p) => ({ ...p, type: e.target.value as any }))
+                  setForm((p) => ({ ...p, type: e.target.value }))
                 }
                 className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm"
               >
@@ -492,7 +492,7 @@ export default function Fleet() {
               <select
                 value={form.status}
                 onChange={(e) =>
-                  setForm((p) => ({ ...p, status: e.target.value as any }))
+                  setForm((p) => ({ ...p, status: e.target.value }))
                 }
                 className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm"
               >

@@ -4,6 +4,7 @@ import { apiClient } from '../lib/api/client';
 import { canAccessModel } from '../lib/rbac';
 import type { AccessModel, UserRole } from '../lib/rbac';
 import type { AuthResponse, Load, Vehicle, TrackingEvent, Conversation, Customer, Driver, Dispatch, LoadAssignment } from '../types';
+import { Alert } from 'react-native';
 
 interface AuthContextValue {
   signIn: (payload: { phone: string; password: string }) => Promise<void>;
@@ -61,7 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (token && user) {
-      refreshUserData();
+      refreshUserData().catch((e) => console.error('Auto-refresh failed', e));
     }
   }, [token, user?.id]);
 
@@ -104,11 +105,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signIn = async ({ phone, password }: { phone: string; password: string }) => {
-    const data = await apiClient.post<AuthResponse>(
-      '/auth/login',
-      { phoneNumber: phone, password },
-    );
-    await saveAuth(data.accessToken, data.user);
+    try {
+      const data = await apiClient.post<AuthResponse>(
+        '/auth/login',
+        { phoneNumber: phone, password },
+      );
+      await saveAuth(data.accessToken, data.user);
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'Login failed. Please try again.';
+      throw new Error(message);
+    }
   };
 
   const signUp = async (payload: {
@@ -118,31 +124,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     email?: string;
     role?: UserRole;
   }) => {
-    const [firstName = '', lastName = ''] = (payload.name ?? '').split(' ');
-    const data = await apiClient.post<AuthResponse>(
-      '/auth/signup',
-      {
-        firstName,
-        lastName,
-        email: payload.email,
-        phoneNumber: payload.phone,
-        password: payload.password,
-        role: payload.role,
-      },
-    );
-    await saveAuth(data.accessToken, data.user);
+    try {
+      const [firstName = '', lastName = ''] = (payload.name ?? '').split(' ');
+      const data = await apiClient.post<AuthResponse>(
+        '/auth/signup',
+        {
+          firstName,
+          lastName,
+          email: payload.email,
+          phoneNumber: payload.phone,
+          password: payload.password,
+          role: payload.role,
+        },
+      );
+      await saveAuth(data.accessToken, data.user);
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'Sign up failed. Please try again.';
+      throw new Error(message);
+    }
   };
 
   const signOut = async () => {
     await clearAuth();
   };
 
-  const fetchAuthorizedData = async <T,>(path: string, model: AccessModel) => {
+  const fetchAuthorizedData = async <T,>(path: string, model: AccessModel): Promise<T[]> => {
     if (!token || !canAccessModel(user?.role, model)) {
       return [] as T[];
     }
 
-    return apiClient.get<T[]>(path, token).catch(() => [] as T[]);
+    try {
+      return await apiClient.get<T[]>(path, token);
+    } catch (e) {
+      const error = e instanceof Error ? e : new Error('Request failed');
+      if (error.message === 'Session expired') {
+        await signOut();
+      }
+      throw error;
+    }
   };
 
   const refreshUserData = async () => {
@@ -170,6 +189,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setDispatches(dispatchData);
     } catch (e) {
       console.error('Failed to refresh user data', e);
+      throw e;
     }
   };
 

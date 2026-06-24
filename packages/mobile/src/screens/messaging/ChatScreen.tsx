@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, RefreshControl, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, RefreshControl, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { useAuth } from '../../contexts/AuthContext';
 import { apiClient } from '../../lib/api/client';
 import type { Message, Conversation } from '../../types';
@@ -15,6 +15,8 @@ export default function ChatScreen({ route, navigation }: any) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [messageBody, setMessageBody] = useState('');
+  const [chatError, setChatError] = useState<string | null>(null);
+  const [sendError, setSendError] = useState<string | null>(null);
 
   const loadMessages = async () => {
     if (!token || !conversationId) return;
@@ -38,20 +40,33 @@ export default function ChatScreen({ route, navigation }: any) {
 
   useEffect(() => {
     if (token && conversationId && user) {
-      Promise.all([loadMessages(), loadConversation()]).finally(() => setLoading(false));
+      Promise.all([loadMessages(), loadConversation()])
+        .then(() => setLoading(false))
+        .catch((e) => {
+          const message = e instanceof Error ? e.message : 'Failed to load chat';
+          setChatError(message);
+          setLoading(false);
+        });
     }
   }, [conversationId, token, user?.id]);
 
   const onRefresh = async () => {
     setRefreshing(true);
+    setChatError(null);
     if (token && conversationId && user) {
-      await Promise.all([loadMessages(), loadConversation()]);
+      try {
+        await Promise.all([loadMessages(), loadConversation()]);
+      } catch (e) {
+        const message = e instanceof Error ? e.message : 'Failed to refresh chat';
+        Alert.alert('Error', message);
+      }
     }
     setRefreshing(false);
   };
 
   const handleSend = async () => {
     if (!messageBody.trim() || !token || !conversationId || !user || !conversation) return;
+    setSendError(null);
 
     try {
       const saved: Message = await apiClient.post<Message>(
@@ -68,7 +83,9 @@ export default function ChatScreen({ route, navigation }: any) {
       setMessages((prev) => [...prev, saved]);
       setMessageBody('');
     } catch (e) {
-      console.error('Failed to send message', e);
+      const message = e instanceof Error ? e.message : 'Failed to send message';
+      setSendError(message);
+      Alert.alert('Error', message);
     }
   };
 
@@ -106,13 +123,35 @@ export default function ChatScreen({ route, navigation }: any) {
         contentContainerStyle={styles.messagesList}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No messages yet. Start the conversation!</Text>
-          </View>
+          chatError ? (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>{chatError}</Text>
+              <TouchableOpacity style={styles.retryButton} onPress={() => {
+                setChatError(null);
+                setLoading(true);
+                if (token && conversationId && user) {
+                  Promise.all([loadMessages(), loadConversation()])
+                    .then(() => setLoading(false))
+                    .catch((e) => {
+                      const message = e instanceof Error ? e.message : 'Failed to load chat';
+                      setChatError(message);
+                      setLoading(false);
+                    });
+                }
+              }}>
+                <Text style={styles.retryButtonText}>Retry</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>No messages yet. Start the conversation!</Text>
+            </View>
+          )
         }
       />
 
       <View style={[styles.inputContainer, { paddingBottom: Math.max(insets.bottom, 16) }]}>
+        {sendError && <Text style={styles.sendErrorText}>{sendError}</Text>}
         <TextInput
           style={styles.textInput}
           placeholder="Type a message..."
@@ -166,6 +205,29 @@ const styles = StyleSheet.create({
     color: '#6b7280',
     textAlign: 'center',
   },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  errorText: {
+    color: '#ef4444',
+    textAlign: 'center',
+    marginBottom: 16,
+    fontSize: 14,
+  },
+  retryButton: {
+    backgroundColor: '#4f46e5',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 14,
+  },
   messageBubble: {
     maxWidth: '70%',
     borderRadius: 16,
@@ -204,6 +266,11 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#e5e7eb',
     alignItems: 'flex-end',
+  },
+  sendErrorText: {
+    color: '#ef4444',
+    fontSize: 12,
+    marginBottom: 4,
   },
   textInput: {
     flex: 1,
