@@ -5,16 +5,10 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-export type LoadStatus =
-  | "pending"
-  | "dispatched"
-  | "in_transit"
-  | "delivered"
-  | "cancelled"
-  | "problem";
-export type DriverStatus = "available" | "on_load" | "off_duty";
-export type VehicleStatus = "active" | "maintenance" | "out_of_service";
-export type VehicleType = "truck" | "trailer";
+export type LoadStatus = string;
+export type DriverStatus = string;
+export type VehicleStatus = string;
+export type VehicleType = string;
 
 export interface Customer {
   id: string;

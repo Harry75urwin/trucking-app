@@ -7,6 +7,7 @@ import {
   Trash2,
   X,
   AlertTriangle,
+  RefreshCw,
 } from "lucide-react";
 import {
   flexRender,
@@ -52,6 +53,7 @@ import {
 import { DriverStatusBadge } from "@/components/status-badges";
 import { supabase, type Driver } from "@/lib/supabase";
 import { useLanguage } from "@/lib/language-context";
+import { toast } from "sonner";
 
 type DriverForm = Omit<Driver, "id" | "created_at">;
 
@@ -83,13 +85,22 @@ export default function Drivers() {
   const [editDriver, setEditDriver] = useState<Driver | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
+  const [driversError, setDriversError] = useState<string | null>(null);
 
   const fetchDrivers = useCallback(async () => {
-    const { data } = await supabase
-      .from("drivers")
-      .select("*")
-      .order("first_name");
-    if (data) setDrivers(data);
+    setDriversError(null);
+    try {
+      const { data, error } = await supabase
+        .from("drivers")
+        .select("*")
+        .order("first_name");
+      if (error) throw error;
+      if (data) setDrivers(data);
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Failed to load drivers";
+      setDriversError(message);
+      toast.error(message);
+    }
   }, []);
 
   useEffect(() => {
@@ -281,6 +292,22 @@ export default function Drivers() {
 
   return (
     <div className="flex flex-col gap-6 p-6">
+      {driversError && (
+        <div className="flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm dark:border-red-900 dark:bg-red-950/30">
+          <AlertTriangle className="size-4 text-red-600 dark:text-red-400 shrink-0" />
+          <span className="text-red-700 dark:text-red-300">{driversError}</span>
+          <Button
+            variant="outline"
+            size="sm"
+            className="ml-auto"
+            onClick={() => void fetchDrivers()}
+          >
+            <RefreshCw className="size-4 mr-1" />
+            Retry
+          </Button>
+        </div>
+      )}
+
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
@@ -533,7 +560,7 @@ export default function Drivers() {
               <select
                 value={form.status}
                 onChange={(e) =>
-                  setForm((p) => ({ ...p, status: e.target.value as any }))
+                  setForm((p) => ({ ...p, status: e.target.value }))
                 }
                 className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm"
               >

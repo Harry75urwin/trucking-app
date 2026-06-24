@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "Indian Truck Network",
+    "slug": "indian-truck-network",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#eef2ff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.harikrishnan-unnithan.mobile"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#eef2ff",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.harikrishnan_unnithan.mobile"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}

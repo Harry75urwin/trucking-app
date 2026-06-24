@@ -1,130 +1,80 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+  <img src="https://nestjs.com/img/logo-small.svg" width="100" alt="NestJS Logo" />
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+<h1 align="center">Trucking Backend API</h1>
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
+<p align="center">
+  NestJS REST API for the Trucking platform with PostgreSQL and S3 integration
 </p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+---
 
-Trucking backend API built with NestJS and PostgreSQL (TypeORM).
+## 📋 Overview
 
-## Database Setup
+Backend API service for the Trucking platform providing:
 
-### Prerequisites
+- JWT-based authentication with multi-role support
+- Real-time WebSocket messaging
+- File upload via presigned S3 URLs
+- Comprehensive API for fleet management
 
-- [Docker](https://docs.docker.com/get-docker/) and Docker Compose, **OR**
-- PostgreSQL installed locally
+## 🔗 API Endpoints
 
-### Option 1: Using Docker (Recommended)
+| Endpoint | Methods | Description |
+|----------|---------|-------------|
+| `/auth/login` | POST | Authenticate user |
+| `/auth/signup` | POST | Register new user |
+| `/users` | GET, POST, PATCH, DELETE | User management |
+| `/organizations` | GET, POST, PATCH, DELETE | Organization CRUD |
+| `/drivers` | GET, POST, PATCH, DELETE | Driver profiles |
+| `/vehicles` | GET, POST, PATCH, DELETE | Vehicle fleet |
+| `/loads` | GET, POST, PATCH, DELETE | Load management |
+| `/dispatches` | GET, POST, PATCH, DELETE | Dispatch records |
+| `/tracking` | GET, POST, PATCH, DELETE | GPS tracking |
+| `/messaging` | WebSocket | Real-time chat |
+| `/upload` | POST, GET | File uploads |
 
-```bash
-# Start PostgreSQL container
-docker-compose up -d
+## 🏗️ Tech Stack
 
-# Check container status
-docker ps
-```
+| Technology | Purpose |
+|------------|---------|
+| **NestJS** 11.x | Backend framework |
+| **TypeORM** 0.3 | Database ORM |
+| **PostgreSQL** 16 | Primary database |
+| **JWT** | Authentication |
+| **Socket.IO** | Real-time messaging |
+| **Swagger** | API documentation |
 
-### Option 2: Using Local PostgreSQL
+## ⚙️ Configuration
 
-Install PostgreSQL and ensure it's running. If you have an existing PostgreSQL on port 5432, update `DB_PORT` accordingly.
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `APP_PORT` | 3000 | Server port |
+| `DB_HOST` | localhost | Database host |
+| `DB_PORT` | 5433 | Database port |
+| `AUTH_SECRET` | - | JWT secret |
+| `DEMO_DATA_ENABLED` | true | Seed demo data |
 
-### Database Configuration
-
-Update `.env` with your database credentials:
-
-```env
-DB_HOST=localhost
-DB_PORT=5433
-DB_USERNAME=truckuser
-DB_PASSWORD=truckpass
-DB_DATABASE=truckapp
-```
-
-### Viewing/Querying the Database
-
-You can connect to the database using any PostgreSQL client:
-
-1. **pgAdmin 4** (Web-based GUI)
-   - Download: https://www.pgadmin.org/download/
-   - Connection: `localhost:5433`, database: `truckapp`, username: `truckuser`, password: `truckpass`
-
-2. **TablePlus** (macOS app)
-   - Connection: PostgreSQL, host: `localhost`, port: `5433`, database: `truckapp`
-
-3. **DBeaver** (Cross-platform)
-   - Connection: PostgreSQL, host: `localhost`, port: `5433`, database: `truckapp`
-
-4. **Command-line (psql)**
-   ```bash
-   psql -h localhost -p 5433 -U truckuser -d truckapp
-   ```
-
-## API Overview
-
-- `POST /auth/signup`
-- `POST /auth/login`
-- `GET|POST|PATCH|DELETE /users`
-- `GET|POST|PATCH|DELETE /organizations`
-- `GET|POST|PATCH|DELETE /drivers`
-- `GET|POST|PATCH|DELETE /vehicles`
-- `GET|POST|PATCH|DELETE /loads`
-- `GET|POST|PATCH|DELETE /dispatches`
-- `GET|POST|PATCH|DELETE /tracking`
-
-Swagger UI is available at `/docs`.
-
-## Project setup
+## 🚀 Development
 
 ```bash
-$ pnpm install
+# Install dependencies
+pnpm install
+
+# Start in watch mode
+pnpm start:dev
+
+# Run tests
+pnpm test
+
+# Lint code
+pnpm lint
 ```
 
-Create a local `.env` file from `.env.example` and adjust values as needed.
+## 📊 Demo Data
 
-Required env keys:
-
-- `APP_NAME`
-- `APP_DESCRIPTION`
-- `APP_VERSION`
-- `APP_PORT`
-- `SWAGGER_PATH`
-- `AUTH_SECRET`
-- `AUTH_TOKEN_TTL_SECONDS`
-- `DEMO_DATA_ENABLED`
-- `DB_HOST`
-- `DB_PORT`
-- `DB_USERNAME`
-- `DB_PASSWORD`
-- `DB_DATABASE`
-
-## Demo data
-
-Set `DEMO_DATA_ENABLED=true` (default) to seed demo data into PostgreSQL on first run.
-
-Demo login:
-
-- Phone: `+91-9000000001`
-- Password: `Demo@1234`
-
-Seeded demo records include:
+With `DEMO_DATA_ENABLED=true`:
 
 - 3 customers
 - 4 drivers
@@ -133,70 +83,16 @@ Seeded demo records include:
 - 2 load assignments
 - 1 dispatch record
 - 2 tracking events
-- 1 organization
 
-## Compile and run the project
-
-```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+```
+Phone:   +91-9000000001
+Password: Demo@1234
 ```
 
-## Run tests
+## 🔌 API Documentation
 
-```bash
-# unit tests
-$ pnpm run test
+Interactive Swagger UI available at `/docs` when server is running locally at `http://localhost:3000/docs`.
 
-# e2e tests
-$ pnpm run test:e2e
+## 📄 License
 
-# test coverage
-$ pnpm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+MIT License

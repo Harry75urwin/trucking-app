@@ -6,6 +6,7 @@ import {
   type AuthSession,
 } from "@/lib/auth-session";
 import { SocketProvider } from "@/lib/socket-context";
+import { Toaster } from "@/components/ui/sonner";
 
 // Auth & Onboarding
 import LoginPage from "@/pages/auth/LoginPage";
@@ -248,6 +249,7 @@ export function App() {
     <LanguageProvider>
       <AuthSessionProvider>
         <AppRouterContent />
+        <Toaster />
       </AuthSessionProvider>
     </LanguageProvider>
   );

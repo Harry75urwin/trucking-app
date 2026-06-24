@@ -5,7 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CheckCircle2 } from "lucide-react";
-import { signupWithBackend } from "@/lib/backend-api";
+import {
+  signupWithBackend,
+  type BackendSignupPayload,
+} from "@/lib/backend-api";
 import type { AuthSession } from "@/lib/auth-session";
 import { useLanguage } from "@/lib/language-context";
 
@@ -19,31 +22,114 @@ export default function OnboardingPage({ onComplete }: OnboardingPageProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
+    password: "",
+    confirmPassword: "",
     fullName: "",
     phone: "",
     email: "",
-    password: "",
-    confirmPassword: "",
-    city: "",
-    state: "",
+    homeCity: "",
+    homeState: "",
+    companyName: "",
+    companyEmail: "",
+    companyPhone: "",
+    companyAddress: "",
+    companyCity: "",
+    companyState: "",
+    companyPostalCode: "",
+    companyWebsite: "",
+    customerName: "",
+    customerEmail: "",
+    customerPhone: "",
+    customerAddress: "",
+    customerCity: "",
+    customerState: "",
+    customerPostalCode: "",
+    adminName: "",
+    adminEmail: "",
+    adminPhone: "",
+    adminAddress: "",
+    adminCity: "",
+    adminState: "",
+    adminPostalCode: "",
   });
   const { t } = useLanguage();
 
+  const validateStep = (): string => {
+    if (step === 1) {
+      if (type === "trucker") {
+        if (!formData.fullName.trim())
+          return t("Full Name is required", "पूरा नाम आवश्यक है");
+        if (!formData.phone.trim())
+          return t("Phone is required", "फोन आवश्यक है");
+        if (!formData.email.trim())
+          return t("Email is required", "ईमेल आवश्यक है");
+      } else if (type === "company") {
+        if (!formData.companyName.trim())
+          return t("Company Name is required", "कंपनी का नाम आवश्यक है");
+        if (!formData.companyEmail.trim())
+          return t("Company Email is required", "कंपनी ईमेल आवश्यक है");
+        if (!formData.companyPhone.trim())
+          return t("Company Phone is required", "कंपनी फोन आवश्यक है");
+      } else if (type === "customer") {
+        if (!formData.customerName.trim())
+          return t("Customer Name is required", "ग्राहक का नाम आवश्यक है");
+        if (!formData.customerEmail.trim())
+          return t("Customer Email is required", "ग्राहक ईमेल आवश्यक है");
+        if (!formData.customerPhone.trim())
+          return t("Customer Phone is required", "ग्राहक फोन आवश्यक है");
+      } else if (type === "admin") {
+        if (!formData.adminName.trim())
+          return t("Admin Name is required", "एडमिन नाम आवश्यक है");
+        if (!formData.adminEmail.trim())
+          return t("Admin Email is required", "एडमिन ईमेल आवश्यक है");
+        if (!formData.adminPhone.trim())
+          return t("Admin Phone is required", "एडमिन फोन आवश्यक है");
+      }
+    } else if (step === 2) {
+      if (type === "company") {
+        if (!formData.companyAddress.trim())
+          return t("Company Address is required", "कंपनी पता आवश्यक है");
+        if (!formData.companyCity.trim())
+          return t("City is required", "शहर आवश्यक है");
+        if (!formData.companyState.trim())
+          return t("State is required", "राज्य आवश्यक है");
+        if (!formData.companyPostalCode.trim())
+          return t("Postal Code is required", "पिन कोड आवश्यक है");
+      } else if (type === "customer") {
+        if (!formData.customerAddress.trim())
+          return t("Address is required", "पता आवश्यक है");
+        if (!formData.customerCity.trim())
+          return t("City is required", "शहर आवश्यक है");
+        if (!formData.customerState.trim())
+          return t("State is required", "राज्य आवश्यक है");
+        if (!formData.customerPostalCode.trim())
+          return t("Postal Code is required", "पिन कोड आवश्यक है");
+      } else if (type === "admin") {
+        if (!formData.adminAddress.trim())
+          return t("Address is required", "पता आवश्यक है");
+        if (!formData.adminCity.trim())
+          return t("City is required", "शहर आवश्यक है");
+        if (!formData.adminState.trim())
+          return t("State is required", "राज्य आवश्यक है");
+        if (!formData.adminPostalCode.trim())
+          return t("Postal Code is required", "पिन कोड आवश्यक है");
+      }
+    }
+    return "";
+  };
+
   const handleNext = () => {
     if (step < 3) {
+      const validationError = validateStep();
+      if (validationError) {
+        setError(validationError);
+        return;
+      }
+      setError("");
       setStep(step + 1);
     } else {
       void handleRegister();
     }
-  };
-
-  const splitName = (fullName: string) => {
-    const trimmedName = fullName.trim().replace(/\s+/g, " ");
-    const [firstName, ...rest] = trimmedName.split(" ");
-    return {
-      firstName: firstName || "User",
-      lastName: rest.join(" ") || "User",
-    };
   };
 
   const resolveBackendRole = (frontendType: string | undefined) => {
@@ -68,16 +154,72 @@ export default function OnboardingPage({ onComplete }: OnboardingPageProps) {
       if (formData.password !== formData.confirmPassword) {
         throw new Error(t("Passwords do not match", "पासवर्ड मेल नहीं खाते"));
       }
+      if (!formData.password.trim()) {
+        throw new Error(t("Password is required", "पासवर्ड आवश्यक है"));
+      }
 
-      const { firstName, lastName } = splitName(formData.fullName);
-      const session = await signupWithBackend({
-        firstName,
-        lastName,
-        email: formData.email,
+      const role = resolveBackendRole(type);
+      const isCompany = role === "dispatcher";
+      const isCustomer = role === "customer";
+      const isAdmin = role === "admin";
+
+      const signupPayload: BackendSignupPayload = {
+        firstName:
+          isCompany && formData.companyName
+            ? formData.companyName.split(" ")[0] || "User"
+            : isCustomer && formData.customerName
+              ? formData.customerName.split(" ")[0] || "User"
+              : isAdmin && formData.adminName
+                ? formData.adminName.split(" ")[0] || "User"
+                : formData.fullName?.split(" ")[0] || "User",
+        lastName:
+          isCompany && formData.companyName
+            ? formData.companyName.split(" ").slice(1).join(" ") || "User"
+            : isCustomer && formData.customerName
+              ? formData.customerName.split(" ").slice(1).join(" ") || "User"
+              : isAdmin && formData.adminName
+                ? formData.adminName.split(" ").slice(1).join(" ") || "User"
+                : formData.fullName?.split(" ").slice(1).join(" ") || "User",
+        email: isCompany
+          ? formData.companyEmail
+          : isCustomer
+            ? formData.customerEmail
+            : isAdmin
+              ? formData.adminEmail
+              : formData.email,
         password: formData.password,
-        phoneNumber: formData.phone,
-        role: resolveBackendRole(type),
-      });
+        phoneNumber: isCompany
+          ? formData.companyPhone
+          : isCustomer
+            ? formData.customerPhone
+            : isAdmin
+              ? formData.adminPhone
+              : formData.phone,
+        role,
+      };
+
+      if (isCompany) {
+        signupPayload.organizationName = formData.companyName;
+        signupPayload.organizationEmail = formData.companyEmail;
+        signupPayload.organizationPhoneNumber = formData.companyPhone;
+        signupPayload.organizationWebsite = formData.companyWebsite;
+        signupPayload.organizationAddress = formData.companyAddress;
+        signupPayload.organizationCity = formData.companyCity;
+        signupPayload.organizationState = formData.companyState;
+        signupPayload.organizationPostalCode = formData.companyPostalCode;
+      }
+
+      if (isCustomer) {
+        signupPayload.organizationName = formData.customerName;
+        signupPayload.organizationEmail = formData.customerEmail;
+        signupPayload.organizationPhoneNumber = formData.customerPhone;
+        signupPayload.organizationAddress = formData.customerAddress;
+        signupPayload.organizationCity = formData.customerCity;
+        signupPayload.organizationState = formData.customerState;
+        signupPayload.organizationPostalCode = formData.customerPostalCode;
+      }
+
+      const session = await signupWithBackend(signupPayload);
       onComplete(session);
     } catch (registerError) {
       setError(
@@ -107,23 +249,31 @@ export default function OnboardingPage({ onComplete }: OnboardingPageProps) {
       steps: [
         { num: 1, label: t("Personal Info", "व्यक्तिगत जानकारी") },
         { num: 2, label: t("Documents", "दस्तावेज़") },
-        { num: 3, label: t("Bank Details", "बैंक विवरण") },
+        { num: 3, label: t("Security", "सुरक्षा") },
       ],
     },
     company: {
       title: t("Company Registration", "कंपनी पंजीकरण"),
       steps: [
         { num: 1, label: t("Company Info", "कंपनी जानकारी") },
-        { num: 2, label: t("Verification", "प्रमाणीकरण") },
-        { num: 3, label: t("Bank Details", "बैंक विवरण") },
+        { num: 2, label: t("Address", "पता") },
+        { num: 3, label: t("Security", "सुरक्षा") },
       ],
     },
     customer: {
       title: t("Customer Registration", "ग्राहक पंजीकरण"),
       steps: [
         { num: 1, label: t("Personal Info", "व्यक्तिगत जानकारी") },
-        { num: 2, label: t("Business Info", "व्यावसायिक जानकारी") },
-        { num: 3, label: t("Address", "पता") },
+        { num: 2, label: t("Address", "पता") },
+        { num: 3, label: t("Security", "सुरक्षा") },
+      ],
+    },
+    admin: {
+      title: t("Admin Registration", "एडमिन पंजीकरण"),
+      steps: [
+        { num: 1, label: t("Admin Info", "एडमिन जानकारी") },
+        { num: 2, label: t("Address", "पता") },
+        { num: 3, label: t("Security", "सुरक्षा") },
       ],
     },
   };
@@ -169,7 +319,7 @@ export default function OnboardingPage({ onComplete }: OnboardingPageProps) {
             </div>
 
             {/* Step content */}
-            {step === 1 && (
+            {step === 1 && type === "trucker" && (
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -203,19 +353,19 @@ export default function OnboardingPage({ onComplete }: OnboardingPageProps) {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>{t("City", "शहर")}</Label>
+                    <Label>{t("Home City", "होम सहर")}</Label>
                     <Input
-                      name="city"
-                      value={formData.city}
+                      name="homeCity"
+                      value={formData.homeCity}
                       onChange={handleInputChange}
                       placeholder={t("Mumbai", "मुंबई")}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>{t("State", "राज्य")}</Label>
+                    <Label>{t("Home State", "होम राज्य")}</Label>
                     <Input
-                      name="state"
-                      value={formData.state}
+                      name="homeState"
+                      value={formData.homeState}
                       onChange={handleInputChange}
                       placeholder={t("Maharashtra", "महाराष्ट्र")}
                     />
@@ -224,7 +374,124 @@ export default function OnboardingPage({ onComplete }: OnboardingPageProps) {
               </div>
             )}
 
-            {step === 2 && (
+            {step === 1 && type === "company" && (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>{t("Company Name", "कंपनी का नाम")}</Label>
+                  <Input
+                    name="companyName"
+                    value={formData.companyName}
+                    onChange={handleInputChange}
+                    placeholder={t(
+                      "Fast Cargo Logistics",
+                      "फास्ट कार्गो लॉजिस्टिक्स"
+                    )}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>{t("Company Email", "कंपनी ईमेल")}</Label>
+                    <Input
+                      type="email"
+                      name="companyEmail"
+                      value={formData.companyEmail}
+                      onChange={handleInputChange}
+                      placeholder="ops@fastcargo.com"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{t("Company Phone", "कंपनी फोन")}</Label>
+                    <Input
+                      name="companyPhone"
+                      value={formData.companyPhone}
+                      onChange={handleInputChange}
+                      placeholder="+91 98765 43210"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>{t("Company Website", "कंपनी वेबसाइट")}</Label>
+                  <Input
+                    name="companyWebsite"
+                    value={formData.companyWebsite}
+                    onChange={handleInputChange}
+                    placeholder="https://fastcargo.com"
+                  />
+                </div>
+              </div>
+            )}
+
+            {step === 1 && type === "customer" && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>{t("Full Name", "पूरा नाम")}</Label>
+                    <Input
+                      name="fullName"
+                      value={formData.fullName}
+                      onChange={handleInputChange}
+                      placeholder={t("John Doe", "जॉन डो")}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{t("Phone", "फोन")}</Label>
+                    <Input
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      placeholder="+91 98765 43210"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>{t("Email", "ईमेल")}</Label>
+                  <Input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="john@example.com"
+                  />
+                </div>
+              </div>
+            )}
+
+            {step === 1 && type === "admin" && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>{t("Admin Name", "एडमिन नाम")}</Label>
+                    <Input
+                      name="adminName"
+                      value={formData.adminName}
+                      onChange={handleInputChange}
+                      placeholder={t("Admin User", "एडमिन यूजर")}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{t("Phone", "फोन")}</Label>
+                    <Input
+                      name="adminPhone"
+                      value={formData.adminPhone}
+                      onChange={handleInputChange}
+                      placeholder="+91 98765 43210"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>{t("Email", "ईमेल")}</Label>
+                  <Input
+                    type="email"
+                    name="adminEmail"
+                    value={formData.adminEmail}
+                    onChange={handleInputChange}
+                    placeholder="admin@example.com"
+                  />
+                </div>
+              </div>
+            )}
+
+            {step === 2 && type === "trucker" && (
               <div className="space-y-4">
                 <div className="bg-linear-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-4 rounded-lg border border-blue-200/50 dark:border-blue-900/50">
                   <p className="text-sm text-blue-900 dark:text-blue-200">
@@ -234,7 +501,7 @@ export default function OnboardingPage({ onComplete }: OnboardingPageProps) {
                 <div className="space-y-4">
                   <div className="border-2 border-dashed border-indigo-300 dark:border-indigo-700 rounded-xl p-8 text-center cursor-pointer hover:border-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/20 transition-all">
                     <p className="text-muted-foreground">
-                      {t("License", "लाइसेंस")}
+                      {t("CDL License", "सीडीएल लाइसेंस")}
                     </p>
                   </div>
                   <div className="border-2 border-dashed border-indigo-300 dark:border-indigo-700 rounded-xl p-8 text-center cursor-pointer hover:border-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/20 transition-all">
@@ -242,6 +509,168 @@ export default function OnboardingPage({ onComplete }: OnboardingPageProps) {
                       {t("Insurance", "बीमा")}
                     </p>
                   </div>
+                  <div className="border-2 border-dashed border-indigo-300 dark:border-indigo-700 rounded-xl p-8 text-center cursor-pointer hover:border-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/20 transition-all">
+                    <p className="text-muted-foreground">
+                      {t("Medical Certificate", "चिकित्सा सर्टिफिकेट")}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {step === 2 && type === "company" && (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>{t("Company Address", "कंपनी पता")}</Label>
+                  <Input
+                    name="companyAddress"
+                    value={formData.companyAddress}
+                    onChange={handleInputChange}
+                    placeholder={t("42 Business Road", "42 बिज़नेस रोड")}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>{t("City", "शहर")}</Label>
+                    <Input
+                      name="companyCity"
+                      value={formData.companyCity}
+                      onChange={handleInputChange}
+                      placeholder={t("Bengaluru", "बेंगलुरु")}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{t("State", "राज्य")}</Label>
+                    <Input
+                      name="companyState"
+                      value={formData.companyState}
+                      onChange={handleInputChange}
+                      placeholder={t("Karnataka", "कर्नाटक")}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>{t("Postal Code", "पिन कोड")}</Label>
+                  <Input
+                    name="companyPostalCode"
+                    value={formData.companyPostalCode}
+                    onChange={handleInputChange}
+                    placeholder="560001"
+                  />
+                </div>
+              </div>
+            )}
+
+            {step === 2 && type === "customer" && (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>{t("Business Name", "व्यावसायिक नाम")}</Label>
+                  <Input
+                    name="customerName"
+                    value={formData.customerName}
+                    onChange={handleInputChange}
+                    placeholder={t("ABC Corp", "एबीसी कार्पोरेशन")}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>{t("Business Email", "व्यावसायिक ईमेल")}</Label>
+                  <Input
+                    type="email"
+                    name="customerEmail"
+                    value={formData.customerEmail}
+                    onChange={handleInputChange}
+                    placeholder="contact@abccorp.com"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>{t("Business Phone", "व्यावसायिक फोन")}</Label>
+                  <Input
+                    name="customerPhone"
+                    value={formData.customerPhone}
+                    onChange={handleInputChange}
+                    placeholder="+91 98765 43210"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>{t("Address", "पता")}</Label>
+                  <Input
+                    name="customerAddress"
+                    value={formData.customerAddress}
+                    onChange={handleInputChange}
+                    placeholder={t("123 Main Street", "123 मेन स्ट्रीट")}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>{t("City", "शहर")}</Label>
+                    <Input
+                      name="customerCity"
+                      value={formData.customerCity}
+                      onChange={handleInputChange}
+                      placeholder={t("Mumbai", "मुंबई")}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{t("State", "राज्य")}</Label>
+                    <Input
+                      name="customerState"
+                      value={formData.customerState}
+                      onChange={handleInputChange}
+                      placeholder={t("Maharashtra", "महाराष्ट्र")}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>{t("Postal Code", "पिन कोड")}</Label>
+                  <Input
+                    name="customerPostalCode"
+                    value={formData.customerPostalCode}
+                    onChange={handleInputChange}
+                    placeholder="400001"
+                  />
+                </div>
+              </div>
+            )}
+
+            {step === 2 && type === "admin" && (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>{t("Address", "पता")}</Label>
+                  <Input
+                    name="adminAddress"
+                    value={formData.adminAddress}
+                    onChange={handleInputChange}
+                    placeholder={t("123 Admin Street", "123 एडमिन स्ट्रीट")}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>{t("City", "शहर")}</Label>
+                    <Input
+                      name="adminCity"
+                      value={formData.adminCity}
+                      onChange={handleInputChange}
+                      placeholder={t("Mumbai", "मुंबई")}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{t("State", "राज्य")}</Label>
+                    <Input
+                      name="adminState"
+                      value={formData.adminState}
+                      onChange={handleInputChange}
+                      placeholder={t("Maharashtra", "महाराष्ट्र")}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>{t("Postal Code", "पिन कोड")}</Label>
+                  <Input
+                    name="adminPostalCode"
+                    value={formData.adminPostalCode}
+                    onChange={handleInputChange}
+                    placeholder="400001"
+                  />
                 </div>
               </div>
             )}
@@ -270,6 +699,16 @@ export default function OnboardingPage({ onComplete }: OnboardingPageProps) {
                     placeholder="••••••••"
                   />
                 </div>
+                {type === "trucker" && (
+                  <div className="bg-linear-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-4 rounded-lg border border-blue-200/50 dark:border-blue-900/50">
+                    <p className="text-sm text-blue-900 dark:text-blue-200">
+                      {t(
+                        "Bank account details (optional)",
+                        "बैंक खाता विवरण (वैकल्पिक)"
+                      )}
+                    </p>
+                  </div>
+                )}
               </div>
             )}
 

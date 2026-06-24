@@ -9,6 +9,7 @@ import {
   TrendingUp,
   MapPin,
   ArrowRight,
+  RefreshCw,
 } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
@@ -28,6 +29,7 @@ import {
 import { LoadStatusBadge } from "@/components/status-badges";
 import { supabase, type Load, type Driver } from "@/lib/supabase";
 import { useLanguage } from "@/lib/language-context";
+import { toast } from "sonner";
 
 const revenueData = [
   { month: "Jan", revenue: 42000 },
@@ -63,9 +65,11 @@ export default function Dashboard() {
   });
   const [recentLoads, setRecentLoads] = useState<Load[]>([]);
   const [availableDrivers, setAvailableDrivers] = useState<Driver[]>([]);
+  const [dashboardError, setDashboardError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function fetchData() {
+  const fetchData = async () => {
+    setDashboardError(null);
+    try {
       const [{ data: loads }, { data: drivers }, { data: vehicles }] =
         await Promise.all([
           supabase
@@ -108,12 +112,38 @@ export default function Dashboard() {
         );
         setStats((prev) => ({ ...prev, activeVehicles: active.length }));
       }
+    } catch (e) {
+      const message =
+        e instanceof Error ? e.message : "Failed to load dashboard data";
+      setDashboardError(message);
+      toast.error(message);
     }
+  };
+
+  useEffect(() => {
     void fetchData();
   }, []);
 
   return (
     <div className="flex flex-col gap-6 p-6">
+      {dashboardError && (
+        <div className="flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm dark:border-red-900 dark:bg-red-950/30">
+          <AlertTriangle className="size-4 text-red-600 dark:text-red-400 shrink-0" />
+          <span className="text-red-700 dark:text-red-300">
+            {dashboardError}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            className="ml-auto"
+            onClick={() => void fetchData()}
+          >
+            <RefreshCw className="size-4 mr-1" />
+            Retry
+          </Button>
+        </div>
+      )}
+
       <div>
         <h1 className="text-2xl font-bold tracking-tight">
           {t("Dashboard", "डैशबोर्ड")}

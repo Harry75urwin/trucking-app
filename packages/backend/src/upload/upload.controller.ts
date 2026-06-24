@@ -4,10 +4,12 @@ import {
   ApiCreatedResponse,
   ApiOperation,
   ApiTags,
+  ApiResponse,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreatePresignedUploadDto } from './dto/create-presigned-upload.dto';
 import { UploadService } from './upload.service';
+import { ErrorResponseDto } from '../common/dto/error-response.dto';
 
 @ApiTags('uploads')
 @ApiBearerAuth()
@@ -17,6 +19,9 @@ export class UploadController {
 
   @ApiOperation({ summary: 'Create a presigned R2 upload URL' })
   @ApiCreatedResponse({ description: 'R2 upload URL created successfully' })
+  @ApiResponse({ status: 400, type: ErrorResponseDto })
+  @ApiResponse({ status: 401, type: ErrorResponseDto })
+  @ApiResponse({ status: 500, type: ErrorResponseDto })
   @UseGuards(JwtAuthGuard)
   @Post('presign')
   createPresignedUpload(@Body() dto: CreatePresignedUploadDto) {

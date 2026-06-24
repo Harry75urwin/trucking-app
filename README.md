@@ -1,120 +1,127 @@
-# Trucking App
+<p align="center">
+  <img src="packages/mobile/assets/icon.png" alt="Trucking App" width="120" />
+</p>
 
-Full-stack trucking platform with a Vite + React frontend and NestJS + PostgreSQL backend.
+<p align="center">
+  <a href="https://github.com/nestjs/nest">
+    <img src="https://img.shields.io/badge/NestJS-11.0.1-E0234E?logo=nestjs" alt="NestJS" />
+  </a>
+  <a href="https://github.com/facebook/react">
+    <img src="https://img.shields.io/badge/React-19.2.4-61DAFB?logo=react" alt="React" />
+  </a>
+  <a href="https://github.com/expo/expo">
+    <img src="https://img.shields.io/badge/Expo-56.0.12-000020?logo=expo" alt="Expo" />
+  </a>
+  <a href="https://github.com/vitejs/vite">
+    <img src="https://img.shields.io/badge/Vite-7.3.1-646CFF?logo=vite" alt="Vite" />
+  </a>
+  <a href="https://www.postgresql.org/">
+    <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql" alt="PostgreSQL" />
+  </a>
+  <a href="https://github.com/pnpm/pnpm">
+    <img src="https://img.shields.io/badge/pnpm-8+-F69220?logo=pnpm" alt="pnpm" />
+  </a>
+</p>
 
-## Quick Start
+<h1 align="center">Trucking Platform</h1>
 
-Follow these steps to get the project running locally:
+<p align="center">
+  Full-stack trucking platform with React dashboard, React Native mobile app, and NestJS API
+</p>
 
-### 1. Install Prerequisites
+---
+
+## ✨ Features
+
+- **Multi-role Dashboard**: Admin, Dispatcher, Fleet Manager, Driver, and Customer views
+- **Real-time Messaging**: Instant communication via Socket.IO
+- **Load Tracking**: GPS tracking and load status management
+- **Fleet Management**: Vehicles, drivers, and dispatch coordination
+- **File Uploads**: S3-compatible storage for documents and images
+- **Mobile First**: Native mobile experience for on-the-go access
+
+## 🚀 Quick Start
+
+### Prerequisites
 
 - **Node.js** >= 18
-- **pnpm** >= 8 (install with `npm install -g pnpm`)
-- **Docker** (for PostgreSQL and LocalStack)
+- **pnpm** >= 8
+- **Docker** (for PostgreSQL and LocalStack S3)
 
-### 2. Install Dependencies
+### Setup
 
 ```bash
+# 1. Install dependencies
 pnpm install
-```
 
-### 3. Start Infrastructure Services
-
-```bash
+# 2. Start infrastructure (PostgreSQL + LocalStack)
 docker compose up -d
-```
 
-This starts:
-- **PostgreSQL** on port 5433 (database: `truckapp`, user: `truckuser`, pass: `truckpass`)
-- **LocalStack S3** on port 4566 (for file uploads)
-
-**Note:** If you get a container name conflict error, run:
-```bash
-docker rm -f truck-app-postgres truck-app-localstack && docker compose up -d
-```
-
-### 4. Configure Environment
-
-```bash
+# 3. Configure environment
 cp packages/backend/.env.example packages/backend/.env
-```
 
-The default values in `.env.example` work with LocalStack. No changes needed for local development.
-
-### 5. Start Development Servers
-
-```bash
+# 4. Start development servers
 pnpm dev
 ```
 
-This starts both frontend (port 5173) and backend (port 3000).
+### Development URLs
 
-## Available Scripts
+| Service | URL |
+|---------|-----|
+| Frontend Dashboard | <http://localhost:5173> |
+| Backend API | <http://localhost:3000> |
+| Swagger Docs | <http://localhost:3000/docs> |
+| Mobile Bundler | <http://localhost:8081> |
 
-| Command | Description |
-|---------|-------------|
-| `pnpm dev` | Start both frontend and backend |
-| `pnpm dev:web` | Start frontend only (port 5173) |
-| `pnpm dev:backend` | Start backend only (port 3000) |
-| `pnpm build` | Build both apps for production |
-| `pnpm start` | Run backend in production mode |
-| `pnpm lint` | Lint all code |
-| `pnpm format` | Format all code |
-| `pnpm test` | Run backend tests |
+## 📱 Platform Screenshots
 
-## Project Structure
+> Add screenshots of your dashboard and mobile app here
+
+| Frontend Dashboard | Mobile App |
+|------------------|------------|
+| ![Dashboard](docs/screenshots/dashboard.png) | ![Mobile](docs/screenshots/mobile.png) |
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| **Frontend** | Vite, React 19, TypeScript, Tailwind CSS, Recharts |
+| **Mobile** | React Native 0.85, Expo 56, React Navigation |
+| **Backend** | NestJS 11, TypeORM, PostgreSQL, Socket.IO |
+| **Storage** | LocalStack S3 (local) / AWS S3 |
+
+## 📁 Project Structure
 
 ```
 trucking/
-├── package.json           # Root config with workspace scripts
 ├── packages/
-│   ├── web/               # Vite + React frontend
-│   └── backend/           # NestJS API backend
-└── docker-compose.yml       # PostgreSQL and LocalStack services
+│   ├── web/       # Vite + React dashboard
+│   ├── backend/   # NestJS REST API
+│   └── mobile/    # React Native app
+├── docker-compose.yml
+└── package.json
 ```
 
-## Services
+## 📦 Scripts
 
-| Service | Port | Description |
-|---------|------|-------------|
-| PostgreSQL | 5433 | Database (credentials in `.env.example`) |
-| LocalStack S3 | 4566 | S3-compatible storage for file uploads |
-| Backend API | 3000 | NestJS REST API |
-| Frontend | 5173 | Vite + React dev server |
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start all development servers |
+| `pnpm dev:web` | Frontend only |
+| `pnpm dev:backend` | Backend only |
+| `pnpm dev:mobile` | Mobile Metro bundler |
+| `pnpm build` | Build all packages |
+| `pnpm test` | Run tests |
 
-## API Documentation
+## 🔑 Demo Credentials
 
-Swagger UI is available at `http://localhost:3000/docs` when the backend is running.
-
-## File Uploads
-
-Files are stored in LocalStack S3 and accessible at:
-- Local: `http://localhost:4566/truck-app-bucket/<path>`
-
-## Demo Credentials
-
-- Phone: `+91-9000000001`
-- Password: `Demo@1234`
-
-With `DEMO_DATA_ENABLED=true`, the following demo records are seeded:
-- 3 customers
-- 4 drivers
-- 4 vehicles
-- 5 loads
-- 2 load assignments
-- 1 dispatch record
-- 2 tracking events
-- 1 organization
-
-## Viewing the Database
-
-```bash
-psql -h localhost -p 5433 -U truckuser -d truckapp
+```
+Phone:   +91-9000000001
+Password: Demo@1234
 ```
 
-Or use any PostgreSQL client (pgAdmin, TablePlus, DBeaver) with:
-- Host: `localhost`
-- Port: `5433`
-- Database: `truckapp`
-- Username: `truckuser`
-- Password: `truckpass`
+Demo data includes: 3 customers, 4 drivers, 4 vehicles, 5 loads, and dispatch records.
+
+## 📄 License
+
+MIT License

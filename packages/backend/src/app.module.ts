@@ -28,6 +28,8 @@ import { TrackingEvent } from './tracking/entities/tracking-event.entity';
 import { LoadAssignment } from './load-assignment/entities/load-assignment.entity';
 import { UploadModule } from './upload/upload.module';
 import { Organization } from './organization/entities/organization.entity';
+import { StaticData } from './static-data/entities/static-data.entity';
+import { StaticDataModule } from './static-data/static-data.module';
 
 @Module({
   imports: [
@@ -56,6 +58,7 @@ import { Organization } from './organization/entities/organization.entity';
           Conversation,
           Message,
           Organization,
+          StaticData,
         ],
         synchronize: true,
       }),
@@ -74,6 +77,7 @@ import { Organization } from './organization/entities/organization.entity';
     UploadModule,
     MessagingModule,
     TrackingModule,
+    StaticDataModule,
   ],
   controllers: [AppController],
   providers: [AppService],

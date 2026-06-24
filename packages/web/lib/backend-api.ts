@@ -3,6 +3,16 @@ import type { AuthSession, UserType } from "@/lib/auth-session";
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3000";
 
+const DEFAULT_TIMEOUT = 15000;
+
+function getUserFriendlyMessage(status: number, fallback: string): string {
+  if (status === 401) return "Session expired";
+  if (status === 403) return "Access denied";
+  if (status >= 500) return "Server error. Please try again later.";
+  if (status === 0 || status === -1) return "No internet connection";
+  return fallback;
+}
+
 export interface BackendAuthUser {
   id: number;
   firstName: string;
@@ -53,33 +63,61 @@ export interface BackendSignupPayload {
   password: string;
   phoneNumber?: string;
   role?: string;
+  organizationName?: string;
+  organizationEmail?: string;
+  organizationPhoneNumber?: string;
+  organizationWebsite?: string;
+  organizationAddress?: string;
+  organizationCity?: string;
+  organizationState?: string;
+  organizationPostalCode?: string;
 }
 
 async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...(init?.headers ?? {}),
-    },
-    ...init,
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT);
 
-  const contentType = response.headers.get("content-type") ?? "";
-  const body = contentType.includes("application/json")
-    ? await response.json()
-    : await response.text();
+  try {
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+      headers: {
+        "Content-Type": "application/json",
+        ...(init?.headers ?? {}),
+      },
+      ...init,
+      signal: controller.signal,
+    });
 
-  if (!response.ok) {
-    const message =
-      typeof body === "string"
-        ? body
-        : (body?.message ?? `Request failed with status ${response.status}`);
-    throw new Error(
-      Array.isArray(message) ? message.join(", ") : String(message)
-    );
+    clearTimeout(timeoutId);
+
+    const contentType = response.headers.get("content-type") ?? "";
+    const body = contentType.includes("application/json")
+      ? await response.json()
+      : await response.text();
+
+    if (!response.ok) {
+      const message =
+        typeof body === "string"
+          ? body
+          : (body?.message ?? `Request failed with status ${response.status}`);
+      throw new Error(
+        getUserFriendlyMessage(
+          response.status,
+          Array.isArray(message) ? message.join(", ") : String(message)
+        )
+      );
+    }
+
+    return body as T;
+  } catch (e) {
+    clearTimeout(timeoutId);
+    if (e instanceof Error) {
+      if (e.name === "AbortError") {
+        throw new Error("Request timed out. Please try again.");
+      }
+      throw e;
+    }
+    throw new Error("Unexpected API error");
   }
-
-  return body as T;
 }
 
 export function mapBackendRoleToUserType(

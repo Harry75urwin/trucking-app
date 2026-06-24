@@ -1,5 +1,14 @@
 import { useEffect, useState, useCallback } from "react";
-import { Plus, Search, MoreHorizontal, Pencil, Trash2, X } from "lucide-react";
+import {
+  Plus,
+  Search,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+  X,
+  AlertTriangle,
+  RefreshCw,
+} from "lucide-react";
 import {
   flexRender,
   getCoreRowModel,
@@ -45,6 +54,7 @@ import {
 import { LoadStatusBadge } from "@/components/status-badges";
 import { supabase, type Load } from "@/lib/supabase";
 import { useLanguage } from "@/lib/language-context";
+import { toast } from "sonner";
 
 type LoadForm = Omit<
   Load,
@@ -88,13 +98,22 @@ export default function Loads() {
   const [editLoad, setEditLoad] = useState<Load | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
+  const [loadsError, setLoadsError] = useState<string | null>(null);
 
   const fetchLoads = useCallback(async () => {
-    const { data } = await supabase
-      .from("loads")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (data) setLoads(data);
+    setLoadsError(null);
+    try {
+      const { data, error } = await supabase
+        .from("loads")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      if (data) setLoads(data);
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Failed to load loads";
+      setLoadsError(message);
+      toast.error(message);
+    }
   }, []);
 
   useEffect(() => {
@@ -135,19 +154,30 @@ export default function Loads() {
 
   async function handleSave() {
     setSaving(true);
-    if (editLoad) {
-      await supabase.from("loads").update(form).eq("id", editLoad.id);
-    } else {
-      await supabase.from("loads").insert(form);
+    try {
+      if (editLoad) {
+        await supabase.from("loads").update(form).eq("id", editLoad.id);
+      } else {
+        await supabase.from("loads").insert(form);
+      }
+      setDialogOpen(false);
+      void fetchLoads();
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Failed to save load";
+      toast.error(message);
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
-    setDialogOpen(false);
-    void fetchLoads();
   }
 
   async function handleDelete(id: string) {
-    await supabase.from("loads").delete().eq("id", id);
-    void fetchLoads();
+    try {
+      await supabase.from("loads").delete().eq("id", id);
+      void fetchLoads();
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Failed to delete load";
+      toast.error(message);
+    }
   }
 
   const columns: ColumnDef<Load>[] = [
@@ -238,6 +268,21 @@ export default function Loads() {
 
   return (
     <div className="flex flex-col gap-6 p-6">
+      {loadsError && (
+        <div className="flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm dark:border-red-900 dark:bg-red-950/30">
+          <AlertTriangle className="size-4 text-red-600 dark:text-red-400 shrink-0" />
+          <span className="text-red-700 dark:text-red-300">{loadsError}</span>
+          <Button
+            variant="outline"
+            size="sm"
+            className="ml-auto"
+            onClick={() => void fetchLoads()}
+          >
+            <RefreshCw className="size-4 mr-1" />
+            Retry
+          </Button>
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
@@ -526,7 +571,7 @@ export default function Loads() {
               <select
                 value={form.status}
                 onChange={(e) =>
-                  setForm((p) => ({ ...p, status: e.target.value as any }))
+                  setForm((p) => ({ ...p, status: e.target.value }))
                 }
                 className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm"
               >
