@@ -7,6 +7,8 @@ import {
   Trash2,
   X,
   Wrench,
+  AlertTriangle,
+  RefreshCw,
 } from "lucide-react";
 import {
   flexRender,
@@ -53,6 +55,7 @@ import { Badge } from "@/components/ui/badge";
 import { VehicleStatusBadge } from "@/components/status-badges";
 import { supabase, type Vehicle } from "@/lib/supabase";
 import { useLanguage } from "@/lib/language-context";
+import { toast } from "sonner";
 
 type VehicleForm = Omit<Vehicle, "id" | "created_at">;
 
@@ -83,13 +86,23 @@ export default function Fleet() {
   const [editVehicle, setEditVehicle] = useState<Vehicle | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
+  const [fleetError, setFleetError] = useState<string | null>(null);
 
   const fetchVehicles = useCallback(async () => {
-    const { data } = await supabase
-      .from("vehicles")
-      .select("*")
-      .order("unit_number");
-    if (data) setVehicles(data);
+    setFleetError(null);
+    try {
+      const { data, error } = await supabase
+        .from("vehicles")
+        .select("*")
+        .order("unit_number");
+      if (error) throw error;
+      if (data) setVehicles(data);
+    } catch (e) {
+      const message =
+        e instanceof Error ? e.message : "Failed to load vehicles";
+      setFleetError(message);
+      toast.error(message);
+    }
   }, []);
 
   useEffect(() => {
@@ -120,19 +133,31 @@ export default function Fleet() {
 
   async function handleSave() {
     setSaving(true);
-    if (editVehicle) {
-      await supabase.from("vehicles").update(form).eq("id", editVehicle.id);
-    } else {
-      await supabase.from("vehicles").insert(form);
+    try {
+      if (editVehicle) {
+        await supabase.from("vehicles").update(form).eq("id", editVehicle.id);
+      } else {
+        await supabase.from("vehicles").insert(form);
+      }
+      setDialogOpen(false);
+      void fetchVehicles();
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Failed to save vehicle";
+      toast.error(message);
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
-    setDialogOpen(false);
-    void fetchVehicles();
   }
 
   async function handleDelete(id: string) {
-    await supabase.from("vehicles").delete().eq("id", id);
-    void fetchVehicles();
+    try {
+      await supabase.from("vehicles").delete().eq("id", id);
+      void fetchVehicles();
+    } catch (e) {
+      const message =
+        e instanceof Error ? e.message : "Failed to delete vehicle";
+      toast.error(message);
+    }
   }
 
   function isMaintenanceDue(vehicle: Vehicle): boolean {
@@ -243,6 +268,21 @@ export default function Fleet() {
 
   return (
     <div className="flex flex-col gap-6 p-6">
+      {fleetError && (
+        <div className="flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm dark:border-red-900 dark:bg-red-950/30">
+          <AlertTriangle className="size-4 text-red-600 dark:text-red-400 shrink-0" />
+          <span className="text-red-700 dark:text-red-300">{fleetError}</span>
+          <Button
+            variant="outline"
+            size="sm"
+            className="ml-auto"
+            onClick={() => void fetchVehicles()}
+          >
+            <RefreshCw className="size-4 mr-1" />
+            Retry
+          </Button>
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">

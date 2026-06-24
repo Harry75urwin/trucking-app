@@ -15,6 +15,7 @@ import {
   ApiParam,
   ApiTags,
   ApiQuery,
+  ApiResponse,
 } from '@nestjs/swagger';
 import { MessagingService } from './messaging.service';
 import { CreateConversationDto } from './dto/create-conversation.dto';
@@ -22,6 +23,7 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { ErrorResponseDto } from '../common/dto/error-response.dto';
 
 const ALL_ROLES = [
   'admin',
@@ -40,6 +42,10 @@ export class MessagingController {
   @ApiOperation({ summary: 'Create a conversation' })
   @Roles(...ALL_ROLES)
   @ApiCreatedResponse({ description: 'Conversation created successfully' })
+  @ApiResponse({ status: 400, type: ErrorResponseDto })
+  @ApiResponse({ status: 401, type: ErrorResponseDto })
+  @ApiResponse({ status: 403, type: ErrorResponseDto })
+  @ApiResponse({ status: 500, type: ErrorResponseDto })
   @Post('conversations')
   createConversation(@Body() dto: CreateConversationDto & { userId: number }) {
     return this.messagingService.createConversation(dto);
@@ -48,6 +54,9 @@ export class MessagingController {
   @ApiOperation({ summary: 'List conversations for current user' })
   @Roles(...ALL_ROLES)
   @ApiOkResponse({ description: 'Conversations returned successfully' })
+  @ApiResponse({ status: 401, type: ErrorResponseDto })
+  @ApiResponse({ status: 403, type: ErrorResponseDto })
+  @ApiResponse({ status: 500, type: ErrorResponseDto })
   @ApiQuery({ name: 'userId', required: true, type: Number })
   @Get('conversations')
   findAllConversations(@Query('userId') userId: string) {
@@ -58,6 +67,11 @@ export class MessagingController {
   @Roles(...ALL_ROLES)
   @ApiParam({ name: 'id', type: String })
   @ApiOkResponse({ description: 'Conversation returned successfully' })
+  @ApiResponse({ status: 400, type: ErrorResponseDto })
+  @ApiResponse({ status: 401, type: ErrorResponseDto })
+  @ApiResponse({ status: 403, type: ErrorResponseDto })
+  @ApiResponse({ status: 404, type: ErrorResponseDto })
+  @ApiResponse({ status: 500, type: ErrorResponseDto })
   @Get('conversations/:id')
   findOneConversation(
     @Query('userId') userId: string,
@@ -69,6 +83,10 @@ export class MessagingController {
   @ApiOperation({ summary: 'Send a message' })
   @Roles(...ALL_ROLES)
   @ApiCreatedResponse({ description: 'Message sent successfully' })
+  @ApiResponse({ status: 400, type: ErrorResponseDto })
+  @ApiResponse({ status: 401, type: ErrorResponseDto })
+  @ApiResponse({ status: 403, type: ErrorResponseDto })
+  @ApiResponse({ status: 500, type: ErrorResponseDto })
   @Post('messages')
   sendMessage(@Body() dto: CreateMessageDto & { senderId: number }) {
     return this.messagingService.sendMessage(dto);
@@ -77,6 +95,11 @@ export class MessagingController {
   @ApiOperation({ summary: 'List messages in a conversation' })
   @Roles(...ALL_ROLES)
   @ApiOkResponse({ description: 'Messages returned successfully' })
+  @ApiResponse({ status: 400, type: ErrorResponseDto })
+  @ApiResponse({ status: 401, type: ErrorResponseDto })
+  @ApiResponse({ status: 403, type: ErrorResponseDto })
+  @ApiResponse({ status: 404, type: ErrorResponseDto })
+  @ApiResponse({ status: 500, type: ErrorResponseDto })
   @ApiParam({ name: 'conversationId', type: String })
   @ApiQuery({ name: 'limit', required: false, type: Number })
   @Get('conversations/:conversationId/messages')
@@ -93,6 +116,11 @@ export class MessagingController {
   @ApiOperation({ summary: 'Mark message as read' })
   @Roles(...ALL_ROLES)
   @ApiOkResponse({ description: 'Message marked as read' })
+  @ApiResponse({ status: 400, type: ErrorResponseDto })
+  @ApiResponse({ status: 401, type: ErrorResponseDto })
+  @ApiResponse({ status: 403, type: ErrorResponseDto })
+  @ApiResponse({ status: 404, type: ErrorResponseDto })
+  @ApiResponse({ status: 500, type: ErrorResponseDto })
   @ApiQuery({ name: 'userId', required: true, type: Number })
   @Patch('messages/:id/read')
   markAsRead(@Query('userId') userId: string, @Param('id') id: string) {

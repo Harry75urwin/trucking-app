@@ -14,6 +14,7 @@ import {
   ApiOperation,
   ApiParam,
   ApiTags,
+  ApiResponse,
 } from '@nestjs/swagger';
 import { CreateTrackingEventDto } from './dto/create-tracking-event.dto';
 import { UpdateTrackingEventDto } from './dto/update-tracking-event.dto';
@@ -21,6 +22,7 @@ import { TrackingService } from './tracking.service';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { ErrorResponseDto } from '../common/dto/error-response.dto';
 
 const ALL_ROLES = [
   'admin',
@@ -45,6 +47,10 @@ export class TrackingController {
   @ApiOperation({ summary: 'Create a tracking event' })
   @Roles(...TRACKING_MUTATION_ROLES)
   @ApiCreatedResponse({ description: 'Tracking event created successfully' })
+  @ApiResponse({ status: 400, type: ErrorResponseDto })
+  @ApiResponse({ status: 401, type: ErrorResponseDto })
+  @ApiResponse({ status: 403, type: ErrorResponseDto })
+  @ApiResponse({ status: 500, type: ErrorResponseDto })
   @Post()
   create(@Body() createTrackingEventDto: CreateTrackingEventDto) {
     return this.trackingService.create(createTrackingEventDto);
@@ -53,6 +59,9 @@ export class TrackingController {
   @ApiOperation({ summary: 'List tracking events' })
   @Roles(...ALL_ROLES)
   @ApiOkResponse({ description: 'Tracking events returned successfully' })
+  @ApiResponse({ status: 401, type: ErrorResponseDto })
+  @ApiResponse({ status: 403, type: ErrorResponseDto })
+  @ApiResponse({ status: 500, type: ErrorResponseDto })
   @Get()
   findAll() {
     return this.trackingService.findAll();
@@ -62,6 +71,11 @@ export class TrackingController {
   @Roles(...ALL_ROLES)
   @ApiParam({ name: 'id', type: String })
   @ApiOkResponse({ description: 'Tracking event returned successfully' })
+  @ApiResponse({ status: 400, type: ErrorResponseDto })
+  @ApiResponse({ status: 401, type: ErrorResponseDto })
+  @ApiResponse({ status: 403, type: ErrorResponseDto })
+  @ApiResponse({ status: 404, type: ErrorResponseDto })
+  @ApiResponse({ status: 500, type: ErrorResponseDto })
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.trackingService.findOne(id);
@@ -71,6 +85,11 @@ export class TrackingController {
   @Roles(...TRACKING_MUTATION_ROLES)
   @ApiParam({ name: 'id', type: String })
   @ApiOkResponse({ description: 'Tracking event updated successfully' })
+  @ApiResponse({ status: 400, type: ErrorResponseDto })
+  @ApiResponse({ status: 401, type: ErrorResponseDto })
+  @ApiResponse({ status: 403, type: ErrorResponseDto })
+  @ApiResponse({ status: 404, type: ErrorResponseDto })
+  @ApiResponse({ status: 500, type: ErrorResponseDto })
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -83,6 +102,11 @@ export class TrackingController {
   @Roles(...TRACKING_MUTATION_ROLES)
   @ApiParam({ name: 'id', type: String })
   @ApiOkResponse({ description: 'Tracking event deleted successfully' })
+  @ApiResponse({ status: 400, type: ErrorResponseDto })
+  @ApiResponse({ status: 401, type: ErrorResponseDto })
+  @ApiResponse({ status: 403, type: ErrorResponseDto })
+  @ApiResponse({ status: 404, type: ErrorResponseDto })
+  @ApiResponse({ status: 500, type: ErrorResponseDto })
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.trackingService.remove(id);

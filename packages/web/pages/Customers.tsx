@@ -6,6 +6,8 @@ import {
   Pencil,
   Trash2,
   X,
+  AlertTriangle,
+  RefreshCw,
   Building2,
   Phone,
   Mail,
@@ -54,6 +56,7 @@ import {
 } from "@/components/ui/card";
 import { supabase, type Customer } from "@/lib/supabase";
 import { useLanguage } from "@/lib/language-context";
+import { toast } from "sonner";
 
 const emptyForm = {
   name: "",
@@ -76,10 +79,23 @@ export default function Customers() {
   const [editCustomer, setEditCustomer] = useState<Customer | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
+  const [customersError, setCustomersError] = useState<string | null>(null);
 
   const fetchCustomers = useCallback(async () => {
-    const { data } = await supabase.from("customers").select("*").order("name");
-    if (data) setCustomers(data);
+    setCustomersError(null);
+    try {
+      const { data, error } = await supabase
+        .from("customers")
+        .select("*")
+        .order("name");
+      if (error) throw error;
+      if (data) setCustomers(data);
+    } catch (e) {
+      const message =
+        e instanceof Error ? e.message : "Failed to load customers";
+      setCustomersError(message);
+      toast.error(message);
+    }
   }, []);
 
   useEffect(() => {
@@ -110,19 +126,32 @@ export default function Customers() {
 
   async function handleSave() {
     setSaving(true);
-    if (editCustomer) {
-      await supabase.from("customers").update(form).eq("id", editCustomer.id);
-    } else {
-      await supabase.from("customers").insert(form);
+    try {
+      if (editCustomer) {
+        await supabase.from("customers").update(form).eq("id", editCustomer.id);
+      } else {
+        await supabase.from("customers").insert(form);
+      }
+      setDialogOpen(false);
+      void fetchCustomers();
+    } catch (e) {
+      const message =
+        e instanceof Error ? e.message : "Failed to save customer";
+      toast.error(message);
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
-    setDialogOpen(false);
-    void fetchCustomers();
   }
 
   async function handleDelete(id: string) {
-    await supabase.from("customers").delete().eq("id", id);
-    void fetchCustomers();
+    try {
+      await supabase.from("customers").delete().eq("id", id);
+      void fetchCustomers();
+    } catch (e) {
+      const message =
+        e instanceof Error ? e.message : "Failed to delete customer";
+      toast.error(message);
+    }
   }
 
   const columns: ColumnDef<Customer>[] = [
@@ -212,6 +241,23 @@ export default function Customers() {
 
   return (
     <div className="flex flex-col gap-6 p-6">
+      {customersError && (
+        <div className="flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm dark:border-red-900 dark:bg-red-950/30">
+          <AlertTriangle className="size-4 text-red-600 dark:text-red-400 shrink-0" />
+          <span className="text-red-700 dark:text-red-300">
+            {customersError}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            className="ml-auto"
+            onClick={() => void fetchCustomers()}
+          >
+            <RefreshCw className="size-4 mr-1" />
+            Retry
+          </Button>
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">

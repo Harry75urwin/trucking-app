@@ -7,6 +7,8 @@ import {
   ArrowRight,
   CheckCircle2,
   AlertCircle,
+  AlertTriangle,
+  RefreshCw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +34,7 @@ import {
   type LoadAssignment,
 } from "@/lib/supabase";
 import { useLanguage } from "@/lib/language-context";
+import { toast } from "sonner";
 
 type LoadWithAssignment = Load & {
   customers?: { name: string };
@@ -55,10 +58,16 @@ export default function Dispatch() {
     Record<string, { driver_id: string; truck_id: string; trailer_id: string }>
   >({});
   const [saving, setSaving] = useState<string | null>(null);
+  const [dispatchError, setDispatchError] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
-    const [{ data: loadsData }, { data: driversData }, { data: vehiclesData }] =
-      await Promise.all([
+    setDispatchError(null);
+    try {
+      const [
+        { data: loadsData },
+        { data: driversData },
+        { data: vehiclesData },
+      ] = await Promise.all([
         supabase
           .from("loads")
           .select(
@@ -69,11 +78,17 @@ export default function Dispatch() {
         supabase.from("drivers").select("*").in("status", ["available"]),
         supabase.from("vehicles").select("*").eq("status", "active"),
       ]);
-    if (loadsData) setLoads(loadsData as LoadWithAssignment[]);
-    if (driversData) setDrivers(driversData);
-    if (vehiclesData) {
-      setTrucks(vehiclesData.filter((v: Vehicle) => v.type === "truck"));
-      setTrailers(vehiclesData.filter((v: Vehicle) => v.type === "trailer"));
+      if (loadsData) setLoads(loadsData as LoadWithAssignment[]);
+      if (driversData) setDrivers(driversData);
+      if (vehiclesData) {
+        setTrucks(vehiclesData.filter((v: Vehicle) => v.type === "truck"));
+        setTrailers(vehiclesData.filter((v: Vehicle) => v.type === "trailer"));
+      }
+    } catch (e) {
+      const message =
+        e instanceof Error ? e.message : "Failed to load dispatch data";
+      setDispatchError(message);
+      toast.error(message);
     }
   }, []);
 
@@ -92,33 +107,39 @@ export default function Dispatch() {
 
     const existing = loads.find((l) => l.id === loadId)?.load_assignments?.[0];
 
-    if (existing) {
-      await supabase
-        .from("load_assignments")
-        .update({
+    try {
+      if (existing) {
+        await supabase
+          .from("load_assignments")
+          .update({
+            driver_id: a.driver_id || null,
+            truck_id: a.truck_id || null,
+            trailer_id: a.trailer_id || null,
+          })
+          .eq("load_id", loadId);
+      } else {
+        await supabase.from("load_assignments").insert({
+          load_id: loadId,
           driver_id: a.driver_id || null,
           truck_id: a.truck_id || null,
           trailer_id: a.trailer_id || null,
-        })
-        .eq("load_id", loadId);
-    } else {
-      await supabase.from("load_assignments").insert({
-        load_id: loadId,
-        driver_id: a.driver_id || null,
-        truck_id: a.truck_id || null,
-        trailer_id: a.trailer_id || null,
-      });
+        });
+      }
+
+      await supabase
+        .from("loads")
+        .update({ status: "dispatched", updated_at: new Date().toISOString() })
+        .eq("id", loadId)
+        .eq("status", "pending");
+
+      setSaving(null);
+      setAssigning(null);
+      void fetchData();
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Failed to assign load";
+      toast.error(message);
+      setSaving(null);
     }
-
-    await supabase
-      .from("loads")
-      .update({ status: "dispatched", updated_at: new Date().toISOString() })
-      .eq("id", loadId)
-      .eq("status", "pending");
-
-    setSaving(null);
-    setAssigning(null);
-    void fetchData();
   }
 
   const pendingLoads = loads.filter((l) => l.status === "pending");
@@ -351,6 +372,23 @@ export default function Dispatch() {
 
   return (
     <div className="flex flex-col gap-6 p-6">
+      {dispatchError && (
+        <div className="flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm dark:border-red-900 dark:bg-red-950/30">
+          <AlertTriangle className="size-4 text-red-600 dark:text-red-400 shrink-0" />
+          <span className="text-red-700 dark:text-red-300">
+            {dispatchError}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            className="ml-auto"
+            onClick={() => void fetchData()}
+          >
+            <RefreshCw className="size-4 mr-1" />
+            Retry
+          </Button>
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">

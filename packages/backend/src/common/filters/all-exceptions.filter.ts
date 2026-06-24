@@ -6,12 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
-
-interface ErrorResponse {
-  statusCode: number;
-  message: string;
-  timestamp: string;
-}
+import { ErrorResponseDto } from '../dto/error-response.dto';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -24,11 +19,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const { status, message } = this.getStatusAndMessage(exception);
 
-    const errorResponse: ErrorResponse = {
-      statusCode: status,
-      message: Array.isArray(message) ? message.join(', ') : String(message),
-      timestamp: new Date().toISOString(),
-    };
+    const errorResponse = new ErrorResponseDto();
+    errorResponse.statusCode = status;
+    errorResponse.message = Array.isArray(message)
+      ? message.join(', ')
+      : String(message);
+    errorResponse.timestamp = new Date().toISOString();
 
     response.status(status).json(errorResponse);
   }

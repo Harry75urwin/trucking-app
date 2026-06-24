@@ -85,7 +85,6 @@ export default function ChatScreen({ route, navigation }: any) {
     } catch (e) {
       const message = e instanceof Error ? e.message : 'Failed to send message';
       setSendError(message);
-      Alert.alert('Error', message);
     }
   };
 
@@ -151,9 +150,16 @@ export default function ChatScreen({ route, navigation }: any) {
       />
 
       <View style={[styles.inputContainer, { paddingBottom: Math.max(insets.bottom, 16) }]}>
-        {sendError && <Text style={styles.sendErrorText}>{sendError}</Text>}
+        {sendError && (
+          <View style={styles.sendErrorContainer}>
+            <Text style={styles.sendErrorText}>{sendError}</Text>
+            <TouchableOpacity style={styles.retrySendButton} onPress={handleSend}>
+              <Text style={styles.retrySendButtonText}>Retry</Text>
+            </TouchableOpacity>
+          </View>
+        )}
         <TextInput
-          style={styles.textInput}
+          style={[styles.textInput, sendError && styles.textInputWithError]}
           placeholder="Type a message..."
           value={messageBody}
           onChangeText={setMessageBody}
@@ -271,6 +277,35 @@ const styles = StyleSheet.create({
     color: '#ef4444',
     fontSize: 12,
     marginBottom: 4,
+  },
+  sendErrorContainer: {
+    position: 'absolute',
+    bottom: '100%',
+    left: 16,
+    right: 16,
+    backgroundColor: '#fef2f2',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginBottom: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  retrySendButton: {
+    backgroundColor: '#ef4444',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+    marginLeft: 8,
+  },
+  retrySendButtonText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  textInputWithError: {
+    marginBottom: 40,
   },
   textInput: {
     flex: 1,

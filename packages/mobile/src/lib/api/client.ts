@@ -17,10 +17,21 @@ async function request<T>(
   path: string,
   options: RequestInit = {},
   token?: string | null,
+  signal?: AbortSignal,
 ): Promise<T> {
   const url = `${API_URL}${path}`;
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT);
+
+  if (signal?.aborted) {
+    controller.abort();
+  } else if (signal) {
+    signal.addEventListener(
+      "abort",
+      () => controller.abort(),
+      { once: true },
+    );
+  }
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -74,14 +85,32 @@ async function request<T>(
 }
 
 export const apiClient = {
-  get: <T>(path: string, token?: string | null) =>
-    request<T>(path, { method: 'GET' }, token),
-  post: <T>(path: string, body: unknown, token?: string | null) =>
-    request<T>(path, { method: 'POST', body: JSON.stringify(body) }, token),
-  put: <T>(path: string, body: unknown, token?: string | null) =>
-    request<T>(path, { method: 'PUT', body: JSON.stringify(body) }, token),
-  patch: <T>(path: string, body: unknown, token?: string | null) =>
-    request<T>(path, { method: 'PATCH', body: JSON.stringify(body) }, token),
-  delete: <T>(path: string, token?: string | null) =>
-    request<T>(path, { method: 'DELETE' }, token),
+  get: <T>(
+    path: string,
+    token?: string | null,
+    signal?: AbortSignal,
+  ) => request<T>(path, { method: "GET" }, token, signal),
+  post: <T>(
+    path: string,
+    body: unknown,
+    token?: string | null,
+    signal?: AbortSignal,
+  ) => request<T>(path, { method: "POST", body: JSON.stringify(body) }, token, signal),
+  put: <T>(
+    path: string,
+    body: unknown,
+    token?: string | null,
+    signal?: AbortSignal,
+  ) => request<T>(path, { method: "PUT", body: JSON.stringify(body) }, token, signal),
+  patch: <T>(
+    path: string,
+    body: unknown,
+    token?: string | null,
+    signal?: AbortSignal,
+  ) => request<T>(path, { method: "PATCH", body: JSON.stringify(body) }, token, signal),
+  delete: <T>(
+    path: string,
+    token?: string | null,
+    signal?: AbortSignal,
+  ) => request<T>(path, { method: "DELETE" }, token, signal),
 };

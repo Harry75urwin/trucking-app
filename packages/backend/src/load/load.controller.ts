@@ -14,6 +14,7 @@ import {
   ApiOperation,
   ApiParam,
   ApiTags,
+  ApiResponse,
 } from '@nestjs/swagger';
 import { CreateLoadDto } from './dto/create-load.dto';
 import { UpdateLoadDto } from './dto/update-load.dto';
@@ -21,6 +22,7 @@ import { LoadService } from './load.service';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { ErrorResponseDto } from '../common/dto/error-response.dto';
 
 const ALL_ROLES = [
   'admin',
@@ -40,6 +42,10 @@ export class LoadController {
   @ApiOperation({ summary: 'Create a load' })
   @Roles(...OPERATIONS_ROLES)
   @ApiCreatedResponse({ description: 'Load created successfully' })
+  @ApiResponse({ status: 400, type: ErrorResponseDto })
+  @ApiResponse({ status: 401, type: ErrorResponseDto })
+  @ApiResponse({ status: 403, type: ErrorResponseDto })
+  @ApiResponse({ status: 500, type: ErrorResponseDto })
   @Post()
   create(@Body() createLoadDto: CreateLoadDto) {
     return this.loadService.create(createLoadDto);
@@ -48,6 +54,9 @@ export class LoadController {
   @ApiOperation({ summary: 'List all loads' })
   @Roles(...ALL_ROLES)
   @ApiOkResponse({ description: 'Loads returned successfully' })
+  @ApiResponse({ status: 401, type: ErrorResponseDto })
+  @ApiResponse({ status: 403, type: ErrorResponseDto })
+  @ApiResponse({ status: 500, type: ErrorResponseDto })
   @Get()
   findAll() {
     return this.loadService.findAll();
@@ -57,6 +66,11 @@ export class LoadController {
   @Roles(...ALL_ROLES)
   @ApiParam({ name: 'id', type: String })
   @ApiOkResponse({ description: 'Load returned successfully' })
+  @ApiResponse({ status: 400, type: ErrorResponseDto })
+  @ApiResponse({ status: 401, type: ErrorResponseDto })
+  @ApiResponse({ status: 403, type: ErrorResponseDto })
+  @ApiResponse({ status: 404, type: ErrorResponseDto })
+  @ApiResponse({ status: 500, type: ErrorResponseDto })
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.loadService.findOne(id);
@@ -66,6 +80,11 @@ export class LoadController {
   @Roles(...OPERATIONS_ROLES)
   @ApiParam({ name: 'id', type: String })
   @ApiOkResponse({ description: 'Load updated successfully' })
+  @ApiResponse({ status: 400, type: ErrorResponseDto })
+  @ApiResponse({ status: 401, type: ErrorResponseDto })
+  @ApiResponse({ status: 403, type: ErrorResponseDto })
+  @ApiResponse({ status: 404, type: ErrorResponseDto })
+  @ApiResponse({ status: 500, type: ErrorResponseDto })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateLoadDto: UpdateLoadDto) {
     return this.loadService.update(id, updateLoadDto);
@@ -75,6 +94,11 @@ export class LoadController {
   @Roles(...OPERATIONS_ROLES)
   @ApiParam({ name: 'id', type: String })
   @ApiOkResponse({ description: 'Load deleted successfully' })
+  @ApiResponse({ status: 400, type: ErrorResponseDto })
+  @ApiResponse({ status: 401, type: ErrorResponseDto })
+  @ApiResponse({ status: 403, type: ErrorResponseDto })
+  @ApiResponse({ status: 404, type: ErrorResponseDto })
+  @ApiResponse({ status: 500, type: ErrorResponseDto })
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.loadService.remove(id);
