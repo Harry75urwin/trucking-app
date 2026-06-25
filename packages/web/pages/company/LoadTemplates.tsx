@@ -43,10 +43,7 @@ export default function LoadTemplatesPage() {
     setError(null);
     try {
       const orgId = session.user?.organizationId;
-      const data = await fetchLoadTemplates(
-        session,
-        orgId ? String(orgId) : undefined
-      );
+      const data = await fetchLoadTemplates(session, orgId);
       setTemplates(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load");

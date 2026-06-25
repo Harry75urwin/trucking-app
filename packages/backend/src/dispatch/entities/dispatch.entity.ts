@@ -1,4 +1,7 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Load } from '../../load/entities/load.entity';
+import { Driver } from '../../driver/entities/driver.entity';
+import { Vehicle } from '../../vehicle/entities/vehicle.entity';
 
 @Entity('dispatches')
 export class Dispatch {
@@ -14,8 +17,20 @@ export class Dispatch {
   @Column()
   vehicleId!: string;
 
+  @ManyToOne(() => Load, { nullable: true })
+  @JoinColumn({ name: 'loadId' })
+  load?: Load;
+
+  @ManyToOne(() => Driver, { nullable: true })
+  @JoinColumn({ name: 'driverId' })
+  driver?: Driver;
+
+  @ManyToOne(() => Vehicle, { nullable: true })
+  @JoinColumn({ name: 'vehicleId' })
+  vehicle?: Vehicle;
+
   @Column({ nullable: true })
-  organizationId?: string;
+  organizationId?: number;
 
   @Column({ nullable: true })
   scheduledAt?: string;

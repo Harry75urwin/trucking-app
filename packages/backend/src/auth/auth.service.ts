@@ -7,7 +7,8 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { createHash, createHmac, randomUUID } from 'crypto';
+import { createHmac } from 'crypto';
+import bcrypt from 'bcrypt';
 import { DEMO_AUTH_ORGANIZATION, DEMO_AUTH_USERS } from '../demo/demo-data';
 import { LoginDto } from './dto/login.dto';
 import {
@@ -56,7 +57,7 @@ export class AuthService implements OnModuleInit {
     for (let i = 0; i < DEMO_AUTH_USERS.length; i++) {
       const demoUser = DEMO_AUTH_USERS[i];
       const userCreatedAt = new Date(now.getTime() + i * 60_000);
-      const { salt, passwordHash } = this.hashPassword(demoUser.password);
+      const passwordHash = this.hashPassword(demoUser.password);
 
       const user = this.userRepository.create({
         firstName: demoUser.firstName,
@@ -68,7 +69,6 @@ export class AuthService implements OnModuleInit {
         isActive: true,
         createdAt: userCreatedAt,
         updatedAt: userCreatedAt,
-        salt,
         password: passwordHash,
       });
       await this.userRepository.save(user);
@@ -99,7 +99,7 @@ export class AuthService implements OnModuleInit {
 
     const now = new Date();
     const organization = await this.createOrganizationIfNeeded(signupDto, now);
-    const { salt, passwordHash } = this.hashPassword(signupDto.password);
+    const passwordHash = this.hashPassword(signupDto.password);
 
     const user = this.userRepository.create({
       firstName: signupDto.firstName,
@@ -111,7 +111,6 @@ export class AuthService implements OnModuleInit {
       isActive: true,
       createdAt: now,
       updatedAt: now,
-      salt,
       password: passwordHash,
     });
     const savedUser = await this.userRepository.save(user);
@@ -142,9 +141,15 @@ export class AuthService implements OnModuleInit {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const { passwordHash } = this.hashPassword(loginDto.password, user.salt);
+    if (!user.password) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
 
-    if (passwordHash !== user.password) {
+    const passwordMatches = await bcrypt.compare(
+      loginDto.password,
+      user.password,
+    );
+    if (!passwordMatches) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -190,13 +195,8 @@ export class AuthService implements OnModuleInit {
     return this.organizationRepository.save(organization);
   }
 
-  private hashPassword(password: string, salt: string = randomUUID()) {
-    return {
-      salt,
-      passwordHash: createHash('sha256')
-        .update(`${salt}:${password}`)
-        .digest('hex'),
-    };
+  private hashPassword(password: string): string {
+    return bcrypt.hashSync(password, 10);
   }
 
   private createAccessToken(user: User) {

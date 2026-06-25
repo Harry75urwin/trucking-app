@@ -66,16 +66,7 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
         phoneNumber: phone,
         password,
       });
-      const typedSession = {
-        ...session,
-        userType: userType as "trucker" | "company" | "customer" | "admin",
-        backendRole: userType,
-        user: {
-          ...session.user,
-          role: userType,
-        },
-      };
-      onLoginSuccess(typedSession);
+      onLoginSuccess(session);
     } catch (loginError) {
       setError(
         loginError instanceof Error

@@ -179,7 +179,7 @@ export interface BackendDispatch {
   loadId: string;
   driverId: string;
   vehicleId: string;
-  organizationId?: string;
+  organizationId?: number;
   scheduledAt?: string;
   dispatchedAt?: string;
   status?: string;
@@ -228,9 +228,13 @@ export async function updateLoad(
 }
 
 export async function fetchVehicles(
-  session: AuthSession
+  session: AuthSession,
+  organizationId?: number
 ): Promise<BackendVehicle[]> {
-  return requestJson<BackendVehicle[]>("/vehicles", {
+  const qs = organizationId
+    ? `?organization_id=${encodeURIComponent(organizationId)}`
+    : "";
+  return requestJson<BackendVehicle[]>(`/vehicles${qs}`, {
     accessToken: getAccessToken(session),
   });
 }
@@ -385,9 +389,13 @@ export async function deleteOrganization(
 }
 
 export async function fetchDrivers(
-  session: AuthSession
+  session: AuthSession,
+  organizationId?: number
 ): Promise<BackendDriver[]> {
-  return requestJson<BackendDriver[]>("/drivers", {
+  const qs = organizationId
+    ? `?organization_id=${encodeURIComponent(organizationId)}`
+    : "";
+  return requestJson<BackendDriver[]>(`/drivers${qs}`, {
     accessToken: getAccessToken(session),
   });
 }
@@ -433,7 +441,7 @@ export interface BackendDriver {
 
 export async function fetchLoadTemplates(
   session: AuthSession,
-  organizationId?: string
+  organizationId?: number
 ): Promise<BackendLoadTemplate[]> {
   const qs = organizationId
     ? `?organization_id=${encodeURIComponent(organizationId)}`

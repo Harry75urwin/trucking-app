@@ -6,6 +6,7 @@ import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-cont
 import { Text, View, StyleSheet } from "react-native";
 import { useAuth } from "../contexts/AuthContext";
 import { canAccessAnyModel, canAccessModel, type AccessModel, type UserRole } from "../lib/rbac";
+import { SocketProvider } from "../lib/socket-context";
 
 import AccessDeniedScreen from "../components/AccessDeniedScreen";
 import SplashScreen from "../screens/auth/SplashScreen";
@@ -344,45 +345,47 @@ export default function AppNavigator() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Stack.Navigator>
-          {!token || !user ? (
-            <>
-              <Stack.Screen
-                name="Splash"
-                component={SplashScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="Login"
-                component={LoginScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="Signup"
-                component={SignupScreen}
-                options={{ title: "Create account" }}
-              />
-            </>
-          ) : (
-            <>
-              <Stack.Screen
-                name="Main"
-                component={TabNavigator}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="ChatScreen"
-                component={GuardedChatScreen}
-                options={{ title: "Chat" }}
-              />
-              <Stack.Screen
-                name="LoadDetailScreen"
-                component={GuardedLoadDetailScreen}
-                options={{ title: "Load Details" }}
-              />
-            </>
-          )}
-        </Stack.Navigator>
+        <SocketProvider token={token}>
+          <Stack.Navigator>
+            {!token || !user ? (
+              <>
+                <Stack.Screen
+                  name="Splash"
+                  component={SplashScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="Login"
+                  component={LoginScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="Signup"
+                  component={SignupScreen}
+                  options={{ title: "Create account" }}
+                />
+              </>
+            ) : (
+              <>
+                <Stack.Screen
+                  name="Main"
+                  component={TabNavigator}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="ChatScreen"
+                  component={GuardedChatScreen}
+                  options={{ title: "Chat" }}
+                />
+                <Stack.Screen
+                  name="LoadDetailScreen"
+                  component={GuardedLoadDetailScreen}
+                  options={{ title: "Load Details" }}
+                />
+              </>
+            )}
+          </Stack.Navigator>
+        </SocketProvider>
       </NavigationContainer>
     </SafeAreaProvider>
   );

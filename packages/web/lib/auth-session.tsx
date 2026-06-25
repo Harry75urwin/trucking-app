@@ -1,6 +1,9 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3000";
+
 export type UserType = "trucker" | "company" | "customer" | "admin";
 
 export interface AuthSession {
@@ -102,6 +105,10 @@ export function AuthSessionProvider({ children }: { children: ReactNode }) {
       session,
       login: (nextSession: AuthSession) => setSession(nextSession),
       logout: () => {
+        fetch(`${API_BASE_URL}/auth/logout`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        }).catch(() => void 0);
         clearAuthSession();
         setSession({
           isAuthenticated: false,

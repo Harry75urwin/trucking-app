@@ -1,4 +1,5 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Customer } from '../../customer/entities/customer.entity';
 
 @Entity('loads')
 export class Load {
@@ -10,6 +11,10 @@ export class Load {
 
   @Column()
   customer_id!: string;
+
+  @ManyToOne(() => Customer, { nullable: true })
+  @JoinColumn({ name: 'customer_id' })
+  customer?: Customer;
 
   @Column()
   origin_city!: string;

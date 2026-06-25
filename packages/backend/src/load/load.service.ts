@@ -38,16 +38,22 @@ export class LoadService implements OnModuleInit {
   }
 
   findAll() {
-    return this.loadRepository.find();
+    return this.loadRepository.find({ relations: ['customer'] });
   }
 
   findOne(id: string) {
-    return this.loadRepository.findOne({ where: { id } });
+    return this.loadRepository.findOne({
+      where: { id },
+      relations: ['customer'],
+    });
   }
 
   async update(id: string, updateLoadDto: UpdateLoadDto) {
     await this.loadRepository.update(id, updateLoadDto);
-    return this.loadRepository.findOne({ where: { id } });
+    return this.loadRepository.findOne({
+      where: { id },
+      relations: ['customer'],
+    });
   }
 
   remove(id: string) {

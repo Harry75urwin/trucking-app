@@ -38,11 +38,16 @@ export class DispatchService implements OnModuleInit {
   }
 
   findAll() {
-    return this.dispatchRepository.find();
+    return this.dispatchRepository.find({
+      relations: ['load', 'driver', 'vehicle'],
+    });
   }
 
   findOne(id: string) {
-    return this.dispatchRepository.findOne({ where: { id } });
+    return this.dispatchRepository.findOne({
+      where: { id },
+      relations: ['load', 'driver', 'vehicle'],
+    });
   }
 
   update(id: string, updateDispatchDto: UpdateDispatchDto) {

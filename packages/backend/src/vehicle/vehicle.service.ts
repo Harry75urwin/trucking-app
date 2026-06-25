@@ -37,17 +37,24 @@ export class VehicleService implements OnModuleInit {
     return this.vehicleRepository.save(vehicle);
   }
 
-  findAll() {
-    return this.vehicleRepository.find();
+  findAll(organizationId?: number) {
+    const where = organizationId ? { organizationId } : undefined;
+    return this.vehicleRepository.find({ where, relations: ['driver'] });
   }
 
   findOne(id: string) {
-    return this.vehicleRepository.findOne({ where: { id } });
+    return this.vehicleRepository.findOne({
+      where: { id },
+      relations: ['driver'],
+    });
   }
 
   async update(id: string, updateVehicleDto: UpdateVehicleDto) {
     await this.vehicleRepository.update(id, updateVehicleDto);
-    return this.vehicleRepository.findOne({ where: { id } });
+    return this.vehicleRepository.findOne({
+      where: { id },
+      relations: ['driver'],
+    });
   }
 
   remove(id: string) {

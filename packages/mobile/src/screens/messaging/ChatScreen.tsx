@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, RefreshControl, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { useAuth } from '../../contexts/AuthContext';
 import { apiClient } from '../../lib/api/client';
+import { useSocket } from '../../lib/socket-context';
 import type { Message, Conversation } from '../../types';
 
 import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
@@ -10,6 +11,7 @@ export default function ChatScreen({ route, navigation }: any) {
   const insets = useSafeAreaInsets();
   const { conversationId } = route.params;
   const { user, token, loads } = useAuth();
+  const { socket, isConnected } = useSocket();
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [loading, setLoading] = useState(true);
@@ -50,6 +52,25 @@ export default function ChatScreen({ route, navigation }: any) {
     }
   }, [conversationId, token, user?.id]);
 
+  useEffect(() => {
+    if (!socket || !conversationId || !user) return;
+
+    const handleNewMessage = (msg: Message) => {
+      if (msg.conversationId === conversationId && msg.senderId !== user.id) {
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === msg.id)) return prev;
+          return [...prev, msg];
+        });
+      }
+    };
+
+    socket.on("newMessage", handleNewMessage);
+
+    return () => {
+      socket.off("newMessage", handleNewMessage);
+    };
+  }, [socket, conversationId, user?.id]);
+
   const onRefresh = async () => {
     setRefreshing(true);
     setChatError(null);
@@ -66,6 +87,8 @@ export default function ChatScreen({ route, navigation }: any) {
 
   const handleSend = async () => {
     if (!messageBody.trim() || !token || !conversationId || !user || !conversation) return;
+    const receiverId = conversation.receiverId ?? conversation.createdBy;
+    if (!receiverId) return;
     setSendError(null);
 
     try {
@@ -74,7 +97,7 @@ export default function ChatScreen({ route, navigation }: any) {
         {
           conversationId,
           senderId: user.id,
-          receiverId: conversation.receiverId ?? conversation.createdBy,
+          receiverId,
           body: messageBody.trim(),
         },
         token,

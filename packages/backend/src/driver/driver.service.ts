@@ -37,8 +37,9 @@ export class DriverService implements OnModuleInit {
     return this.driverRepository.save(driver);
   }
 
-  findAll() {
-    return this.driverRepository.find();
+  findAll(organizationId?: number) {
+    const where = organizationId ? { organizationId } : undefined;
+    return this.driverRepository.find({ where });
   }
 
   findOne(id: string) {

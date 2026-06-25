@@ -10,8 +10,8 @@ export class CreateDispatchDto {
   @ApiProperty({ example: 'vehicle-uuid-123' })
   vehicleId!: string;
 
-  @ApiPropertyOptional({ example: 'organization-uuid-123' })
-  organizationId?: string;
+  @ApiPropertyOptional({ example: 1 })
+  organizationId?: number;
 
   @ApiPropertyOptional({ example: '2026-06-12T06:00:00.000Z' })
   scheduledAt?: string;

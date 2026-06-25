@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -13,6 +14,7 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiTags,
   ApiResponse,
 } from '@nestjs/swagger';
@@ -50,9 +52,10 @@ export class DriverController {
   @ApiResponse({ status: 401, type: ErrorResponseDto })
   @ApiResponse({ status: 403, type: ErrorResponseDto })
   @ApiResponse({ status: 500, type: ErrorResponseDto })
+  @ApiQuery({ name: 'organization_id', required: false, type: Number })
   @Get()
-  findAll() {
-    return this.driverService.findAll();
+  findAll(@Query('organization_id') organizationId?: number) {
+    return this.driverService.findAll(organizationId);
   }
 
   @ApiOperation({ summary: 'Get a driver by id' })
@@ -75,7 +78,6 @@ export class DriverController {
   @ApiOkResponse({ description: 'Driver updated successfully' })
   @ApiResponse({ status: 400, type: ErrorResponseDto })
   @ApiResponse({ status: 401, type: ErrorResponseDto })
-  @ApiResponse({ status: 403, type: ErrorResponseDto })
   @ApiResponse({ status: 404, type: ErrorResponseDto })
   @ApiResponse({ status: 500, type: ErrorResponseDto })
   @Patch(':id')

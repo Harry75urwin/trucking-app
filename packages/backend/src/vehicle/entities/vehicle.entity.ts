@@ -1,4 +1,5 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Driver } from '../../driver/entities/driver.entity';
 
 @Entity('vehicles')
 export class Vehicle {
@@ -39,6 +40,16 @@ export class Vehicle {
 
   @Column()
   status!: string;
+
+  @Column({ nullable: true })
+  driverId?: string;
+
+  @Column({ nullable: true })
+  organizationId?: number;
+
+  @ManyToOne(() => Driver)
+  @JoinColumn({ name: 'driverId' })
+  driver?: Driver;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at!: string;

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { Repository } from 'typeorm';
@@ -8,13 +8,17 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { Conversation } from './entities/conversation.entity';
 import { Message } from './entities/message.entity';
 import { User } from '../user/entities/user.entity';
+import {
+  DEMO_CONVERSATIONS,
+  DEMO_MESSAGES,
+} from '../demo/demo-data';
 
 function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 9);
 }
 
 @Injectable()
-export class MessagingService {
+export class MessagingService implements OnModuleInit {
   constructor(
     @InjectRepository(Conversation)
     private conversationRepository: Repository<Conversation>,
@@ -33,31 +37,12 @@ export class MessagingService {
     );
   }
 
-  async seedDemoData() {
+  async onModuleInit() {
     if (!this.isDemoDataEnabled()) return;
-    const users = await this.userRepository.find();
-    if (users.length < 2) return;
-    const creator = users[0];
-    const participant = users[1];
     const existing = await this.conversationRepository.count();
     if (existing > 0) return;
-    const conv = this.conversationRepository.create({
-      id: generateId(),
-      loadId: 'LD-1001',
-      organizationId: creator.organizationId ?? undefined,
-      createdBy: creator.id,
-      receiverId: participant.id,
-    });
-    await this.conversationRepository.save(conv);
-    const welcome = this.messageRepository.create({
-      id: generateId(),
-      conversationId: conv.id,
-      senderId: creator.id,
-      receiverId: participant.id,
-      body: 'Welcome to the load conversation. Use this channel to coordinate pickup and delivery details.',
-      isRead: true,
-    });
-    await this.messageRepository.save(welcome);
+    await this.conversationRepository.save(DEMO_CONVERSATIONS);
+    await this.messageRepository.save(DEMO_MESSAGES);
   }
 
   createConversation(dto: CreateConversationDto & { userId: number }) {

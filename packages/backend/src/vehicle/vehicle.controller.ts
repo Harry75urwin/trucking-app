@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -13,6 +14,7 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiTags,
   ApiResponse,
 } from '@nestjs/swagger';
@@ -50,9 +52,10 @@ export class VehicleController {
   @ApiResponse({ status: 401, type: ErrorResponseDto })
   @ApiResponse({ status: 403, type: ErrorResponseDto })
   @ApiResponse({ status: 500, type: ErrorResponseDto })
+  @ApiQuery({ name: 'organization_id', required: false, type: Number })
   @Get()
-  findAll() {
-    return this.vehicleService.findAll();
+  findAll(@Query('organization_id') organizationId?: number) {
+    return this.vehicleService.findAll(organizationId);
   }
 
   @ApiOperation({ summary: 'Get a vehicle by id' })
@@ -75,7 +78,6 @@ export class VehicleController {
   @ApiOkResponse({ description: 'Vehicle updated successfully' })
   @ApiResponse({ status: 400, type: ErrorResponseDto })
   @ApiResponse({ status: 401, type: ErrorResponseDto })
-  @ApiResponse({ status: 403, type: ErrorResponseDto })
   @ApiResponse({ status: 404, type: ErrorResponseDto })
   @ApiResponse({ status: 500, type: ErrorResponseDto })
   @Patch(':id')

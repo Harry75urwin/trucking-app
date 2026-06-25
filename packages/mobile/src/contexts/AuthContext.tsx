@@ -6,6 +6,9 @@ import type { AccessModel, UserRole } from '../lib/rbac';
 import type { AuthResponse, Load, Vehicle, TrackingEvent, Conversation, Customer, Driver, Dispatch, LoadAssignment } from '../types';
 import { Alert } from 'react-native';
 
+const API_URL =
+  process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000';
+
 interface AuthContextValue {
   signIn: (payload: { phone: string; password: string }) => Promise<void>;
   signUp: (payload: {
@@ -145,6 +148,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signOut = async () => {
+    if (token) {
+      fetch(`${API_URL}/auth/logout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      }).catch(() => void 0);
+    }
     await clearAuth();
   };
 

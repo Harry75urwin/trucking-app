@@ -28,4 +28,10 @@ export class AuthController {
   login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
   }
+
+  @ApiOperation({ summary: 'Logout current session' })
+  @Post('logout')
+  logout() {
+    return { message: 'Logged out successfully' };
+  }
 }
